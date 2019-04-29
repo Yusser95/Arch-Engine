@@ -40,15 +40,15 @@
                 </div>
 
                 <br>
-                <br>
-                <br>
 
-                
+
+
                   <div class="form-group">
 
                     <label for="files">parameters</label>
                     <div id="files">
                       {% for i in item.parms %}
+                        <br>
                         <div id="filee00-0{{i.id}}">
                           <div class="input-group">
 
@@ -193,7 +193,7 @@
     function addFile() {
         fileId++; // increment fileId to get a unique ID for the new element
 
-        var html = '<br><br><div class="input-group">'+
+        var html = '<br><div class="input-group">'+
 
 
                           '<input type="text" class="form-control" id="parm_names" name="parm_names[]" placeholder="Enter param name" required="" />'+
