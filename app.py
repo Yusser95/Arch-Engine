@@ -310,7 +310,7 @@ def editobject_typ(id):
 
 		obj.name = request.form.get('name')
 		obj.desc = request.form.get('desc')
-		obj.object_type_id = request.form.get('parent')
+		obj.object_type_id = request.form.get('parent',default=None,type=int)
 	
 
 		param_types = request.form.getlist('param_types[]')
