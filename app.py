@@ -309,7 +309,7 @@ def editobject_typ(id):
 		obj = ObjectTypeModel.query.get(id)
 
 		obj.name = request.form.get('name')
-		obj.desc = request.form.get('desc')
+		obj.desc = request.form.get('desc',default=None,type=str)
 		obj.object_type_id = request.form.get('parent',default=None,type=int)
 	
 
@@ -320,7 +320,13 @@ def editobject_typ(id):
 
 		obj.parms.clear()
 		for i in range(len(parm_names)):
-			Param = OnjectTypeParamModel(name=parm_names[i],desc=param_desc[i],param_type=param_types[i])
+			p_desc = ""
+			try:
+				p_desc = param_desc[i]
+			except KeyError as e:
+				pass
+
+			Param = OnjectTypeParamModel(name=parm_names[i],desc=p_desc,param_type=param_types[i])
 			obj.parms.append(Param)
 
 		db.session.commit()
@@ -341,7 +347,7 @@ def create_object_type():
 	if request.method == "POST":
 		with db.session.no_autoflush:
 			name = request.form.get('name')
-			desc = request.form.get('desc')
+			desc = request.form.get('desc',default=None,type=str)
 			object_type_id = request.form.get('parent')
 
 			user_id = flask_login.current_user.id
@@ -355,7 +361,12 @@ def create_object_type():
 			obj = ObjectTypeModel(name=name,desc=desc,user_id=user_id,object_type_id=object_type_id)
 
 			for i in range(len(parm_names)):
-				Param = OnjectTypeParamModel(name=parm_names[i],desc=param_desc[i],param_type=param_types[i])
+				p_desc = ""
+				try:
+					p_desc = param_desc[i]
+				except KeyError as e:
+					pass
+				Param = OnjectTypeParamModel(name=parm_names[i],desc=p_desc,param_type=param_types[i])
 				obj.parms.append(Param)
 
 			db.session.add(obj)
