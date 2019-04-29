@@ -537,9 +537,9 @@ def get_instance_tree(base_page ,instance_object_ids=[]):
 def objecttypeparentdatatreeid(id):
 
 	# pick a root of the menu tree
-	roots = ObjectTypeModel.query.get(id) #.filter(ObjectTypeModel.object_type_id == None).all()
+	root = ObjectTypeModel.query.get(id) #.filter(ObjectTypeModel.object_type_id == None).all()
 	trees = []
-	for root in roots:
+	if root:
 		tree = get_instance_tree(root)
 		trees.append(tree)
 
