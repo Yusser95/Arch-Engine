@@ -246,7 +246,7 @@ def objecttypeparentdata():
 
 
 def get_tree(base_page):
-	dest_dict = {'id':base_page.id, 'text': base_page.name, 'desc': base_page.desc }
+	dest_dict = {'id':base_page.id, 'text': base_page.name}#, 'desc': base_page.desc }
 	children = base_page.childs
 	if children:
 		dest_dict['children'] = []
