@@ -20,7 +20,7 @@
                   <th>id</th>
                   <th>name</th>
                   <th>desc</th>
-                  <th>more info</th>
+                  <!-- <th>more info</th> -->
                   <th>Edit</th>
                   <th>Delete</th>
                 </tr>
@@ -57,16 +57,16 @@
             {"data": "0"},
             {"data": "1"}, 
             {"data": "2"},
-            {"data": "0"},
+            // {"data": "0"},
             {
-              "targets": 4,
+              "targets": 3,
               "data": "0",
               "render": function ( data, type, row, meta ) {
                 return '<a href="/admin/object_type/edit/'+data+'" class="nav-link"><i class="nav-icon fa fa-edit"></i></a>';
               }
             },
             {
-              "targets": 5,
+              "targets": 4,
               "data": "0",
               "render": function ( data, type, row, meta ) {
                 return '<a href="/admin/object_type/delete/'+data+'" class="nav-link" onclick="delete_confirm()" ><i class="nav-icon fa fa-trash"></i></a>';
