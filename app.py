@@ -287,7 +287,7 @@ def objecttypeparentdatatree():
 	print(trees)
 	# print(root_tree)
 	# root_tree = []
-	results = {"results":trees,"paginate": {"more": true}}
+	results = {"results":trees,"paginate": {"more": True}}
 	return jsonify(results)
 
 
