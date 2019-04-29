@@ -21,7 +21,7 @@ from urllib.parse import urlparse
 from datatables import ColumnDT, DataTables
 from flask import  jsonify
 
-from flask_debugtoolbar import DebugToolbarExtension
+# from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.ext.declarative import DeclarativeMeta
 
 
