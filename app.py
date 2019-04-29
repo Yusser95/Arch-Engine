@@ -553,6 +553,54 @@ def objecttypeparentdatatreeid(id):
 
 
 
+
+
+
+@app.route('/user/project/data')
+@flask_login.login_required
+def object_typdata():
+    """Return server side data."""
+    # defining columns
+
+    # ObjectTypeModel2 = db.aliased(ObjectTypeModel)
+
+
+    columns = [
+        ColumnDT(ProjectModel.id),
+        ColumnDT(ProjectModel.name),
+        ColumnDT(ProjectModel.desc),
+        ColumnDT(ProjectModel.created_at)
+
+    ]
+
+    # defining the initial query depending on your purpose
+    query = db.session.query().select_from(ProjectModel)#.outerjoin(ObjectTypeModel2,ObjectTypeModel.parent) #RecipeModel.query()
+    db.session.commit()
+
+    # GET parameters
+    params = request.args.to_dict()
+    print(params)
+
+    # instantiating a DataTable for the query and table needed
+    rowTable = DataTables(params, query, columns)
+
+    # returns what is needed by DataTable
+    return jsonify(rowTable.output_result())
+
+@app.route("/user/project/show" , methods =["GET"])
+@flask_login.login_required
+def createproject():
+	# edit
+	return render_template('/user/project/show.html')
+
+@app.route("/user/project/delete/<id>" , methods =["GET"])
+@flask_login.login_required
+def deleteproject(id):
+	print("deleted " , id)
+	ProjectModel.query.filter_by(id=id).delete()
+	db.session.commit()
+	return redirect('/user/project/show')
+
 @app.route("/user/project/create" , methods =["GET" , "POST"])
 @flask_login.login_required
 def createproject():

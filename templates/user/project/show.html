@@ -1,0 +1,88 @@
+{% extends "user/base.html" %}
+
+
+{% block body %}
+
+<div class="card col-md-11 ">
+              <div class="card-header">
+                <h3 class="card-title">Create Project</h3>
+              </div>
+
+              <div class="card-body">
+
+                
+
+                
+
+                  <table id="dt_110x" class="table table-bordered table-striped" style="width:100%">
+                <thead>
+                <tr>
+                  <th>id</th>
+                  <th>name</th>
+                  <th>desc</th>
+                  <th>created_at</th>
+                  <th>Edit</th>
+                  <th>Delete</th>
+                </tr>
+                </thead>
+                
+               
+              </table>
+
+                </div>
+                            <!-- /.card-body -->
+            </div>
+
+
+
+<script src={{ url_for('static',filename="plugins/jquery/jquery.min.js")}}></script>
+ <script src="https://cdn.datatables.net/1.10.10/js/jquery.dataTables.min.js"></script>
+
+  <script type="text/javascript" charset="utf-8">
+    $(document).ready(function () {
+      var table = $('#dt_110x').DataTable({
+        "stateSave": true,
+        // "responsive": true,
+        "paging":true,
+        "lengthMenu": [[10, 25, 50, 100, 1000, -1], [10, 25, 50, 100, 1000, "All"]],
+      // "lengthChange": true,
+        "pagingType": "full_numbers",
+        "processing": true,
+        "serverSide": true,
+        "pageLength": 10,
+        // "jQueryUI": true,
+        "ajax": "/user/project/data",
+        "columns": [
+            {"data": "0"},
+            {"data": "1"}, 
+            {"data": "2"},
+            {"data": "3"},
+            {
+              "targets": 4,
+              "data": "0",
+              "render": function ( data, type, row, meta ) {
+                // return '<a href="/user/project/edit/'+data+'" class="nav-link"><i class="nav-icon fa fa-edit"></i></a>';
+                return '<a href="/user/project/edit/42" class="nav-link"><i class="nav-icon fa fa-edit"></i></a>';
+              }
+            },
+            {
+              "targets": 5,
+              "data": "0",
+              "render": function ( data, type, row, meta ) {
+                return '<a href="/user/project/delete/'+data+'" class="nav-link" onclick="delete_confirm()" ><i class="nav-icon fa fa-trash"></i></a>';
+              }
+            },
+          ]
+      });
+    });
+
+    function delete_confirm(){
+      if(confirm('Are you sure, You Want to delete this?')) {
+      } else {
+       event.preventDefault(); 
+     }
+    }
+
+   
+  </script>
+{% endblock %}
