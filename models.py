@@ -3,7 +3,7 @@ from app import db
 import itertools
 from datetime import datetime
 # import flask_login
-from sqlalchemy_mptt.mixins import BaseNestedSets
+# from sqlalchemy_mptt.mixins import BaseNestedSets
 
 class User(db.Model):
     __tablename__ = "users"

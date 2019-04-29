@@ -5,8 +5,7 @@ requests
 Pillow
 #Theano
 Werkzeug
-#apscheduler
-Flask-APScheduler
+#Flask-APScheduler
 SQLAlchemy
 sqlalchemy-datatables
 psycopg2
@@ -23,9 +22,9 @@ Flask-WTF
 wtforms_components
 
 
-mysql-connector
-deap
-numpy
-flask-debugtoolbar
-cloudinary
-sqlalchemy_mptt
+#mysql-connector
+#deap
+#numpy
+#flask-debugtoolbar
+#cloudinary
+#sqlalchemy_mptt
