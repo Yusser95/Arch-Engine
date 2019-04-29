@@ -277,7 +277,7 @@ def object_typdata():
     ]
 
     # defining the initial query depending on your purpose
-    query = db.session.query().select_from(ObjectTypeModel).innerjoin(ObjectTypeModel2,ObjectTypeModel.parent) #RecipeModel.query()
+    query = db.session.query().select_from(ObjectTypeModel).outerjoin(ObjectTypeModel2,ObjectTypeModel.parent) #RecipeModel.query()
     db.session.commit()
 
     # GET parameters
