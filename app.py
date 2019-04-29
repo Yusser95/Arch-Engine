@@ -43,8 +43,8 @@ cwd = os.getcwd()
 # app.config['SQLALCHEMY_DATABASE_URI'] =  'sqlite:///'+cwd+'/resources/data.db' 
 # app.config['SQLALCHEMY_DATABASE_URI'] =  os.environ.get("DATABASE_URL") 
 # app.config['SQLALCHEMY_DATABASE_URI'] =  'mysql://rsonbol_foodbudg:13knBd3EvF@mysql.us.cloudlogin.co/rsonbol_foodbudg'
-# app.config['SQLALCHEMY_DATABASE_URI'] =  'mysql://root:root@localhost/flask_arch_engine'
-app.config['SQLALCHEMY_DATABASE_URI'] =  os.environ.get("CLEARDB_DATABASE_URL")[:-15] #or 'mysql://root:root@localhost/food-budget'
+app.config['SQLALCHEMY_DATABASE_URI'] =  'mysql://root:root@localhost/flask_arch_engine'
+# app.config['SQLALCHEMY_DATABASE_URI'] =  os.environ.get("CLEARDB_DATABASE_URL")[:-15] #or 'mysql://root:root@localhost/food-budget'
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_POOL_RECYCLE'] = 200
@@ -106,7 +106,7 @@ app.jinja_env.filters['datetime'] = format_datetime
 @flask_login.login_required
 def main():
 
-	return render_template('admin.html')
+	return render_template('index.html')
 
 
 @app.route("/api/documentation" , methods =["GET"])
@@ -246,9 +246,10 @@ def objecttypeparentdata():
 
 
 def get_tree(base_page):
-	dest_dict = {'id':base_page.id, 'text': base_page.name}#, 'desc': base_page.desc }
+	dest_dict = {'key':base_page.id, 'title': base_page.name}#, 'desc': base_page.desc }
 	children = base_page.childs
 	if children:
+		dest_dict["expanded"]= True
 		dest_dict['children'] = []
 		for child in children:
 			dest_dict['children'].append(get_tree(child))
@@ -283,12 +284,13 @@ def objecttypeparentdatatree():
 		tree = get_tree(root)
 		trees.append(tree)
 
-	# root_tree = root.drilldown_tree(json=True, json_fields=cat_to_json)
 	print(trees)
-	# print(root_tree)
-	# root_tree = []
-	results = {"results":trees,"paginate": {"more": True}}
-	return jsonify(results)
+
+
+	# results = {"results":trees,"paginate": {"more": True}}
+	# return jsonify(results)
+
+	return jsonify(trees)
 
 
 
