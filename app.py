@@ -523,7 +523,7 @@ def createuser():
 
 
 def get_instance_tree(base_page ,instance_object_ids=[]):
-	if base_page.id in instance_object_ids:
+	if base_page.id not in instance_object_ids:
 		dest_dict = {'key':base_page.id, 'title': base_page.name}#, 'desc': base_page.desc }
 		children = base_page.childs
 		if children:
@@ -533,7 +533,7 @@ def get_instance_tree(base_page ,instance_object_ids=[]):
 				dest_dict['children'].append(get_instance_tree(child))
 	return dest_dict
 
-@app.route("/admin/object_type/parent/data/tree/<id>", methods=['GET', "POST"])
+@app.route("/user/project/instances/data/tree/<id>", methods=['GET', "POST"])
 def objecttypeparentdatatreeid(id):
 
 	# pick a root of the menu tree
@@ -575,7 +575,7 @@ def editproject(id):
 
 	# show  one row
 	elif request.method == "GET":
-		return render_template('/user/project/edit.html',data_source = "/admin/object_type/parent/data/tree/{}".format(str(id)))
+		return render_template('/user/project/edit.html',data_source = "/user/project/instances/data/tree/{}".format(str(id)))
 	return "404"
 
 
