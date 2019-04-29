@@ -589,7 +589,7 @@ def projectdata():
 
 @app.route("/user/project/show" , methods =["GET"])
 @flask_login.login_required
-def createproject():
+def showproject():
 	# edit
 	return render_template('/user/project/show.html')
 
