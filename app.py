@@ -558,7 +558,7 @@ def objecttypeparentdatatreeid(id):
 
 @app.route('/user/project/data')
 @flask_login.login_required
-def object_typdata():
+def projectdata():
     """Return server side data."""
     # defining columns
 
