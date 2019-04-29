@@ -264,15 +264,20 @@ def recipekitsdata():
 def object_typdata():
     """Return server side data."""
     # defining columns
+
+    ObjectTypeModel2 = db.aliased(ObjectTypeModel)
+
+
     columns = [
         ColumnDT(ObjectTypeModel.id),
         ColumnDT(ObjectTypeModel.name),
         ColumnDT(ObjectTypeModel.desc),
+        ColumnDT(ObjectTypeModel2.name)
 
     ]
 
     # defining the initial query depending on your purpose
-    query = db.session.query().select_from(ObjectTypeModel) #.join(User) #RecipeModel.query()
+    query = db.session.query().select_from(ObjectTypeModel).join(ObjectTypeModel2,ObjectTypeModel.parent) #RecipeModel.query()
     db.session.commit()
 
     # GET parameters
