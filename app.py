@@ -258,23 +258,6 @@ def get_tree(base_page):
 @app.route("/admin/object_type/parent/data/tree", methods=['GET', "POST"])
 def objecttypeparentdatatree():
 
-	# params = request.args.to_dict()
-	# print(params)
-
-	# q= params['q']
-	# if q:
-	# 	objects = ObjectTypeModel.query.filter(ObjectTypeModel.name.like("%"+q+"%")).limit(50).all()
-	# 	db.session.commit()
-	# 	objects = [{"id": i.id, "text": i.name} for i in objects]
-	# 	# objects.append({"id": q, "text": q})
-	# 	return jsonify(objects)
-
-	# objects = ObjectTypeModel.query.limit(50).all()
-	# db.session.commit()
-	# objects = [{"id": i.id, "text": i.name} for i in objects]
-	# # objects.append({"id": q, "text": q})
-
-
 
 
 	# pick a root of the menu tree
@@ -539,540 +522,62 @@ def createuser():
 
 
 
+def get_instance_tree(base_page ,instance_object_ids=[]):
+	if base_page.id in instance_object_ids:
+		dest_dict = {'key':base_page.id, 'title': base_page.name}#, 'desc': base_page.desc }
+		children = base_page.childs
+		if children:
+			dest_dict["expanded"]= True
+			dest_dict['children'] = []
+			for child in children:
+				dest_dict['children'].append(get_instance_tree(child))
+	return dest_dict
 
+@app.route("/admin/object_type/parent/data/tree/<id>", methods=['GET', "POST"])
+def objecttypeparentdatatreeid(id):
 
-# ###########      domain routes
+	# pick a root of the menu tree
+	roots = ObjectTypeModel.query.get(id) #.filter(ObjectTypeModel.object_type_id == None).all()
+	trees = []
+	for root in roots:
+		tree = get_instance_tree(root)
+		trees.append(tree)
 
-# @app.route("/admin/recipe/kits/data", methods=['GET', "POST"])
-# def recipekitsdata():
+	# print(trees)
 
-# 	params = request.args.to_dict()
-# 	print(params)
 
-# 	q= params['q']
-# 	if q:
-# 		kits = Meal_Kit.query.filter(Meal_Kit.name.like("%"+q+"%")).limit(50).all()
-# 		db.session.commit()
-# 		kits = [{"id": str(i.id), "text": i.name} for i in kits]
-# 		print(kits)
-# 		# kits.append({"id": q, "text": q})
-# 		return jsonify(kits)
+	# results = {"results":trees,"paginate": {"more": True}}
+	# return jsonify(results)
 
-# 	kits = Meal_Kit.query.limit(50).all()
-# 	db.session.commit()
-# 	kits = [{"id": str(i.id), "text": i.name} for i in kits]
-# 	# kits.append({"id": q, "text": q})
+	return jsonify(trees)
 
-# 	print(kits)
-# 	return jsonify(kits)
 
 
+@app.route("/user/project/create" , methods =["GET" , "POST"])
+@flask_login.login_required
+def createproject():
+	# edit
+	if request.method == "POST":
+		pass
 
-# @app.route("/admin/recipe/categories/data", methods=['GET', "POST"])
-# def recipecategoriesdata():
+	# show  one row
+	elif request.method == "GET":
+		return render_template('/user/project/create.html')
+	return "404"
 
-# 	params = request.args.to_dict()
-# 	print(params)
 
-# 	q= params['q']
-# 	if q:
-# 		categories = CategoryModel.query.filter(CategoryModel.name.like("%"+q+"%")).limit(50).all()
-# 		db.session.commit()
-# 		categories = [{"id": str(i.id), "text": i.name} for i in categories]
-# 		# categories.append({"id": q, "text": q})
-# 		return jsonify(categories)
+@app.route("/user/project/edit/<id>" , methods =["GET" , "POST"])
+@flask_login.login_required
+def editproject(id):
+	# edit
+	if request.method == "POST":
+		pass
 
-# 	categories = CategoryModel.query.limit(50).all()
-# 	db.session.commit()
-# 	categories = [{"id": str(i.id), "text": i.name} for i in categories]
-# 	# categories.append({"id": q, "text": q})
-# 	return jsonify(categories)
+	# show  one row
+	elif request.method == "GET":
+		return render_template('/user/project/edit.html',data_source = "/admin/object_type/parent/data/tree/{}".format(str(id)))
+	return "404"
 
-
-# @app.route("/admin/recipe/units/data", methods=['GET', "POST"])
-# def recipeunitsdata():
-
-# 	params = request.args.to_dict()
-# 	print(params)
-
-# 	q= params['q']
-# 	if q:
-# 		units = Unit.query.filter(Unit.name.like("%"+q+"%")).limit(50).all()
-# 		db.session.commit()
-# 		units = [{"id": i.id, "text": i.name} for i in units]
-# 		# units.append({"id": q, "text": q})
-# 		return jsonify(units)
-
-# 	units = Unit.query.limit(50).all()
-# 	db.session.commit()
-# 	units = [{"id": i.id, "text": i.name} for i in units]
-# 	# units.append({"id": q, "text": q})
-# 	return jsonify(units)
-
-
-# @app.route("/admin/recipe/ingredients/data", methods=['GET', "POST"])
-# def recipeingredientsdata():
-
-# 	params = request.args.to_dict()
-# 	print(params)
-
-# 	q= params['q']
-# 	if q:
-# 		ingredients = IngredientModel.query.filter(IngredientModel.name.like("%"+q+"%")).limit(50).all()
-# 		db.session.commit()
-# 		ingredients = [{"id": i.name, "text": i.name} for i in ingredients]
-# 		ingredients.append({"id": q, "text": q})
-# 		return jsonify(ingredients)
-
-# 	ingredients = IngredientModel.query.limit(50).all()
-# 	db.session.commit()
-# 	ingredients = [{"id": i.name, "text": i.name} for i in ingredients]
-# 	ingredients.append({"id": q, "text": q})
-# 	return jsonify(ingredients)
-
-
-# # @app.route('/admin/recipe/data')
-# # @flask_login.login_required
-# # def recipedata():
-# #     data=RecipeModel.query.all()
-# #     return jsonify(data)
-
-
-
-# @app.route('/admin/generated_recipe/data')
-# @flask_login.login_required
-# def generatedrecipedata():
-#     """Return server side data."""
-#     # defining columns
-#     columns = [
-#         ColumnDT(GeneratedRecipesModel.id),
-#         # ColumnDT(User.username),
-#         # ColumnDT(GeneratedRecipesModel.kit_id),
-#         # ColumnDT(GeneratedRecipesModel.recipe_id),
-#         ColumnDT(Meal_Kit.name),
-#         ColumnDT(CategoryModel.name),
-        
-#         ColumnDT(GeneratedRecipesModel.total_price),
-#         ColumnDT(GeneratedRecipesModel.waste),
-#         ColumnDT(GeneratedRecipesModel.created_at),
-#         ColumnDT(ScheduleLog.name),
-#         ColumnDT(Meal_Kit.id),
-#         ColumnDT(RecipeModel.id),
-        
-#         ColumnDT(RecipeModel.name),
-#         ColumnDT(CategoryModel.id)
-#         # ColumnDT("""<a href="/admin/recipe/edit/{}" class="nav-link"><i class="nav-icon fa fa-edit"></i></a>""".format(RecipeModel.id)),
-#         # ColumnDT("""<a  href="/admin/recipe/delete/{}" class="nav-link"><i class="nav-icon fa fa-trash"></i></a>""".format(RecipeModel.id))
-#     ]
-
-#     # defining the initial query depending on your purpose
-#     query = db.session.query().select_from(GeneratedRecipesModel).join(RecipeModel,GeneratedRecipesModel.recipe).join(Meal_Kit,GeneratedRecipesModel.kit).join(ScheduleLog,GeneratedRecipesModel.job).join(CategoryModel,GeneratedRecipesModel.category) #RecipeModel.query()
-    
-#     # Query definition
-# 	# query = db.session.query().select_from(GeneratedRecipesModel).outerjoin(Recipe, GeneratedRecipesModel.recipe_id==Recipe.id).outerjoin(Meal_Kit, GeneratedRecipesModel.kit_id==Meal_Kit.id)
-    
-#     db.session.commit()
-
-#     # GET parameters
-#     params = request.args.to_dict()
-#     print(params)
-
-
-
-#     # instantiating a DataTable for the query and table needed
-#     rowTable = DataTables(params, query, columns)
-
-#     # returns what is needed by DataTable
-#     return jsonify(rowTable.output_result())
-
-
-
-
-# @app.route("/admin/generated_recipe/more_info/<id>" , methods =["GET"])
-# @flask_login.login_required
-# def showgeneratedrecipemoreinfo(id):
-# 	# items = GeneratedRecipesModel.query.all()
-# 	# db.session.commit()
-# 	items = GeneratedRecipesModel.query.get(id)
-
-# 	return render_template('admin/generated_recipe/show_moreinfo.html',items=items)
-
-
-
-# @app.route("/admin/generated_recipe/show" , methods =["GET"])
-# @flask_login.login_required
-# def showgeneratedrecipe():
-# 	# items = GeneratedRecipesModel.query.all()
-# 	# db.session.commit()
-# 	job_id = request.args.get('job_id')
-# 	job_name = None
-# 	if job_id:
-# 		job = ScheduleLog.query.get(job_id)
-# 		if job:
-# 			job_name = job.name
-# 	else:
-# 		job = ScheduleLog.query.order_by(ScheduleLog.created_at.desc()).first()
-# 		if job:
-# 			job_name = job.name
-
-
-
-# 	return render_template('admin/generated_recipe/show.html',job_name=job_name)
-
-
-
-
-
-
-# @app.route('/admin/recipe/data')
-# @flask_login.login_required
-# def recipedata():
-#     """Return server side data"""
-#     # defining columns
-#     columns = [
-#         ColumnDT(RecipeModel.id),
-#         # ColumnDT(User.username),
-#         ColumnDT(RecipeModel.name),
-#         ColumnDT(RecipeModel.image),
-#         ColumnDT(RecipeModel.prep_time),
-#         ColumnDT(RecipeModel.cooke_time),
-#         ColumnDT(RecipeModel.direction),
-#         ColumnDT(RecipeModel.servings)
-#         # ColumnDT("""<a href="/admin/recipe/edit/{}" class="nav-link"><i class="nav-icon fa fa-edit"></i></a>""".format(RecipeModel.id)),
-#         # ColumnDT("""<a  href="/admin/recipe/delete/{}" class="nav-link"><i class="nav-icon fa fa-trash"></i></a>""".format(RecipeModel.id))
-#     ]
-
-#     # defining the initial query depending on your purpose
-#     query = db.session.query().select_from(RecipeModel)#.join(User) #RecipeModel.query()
-#     db.session.commit()
-
-#     # GET parameters
-#     params = request.args.to_dict()
-#     print(params)
-
-
-
-#     # instantiating a DataTable for the query and table needed
-#     rowTable = DataTables(params, query, columns)
-
-#     # returns what is needed by DataTable
-#     return jsonify(rowTable.output_result())
-
-
-# @app.route('/admin/recipe/data/<id>')
-# @flask_login.login_required
-# def recipedatabyid(id):
-# 	"""Return server side data."""
-# 	# defining columns
-# 	columns = [
-# 		ColumnDT(RecipeModel.id),
-# 		# ColumnDT(User.username),
-# 		ColumnDT(RecipeModel.name),
-# 		ColumnDT(RecipeModel.image),
-# 		ColumnDT(RecipeModel.prep_time),
-# 		ColumnDT(RecipeModel.cooke_time),
-# 		ColumnDT(RecipeModel.direction),
-# 		ColumnDT(RecipeModel.servings)
-# 		# ColumnDT("""<a href="/admin/recipe/edit/{}" class="nav-link"><i class="nav-icon fa fa-edit"></i></a>""".format(RecipeModel.id)),
-# 		# ColumnDT("""<a  href="/admin/recipe/delete/{}" class="nav-link"><i class="nav-icon fa fa-trash"></i></a>""".format(RecipeModel.id))
-# 	]
-
-
-# 	item = Meal_Kit.query.get(id)
-# 	filter =[r.id for r in item.recipes]
-# 	# defining the initial query depending on your purpose
-# 	query = db.session.query().select_from(RecipeModel).filter(RecipeModel.id.in_(filter))#.join(User) #RecipeModel.query()
-# 	db.session.commit()
-
-# 	# GET parameters
-# 	params = request.args.to_dict()
-# 	print(params)
-
-
-
-# 	# instantiating a DataTable for the query and table needed
-# 	rowTable = DataTables(params, query, columns)
-
-# 	# returns what is needed by DataTable
-# 	return jsonify(rowTable.output_result())
-
-
-
-
-
-
-# @app.route("/admin/recipe/show" , methods =["GET"])
-# @flask_login.login_required
-# def showrecipe():
-# 	# items = RecipeModel.query.limit(50).all()
-
-# 	return render_template('admin/recipe/show.html' ,data_source="/admin/recipe/data")#,items=items)
-
-
-# @app.route("/admin/recipe/show/<id>" , methods =["GET"])
-# @flask_login.login_required
-# def showrecipebykit(id):
-
-# 	return render_template('admin/recipe/show.html',data_source="/admin/recipe/data/{}".format(str(id)))
-
-
-
-# @app.route("/admin/recipe/delete/<id>" , methods =["GET"])
-# @flask_login.login_required
-# def deletedomain(id):
-# 	print("deleted " , id)
-# 	with db.session.no_autoflush:
-# 		obj = RecipeModel.query.get(id)
-# 		obj.kits.clear()
-# 		for ing in obj.ingredients:
-# 			db.session.delete(ing)
-# 		db.session.commit()
-# 		RecipeModel.query.filter_by(id=id).delete()
-# 		db.session.commit()
-
-# 	return redirect('/admin/recipe/show')
-
-# @app.route("/admin/recipe/edit/<id>" , methods =["GET" , "POST"])
-# @flask_login.login_required
-# def editrecipe(id):
-# 	_url = urlparse(request.base_url)
-# 	master_url = '{0}://{1}'.format(_url.scheme, _url.netloc)
-# 	# print(master_url)
-# 	# edit
-# 	if request.method == "POST":
-
-# 		# with db.session.no_autoflush:
-
-# 		obj = RecipeModel.query.get(id)
-
-
-
-# 		obj.name = request.form.get('name')
-# 		obj.prep_time = request.form.get('prep_time')
-# 		obj.cooke_time = request.form.get('cooke_time')
-# 		obj.servings = request.form.get('servings')
-# 		obj.direction = request.form.get('direction')
-# 		kits = request.form.getlist('kits[]')
-# 		obj.category_id = request.form.get('category')
-# 		# obj.user_id = flask_login.current_user.id
-# 		if 'image' in request.files:
-# 			file = request.files['image']
-# 			if file:
-# 				# claudera
-# 				upload_result = upload(file)
-# 				# obj.image = upload_result['secure_url']
-# 				thumbnail_pixelate, options = cloudinary_url(
-# 				upload_result['public_id'],
-# 				format="jpg",
-# 				crop="fill",
-# 				width=300,
-# 				height=200,
-# 				radius=0,
-# 				# effect="pixelate_faces:9",
-# 				gravity="center"
-# 				)
-# 				obj.image = thumbnail_pixelate#.replace("c_fill_pad,g_center,h_200,r_0,w_300/","")
-				
-
-#                 # manual
-# 				# filename = file.filename
-# 				# path = "resources/uploads/"+obj.name.replace(" ","_").replace("#","_").replace(".","_")+"."+filename.split(".")[-1]
-# 				# obj.image = "/uploads/"+obj.name.replace(" ","_").replace("#","_").replace(".","_")+"."+filename.split(".")[-1]
-# 				# file.save(path)
-
-# 		ingredients = request.form.getlist('ingredients[]')
-# 		weights = request.form.getlist('weights[]')
-# 		values = request.form.getlist('values[]')
-
-# 		obj.kits.clear()
-# 		for id in kits:
-# 			kit = Meal_Kit.query.get(id)
-# 			obj.kits.append(kit)
-
-# 		print(ingredients,weights,values,kits)
-
-# 		# obj.ingredients.clear()
-# 		# for ing in obj.ingredients:
-# 		# 	if ing.ingredient.name not in ingredients:
-# 		# 		db.session.delete(ing)
-# 		# 	else:
-# 		# 		ingredients.remove(ing.ingredient.name)
-
-# 		# for ing in obj.ingredients:
-# 		# 	if ing.ingredient.name not in ingredients:
-# 		# 		db.session.delete(ing)
-# 		# 	else:
-# 		# 		flag = True
-# 		# 		for i in range(len(ingredients)):
-# 		# 			if ing.ingredient.name == ingredients[i] and ing.unit.name == values[i] and str(ing.amount) == str(weights[i]):
-# 		# 				print("found")
-# 		# 				ingredients.pop(i)
-# 		# 				values.pop(i)
-# 		# 				weights.pop(i)
-# 		# 				flag =False
-# 		# 				break
-# 		# 		if flag:
-# 		# 			db.session.delete(ing)
-
-# 		for ing in obj.ingredients:
-# 			if ing.ingredient.name not in ingredients:
-# 				db.session.delete(ing)
-# 			else:
-# 				flag = True
-# 				for i in range(len(ingredients)):
-# 					if ing.ingredient.name == ingredients[i] and ing.unit_id == values[i] and str(ing.amount) == str(weights[i]):
-# 						print("found")
-# 						ingredients.pop(i)
-# 						values.pop(i)
-# 						weights.pop(i)
-# 						flag =False
-# 						break
-# 				if flag:
-# 					db.session.delete(ing)
-
-# 		# db.session.commit()
-# 		print(ingredients,weights,values)
-
-# 		for i in range(len(ingredients)):
-# 			Ingr = Recipe_Ingr(amount=weights[i],unit_id=values[i])
-
-# 			temp_ingr = IngredientModel.query.filter_by(name=ingredients[i]).first()
-# 			if not temp_ingr:
-# 				temp_ingr = IngredientModel(name=ingredients[i])
-# 			Ingr.ingredient = temp_ingr
-
-
-# 			# temp_unit = Unit.query.filter_by(name=values[i]).one()
-# 			# temp_unit = Unit.query.get(values[i])
-# 			# if not temp_unit:
-# 			# 	temp_unit = Unit(name=values[i])
-# 			# Ingr.unit = temp_unit
-
-
-# 			obj.ingredients.append(Ingr)
-
-
-# 		db.session.commit()
-
-
-# 		return redirect('/admin/recipe/show')
-# 	# show  one row
-# 	elif request.method == "GET":
-# 		item = RecipeModel.query.get(id)
-# 		# print("id : ",item.kits)
-# 		# categories = Meal_Kit.query.all()
-# 		# ingredients = IngredientModel.query.all()
-# 		# ingredients = [i.name for i in ingredients]
-# 		# units = Unit.query.all()
-# 		# units = [i.name for i in units]
-# 		# units = db.session.query(Recipe_Ingr.unit).group_by(Recipe_Ingr.unit).all()
-# 		# units = [i[0] for i in units]
-# 		return render_template('/admin/recipe/edit.html',item = item)#,categories=categories,ingredients=ingredients,units=units)
-# 	return "404"
-
-
-# @app.route("/admin/recipe/create" , methods =["GET" , "POST"])
-# @flask_login.login_required
-# def createrecipe():
-# 	_url = urlparse(request.base_url)
-# 	master_url = '{0}://{1}'.format(_url.scheme, _url.netloc)
-# 	# edit
-# 	if request.method == "POST":
-# 		with db.session.no_autoflush:
-# 			name = request.form.get('name')
-# 			prep_time = request.form.get('prep_time')
-# 			cooke_time = request.form.get('cooke_time')
-# 			servings = request.form.get('servings')
-# 			direction = request.form.get('direction')
-# 			kits = request.form.getlist('kits[]')
-# 			category_id = request.form.get('category')
-# 			user_id = flask_login.current_user.id
-# 			image = ''
-# 			if 'image' in request.files:
-# 				file = request.files['image']
-# 				if file:
-
-# 					# claudira
-
-# 					upload_result = upload(file)
-# 					# obj.image = upload_result['secure_url']
-# 					thumbnail_pixelate, options = cloudinary_url(
-# 					upload_result['public_id'],
-# 					format="jpg",
-# 					crop="fill",
-# 					width=300,
-# 					height=200,
-# 					radius=0,
-# 					# effect="pixelate_faces:9",
-# 					gravity="center"
-# 					)
-# 					image = thumbnail_pixelate#.replace("c_fill_pad,g_center,h_200,r_0,w_300/","")
-
-
-# 					# manul
-# 					# filename = file.filename
-# 					# path = "resources/uploads/"+name.replace(" ","_").replace("#","_").replace(".","_")+"."+filename.split(".")[-1]
-# 					# image = "/uploads/"+name.replace(" ","_").replace("#","_").replace(".","_")+"."+filename.split(".")[-1]
-# 					# file.save(path)
-
-# 			ingredients = request.form.getlist('ingredients[]')
-# 			weights = request.form.getlist('weights[]')
-# 			values = request.form.getlist('values[]')
-
-
-# 			obj = RecipeModel(name=name,image=image,prep_time=prep_time,cooke_time=cooke_time,direction=direction,user_id=user_id,servings=servings,category_id=category_id)
-
-# 			db.session.commit()
-# 			for id in kits:
-# 				kit = Meal_Kit.query.get(id)
-# 				obj.kits.append(kit)
-
-# 			# db.session.commit()
-
-# 			# for i in range(len(ingredients)):
-# 			# 	Ingr = Recipe_Ingr(ingr_name=ingredients[i],ingr_value=values[i],ingr_weight=weights[i])
-# 			# 	obj.ingredients.append(Ingr)
-
-# 			for i in range(len(ingredients)):
-# 				Ingr = Recipe_Ingr(amount=weights[i],unit_id=values[i])
-
-# 				temp_ingr = IngredientModel.query.filter_by(name=ingredients[i]).first()
-# 				if not temp_ingr:
-# 					temp_ingr = IngredientModel(name=ingredients[i])
-# 				Ingr.ingredient = temp_ingr
-
-# 				# print(values[i])
-# 				# temp_unit = Unit.query.get(values[i])
-# 				# if not temp_unit:
-# 					# temp_unit = Unit(name=values[i])
-# 				# Ingr.unit = temp_unit
-
-
-# 				obj.ingredients.append(Ingr)
-
-# 			db.session.add(obj)
-# 			# db.session.flush()
-# 			# db.session.refresh(obj)
-# 			# domain_id = obj.id
-# 			db.session.commit()
-
-
-# 		return redirect('/admin/recipe/show')
-# 	# show  one row
-# 	elif request.method == "GET":
-
-# 		# categories = Meal_Kit.query.all()
-
-# 		# ingredients = IngredientModel.query.all() 
-# 		# ingredients = [i.name for i in ingredients]
-
-# 		# units = Unit.query.all()
-# 		# units = [i.name for i in units]
-
-# 		# units = db.session.query(Recipe_Ingr.unit).group_by(Recipe_Ingr.unit).all()
-# 		# units = [i[0] for i in units]
-# 		return render_template('/admin/recipe/create.html')#,categories=categories)#,ingredients=ingredients,units=units)
-# 	return "404"
 
 
 
