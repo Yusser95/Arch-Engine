@@ -28,3 +28,4 @@ deap
 numpy
 flask-debugtoolbar
 cloudinary
+sqlalchemy_mptt

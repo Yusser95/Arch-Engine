@@ -43,8 +43,8 @@ cwd = os.getcwd()
 # app.config['SQLALCHEMY_DATABASE_URI'] =  'sqlite:///'+cwd+'/resources/data.db' 
 # app.config['SQLALCHEMY_DATABASE_URI'] =  os.environ.get("DATABASE_URL") 
 # app.config['SQLALCHEMY_DATABASE_URI'] =  'mysql://rsonbol_foodbudg:13knBd3EvF@mysql.us.cloudlogin.co/rsonbol_foodbudg'
-# app.config['SQLALCHEMY_DATABASE_URI'] =  'mysql://root:root@localhost/flask_arch_engine'
-app.config['SQLALCHEMY_DATABASE_URI'] =  os.environ.get("CLEARDB_DATABASE_URL")[:-15] #or 'mysql://root:root@localhost/food-budget'
+app.config['SQLALCHEMY_DATABASE_URI'] =  'mysql://root:root@localhost/flask_arch_engine'
+# app.config['SQLALCHEMY_DATABASE_URI'] =  os.environ.get("CLEARDB_DATABASE_URL")[:-15] #or 'mysql://root:root@localhost/food-budget'
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_POOL_RECYCLE'] = 200
@@ -241,6 +241,53 @@ def objecttypeparentdata():
 	objects = [{"id": i.id, "text": i.name} for i in objects]
 	# objects.append({"id": q, "text": q})
 	return jsonify(objects)
+
+
+
+
+def get_tree(base_page):
+	dest_dict = {'id':base_page.id, 'name': base_page.name, 'desc': base_page.desc }
+	children = base_page.childs
+	if children:
+		dest_dict['children'] = []
+		for child in children:
+			dest_dict['children'].append(get_tree(child))
+	return dest_dict
+
+@app.route("/admin/object_type/parent/data/tree", methods=['GET', "POST"])
+def objecttypeparentdatatree():
+
+	# params = request.args.to_dict()
+	# print(params)
+
+	# q= params['q']
+	# if q:
+	# 	objects = ObjectTypeModel.query.filter(ObjectTypeModel.name.like("%"+q+"%")).limit(50).all()
+	# 	db.session.commit()
+	# 	objects = [{"id": i.id, "text": i.name} for i in objects]
+	# 	# objects.append({"id": q, "text": q})
+	# 	return jsonify(objects)
+
+	# objects = ObjectTypeModel.query.limit(50).all()
+	# db.session.commit()
+	# objects = [{"id": i.id, "text": i.name} for i in objects]
+	# # objects.append({"id": q, "text": q})
+
+
+
+
+	# pick a root of the menu tree
+	roots = ObjectTypeModel.query.filter(ObjectTypeModel.object_type_id == None).all()
+	trees = []
+	for root in roots:
+		tree = get_tree(root)
+		trees.append(tree)
+
+	# root_tree = root.drilldown_tree(json=True, json_fields=cat_to_json)
+	print(trees)
+	# print(root_tree)
+	# root_tree = []
+	return jsonify(trees)
 
 
 

@@ -1,8 +1,9 @@
 
 from app import db
+import itertools
 from datetime import datetime
 # import flask_login
-
+from sqlalchemy_mptt.mixins import BaseNestedSets
 
 class User(db.Model):
     __tablename__ = "users"
@@ -90,10 +91,14 @@ class ObjectTypeModel(db.Model):
 
     object_type_id = db.Column(db.Integer, db.ForeignKey('object_type.id', ondelete='CASCADE'),
         nullable=True)
-    # parent = db.relationship('ObjectTypeModel',lazy=True,
+    # parent = db.relationship('ObjectTypeModel',lazy=True)#,
         # backref=db.backref('childs', lazy=True))
 
-    parent = db.relationship('ObjectTypeModel', remote_side=[id])
+    # parent = db.relationship('ObjectTypeModel', remote_side=[id])
+
+    childs = db.relationship("ObjectTypeModel",
+                backref=db.backref('parent', remote_side=[id])
+            )
 
     
 
@@ -106,6 +111,20 @@ class ObjectTypeModel(db.Model):
         self.object_type_id = object_type_id
         self.user_id = user_id
         self.created_at = datetime.utcnow()
+
+
+    @property
+    def ancestors(self):
+        if self.parent is None:
+            return ()
+        return itertools.chain((self.parent,), self.parent.ancestors)
+
+    @property
+    def children(self):
+        if self.childs is None:
+            return ()
+        for ch in self.childs:
+            yield itertools.chain.from_iterable((self.childs,), ch.children)
 
 
 
