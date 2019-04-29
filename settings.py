@@ -1,0 +1,1 @@
+BASE_URl = "http://localhost:5000/"

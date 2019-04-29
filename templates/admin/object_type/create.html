@@ -1,0 +1,240 @@
+{% extends "admin/base.html" %}
+
+
+{% block body %}
+
+<!-- general form elements -->
+            <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">Object-Type</h3>
+              </div>
+
+
+
+
+              <!-- /.card-header -->
+              <!-- form start -->
+              <form role="form" action="/admin/object_type/create" method="post" enctype="multipart/form-data">
+
+                <div class="card-body">
+
+                <div class="col-lg-10">
+
+
+                  <div class="form-group">
+                    <label for="name">object name</label>
+                    <input type="text" class="form-control" id="name" name="name" placeholder="Enter name" required="">
+                  </div>
+
+
+                  <div class="form-group">
+                    <label for="desc">object desc</label>
+                    <textarea rows = "5" class="form-control" id="desc" name="desc" placeholder="Enter desc" required=""></textarea>
+                  </div>
+
+
+                  <div class="form-group">
+                  <label>parent *</label>
+                  <select class="form-control select22" name="parent" data-placeholder="select parent">
+                  </select>
+                </div>
+
+
+                  <div class="form-group">
+
+                    <label for="files">parameters</label>
+                    <div id="files">
+                        <div id="filee-1">
+                          <div class="input-group">
+
+
+                          <input type="text" class="form-control" id="parm_names" name="parm_names[]" placeholder="Enter param name" required="" />
+
+
+                          <div class="form-control"><select class="select2" name="param_types[]" data-placeholder="Enter param type" required="">
+                          </select></div>
+
+                          <textarea rows = "5" class="form-control" style="width: 100%;" id="param_desc" name="param_desc[]" placeholder="Enter param descreption" required=""></textarea>
+
+                          <!-- <input type="text" class="form-control" id="values" name="values[]" placeholder="Enter value" required="" /> -->
+                          <input type="button" value="Remove" onclick="removeElement('filee-1');" />
+                          </div>
+                        </div>
+                    </div>
+                    <br>
+                    <p><input type="button" value="Add Ingredient" onclick="addFile();" /></p>
+                  </div>
+
+
+                </div>
+
+
+			</div>
+
+				
+		        <!-- /.col-->
+
+                <div class="card-footer">
+                  <button type="submit" class="btn btn-primary">Submit</button>
+                  <a href="/admin/object_type/show" class="btn btn-warning">Back</a>
+
+                </div>
+
+				</form>
+               </div>
+
+<!-- jQuery -->
+<script src={{ url_for('static',filename="plugins/jquery/jquery.min.js")}}></script>
+
+<!-- Bootstrap 4 -->
+<script src={{ url_for('static',filename="plugins/bootstrap/js/bootstrap.bundle.min.js")}}></script>
+
+<!-- parsley.min -->
+<script src={{ url_for('static',filename="plugins/parsley/dist/parsley.min.js")}}></script>
+
+<!-- bootstrap-duration-picker -->
+<script src={{ url_for('static',filename="dist/js/bootstrap-duration-picker.js")}}></script>
+
+<!-- Select2 -->
+<script src={{ url_for('static',filename="plugins/select2/select2.full.min.js")}}></script>
+
+
+
+
+
+<script type="text/javascript">
+
+
+    $('.select2').select2({
+    tags: false,
+    width: '100%',
+    // maximumSelectionLength: 1,
+    tokenSeparators: [','],
+    
+    ajax: {
+        url: '/admin/object_type/param_types/data',
+        dataType: 'json',
+        delay: 500,
+        processResults: function (data) {
+            return {
+                results: $.map(data, function (item) {
+                    return {
+                        text: item.text,
+                        id: item.text
+                    }
+                })
+            };
+        }
+    }
+  });
+
+
+
+  $('.select22').select2({
+    tags: false,
+    width: '100%',
+    // maximumSelectionLength: 1,
+    tokenSeparators: [','],
+    
+    ajax: {
+        url: '/admin/object_type/parent/data',
+        dataType: 'json',
+        delay: 700,
+        processResults: function (data) {
+            return {
+                results: $.map(data, function (item) {
+                    return {
+                        text: item.text,
+                        id: item.id
+                    }
+                })
+            };
+        }
+    }
+  });
+
+
+    function addElement(parentId, elementTag, elementId, html) {
+    // Adds an element to the document
+    var p = document.getElementById(parentId);
+    var newElement = document.createElement(elementTag);
+    newElement.setAttribute('id', elementId);
+    newElement.innerHTML = html;
+    p.appendChild(newElement);
+    }
+
+
+    function removeElement(elementId) {
+
+      // event.preventDefault();
+
+      // alert('removing')
+
+
+    // Removes an element from the document
+    var element = document.getElementById(elementId);
+    element.parentNode.removeChild(element);
+    
+    // $('#'+elementId).remove();
+
+    // return false;
+    }
+
+
+
+
+    var fileId = 0; // used by the addFile() function to keep track of IDs
+    function addFile() {
+        fileId++; // increment fileId to get a unique ID for the new element
+
+        var html = '<br><div class="input-group">'+
+
+
+                          '<input type="text" class="form-control" id="parm_names" name="parm_names[]" placeholder="Enter param name" required="" />'+
+
+                          '<div class="form-control"><select class="select2" id="param-'+fileId+'" name="param_types[]" data-placeholder="Enter param type" required=""></select></div>'+
+
+                          '<textarea rows = "5" class="form-control" style="width: 100%;" id="param_desc" name="param_desc[]" placeholder="Enter param descreption" required=""></textarea>'+
+
+                          '<input type="button" value="Remove" onclick="removeElement('+"'"+'file-' + fileId +"'"+ ');" />'+
+                  '</div>';
+
+
+
+
+            addElement('files', 'div', 'file-' + fileId, html);
+
+
+            $("#param-"+fileId).select2({
+              tags: false,
+              width: '100%',
+              // maximumSelectionLength: 1,
+              tokenSeparators: [','],
+              
+              ajax: {
+                  url: '/admin/object_type/param_types/data',
+                  dataType: 'json',
+                  delay: 500,
+                  processResults: function (data) {
+                      return {
+                          results: $.map(data, function (item) {
+                              return {
+                                  text: item.text,
+                                  id: item.text
+                              }
+                          })
+                      };
+                  }
+              }
+            });
+
+
+    }
+
+
+
+
+</script>
+
+
+{% endblock %}

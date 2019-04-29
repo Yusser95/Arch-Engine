@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>HCISoft</title>
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+  <!-- Ionicons -->
+  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href={{ url_for('static',filename="dist/css/adminlte.min.css")}}>
+  <!--select2-->
+  <link rel="stylesheet" href={{ url_for('static',filename="plugins/select2/select2.min.css")}}>
+  <!-- Google Font: Source Sans Pro -->
+  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+</head>
+
+<body class="hold-transition">
+<div class="wrapper">
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand bg-white navbar-light border-bottom">
+    <!-- Left navbar links -->
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link" data-widget="pushmenu" href="#"><i class="fa fa-bars"></i></a>
+      </li>
+      <li class="nav-item d-none d-sm-inline-block">
+        <a href="/" class="nav-link">Home</a>
+      </li>
+      <li class="nav-item d-none d-sm-inline-block">
+        <a href="/admin" class="nav-link">Manage</a>
+      </li>
+    </ul>
+
+
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <div id="google_translate_element"></div>
+      </li>
+    </ul>
+
+    
+
+  </nav>
+  <!-- /.navbar -->
+
+
+  <br>
+
+
+  <div class="row justify-content-center">
+
+
+            <form id="myForm" role="form" action="/" method="post" class="col-md-12" style="margin: 15px">
+            <div class="card card-info col-md-12">
+              
+              <div class="card-header">
+                <h3 class="card-title">Inputs</h3>
+              </div>
+
+              
+              <div class="card-body">
+
+
+                  <div class="form-group">
+                    <label>domains</label>
+                    <select class="form-control select2" name="domains[]" multiple="multiple" data-placeholder="Select domains"
+                            style="width: 100%;" >
+                      {% for result in domains %}
+                      <option id="d_{{ result.id }}" value="{{ result.id }}">{{ result.url }}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label>keywords</label>
+                    <select class="form-control select2" name="keywords[]" multiple="multiple" data-placeholder="Select keywords"
+                            style="width: 100%;" >
+                      {% for result in keywords %}
+                      <option id="k_{{ result.id }}" value="{{ result.id }}">{{ result.en_word }}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+              </div>
+
+              <div class="card-footer">
+                  <button type="submit" id=""  class="btn btn-primary" style="float: right;">Submit</button>
+                </div>
+
+              
+              <!-- /.card-body -->
+            </div>
+            </form>
+
+            
+
+            <div class="card col-md-12" style="margin: 15px">
+              <div class="card-header">
+                <h3 class="card-title">domains bar chart</h3>
+              </div>
+
+              <div class="card-body">
+
+                <div class="chart col-md-6">
+                  <canvas id="bar-chart-horizontal" ></canvas>
+                </div>
+
+                </div>
+              <!-- /.card-body -->
+            </div>
+
+
+
+            <div class="card col-md-12" style="margin: 15px">
+              <div class="card-header">
+                <h3 class="card-title">data table order by most contained keywords</h3>
+              </div>
+              <div class="card-body">
+
+                
+
+                <table id="datatable" class="table table-bordered table-striped" >
+                <thead>
+                <tr>
+                  <th>text</th>
+                </tr>
+                </thead>
+                <tbody>
+                  <?php 
+                  {% for item in data %}
+                    <tr>
+                      <td><p>{{ item['html'] |safe }}</p> <br/> <strong>src : <a href="{{ item['domain'] |safe }}">{{ item['domain'] |safe }}</a></strong></td>
+                      
+                    </tr>
+                  {% endfor %}
+                
+                </tbody>
+                <tfoot>
+                <tr>
+                  <th>text</th>
+                </tr>
+                </tfoot>
+              </table>
+
+
+              </div>
+              <!-- /.card-body -->
+            </div>
+
+
+    </div>
+
+
+    <br>
+    <br>
+
+
+
+  <footer class="">
+    <!-- <strong>Copyright &copy; 2014-2018 <a href="/">HCISoft</a>.</strong>
+    All rights reserved. -->
+    <div class="float-right d-none d-sm-inline-block">
+      <b>Version</b> 1.0.0-alpha
+    </div>
+  </footer>
+
+
+</div>
+<!-- ./wrapper -->
+
+
+
+<!-- jQuery -->
+<script src={{ url_for('static',filename="plugins/jquery/jquery.min.js") }}></script>
+<!-- Bootstrap 4 -->
+<script src={{ url_for('static',filename="plugins/bootstrap/js/bootstrap.bundle.min.js")}}></script>
+<!-- ChartJS 1.0.1 -->
+<script src={{ url_for('static',filename="plugins/chart.js/Chart.min.js")}}></script>
+<!-- Select2 -->
+<script src={{ url_for('static',filename="plugins/select2/select2.full.min.js") }}></script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.66.0-2013.10.09/jquery.blockUI.js"></script>
+
+<!-- googleTranslateElementInit -->
+<script src={{ url_for('static',filename="googleTranslateElementInit.js") }}></script>
+<script type="text/javascript">
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({pageLanguage: 'en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
+}
+</script>
+<!-- page script -->
+<script>
+
+  $('.select2').select2();
+
+
+  new Chart(document.getElementById("bar-chart-horizontal"), {
+    type: 'horizontalBar',
+    data: {
+      labels: {{labels | tojson }},
+      datasets: [
+        {
+          label: "pargraphs (count)",
+          backgroundColor: {{ colors  | tojson }},
+          data: {{domains_keywords_count | tojson }}
+        }
+      ]
+    },
+    options: {
+      legend: { display: false },
+      title: {
+        display: true,
+        text: 'Count of pargraphs'
+      }
+    }
+});
+
+
+  
+
+
+  function loadData() {
+      $.blockUI({ css: { 
+                border: 'none', 
+                padding: '15px', 
+                backgroundColor: '#000', 
+                '-webkit-border-radius': '10px', 
+                '-moz-border-radius': '10px', 
+                opacity: .8, 
+                color: '#fff',
+          
+            },
+        message:"loading data"  
+        }); 
+
+      $.ajax({
+              url: $('#myForm').attr('action'),
+              type: 'POST',
+              data : $('#myForm').serialize(),
+              success : function (response) {
+                $.unblockUI();
+                // alert("The server says: {success:" + response.success+"}");
+                $('#datatable tbody').empty();
+
+                var table = $("#datatable tbody");
+                table.empty();
+                $.each(response.data, function(idx, elem){
+                    // table.append("<tr><td>"+elem.html+"</td><td>"+elem.domain+"</td></tr>");
+                    table.append("<tr><td><p>"+elem.html+"</p> <br/> <strong>src : <a href="+elem.domain+">"+elem.domain+"</a></strong></td></tr>")
+                });
+              },
+              error: function (xhr, status, errorThrown) {
+
+                  $.unblockUI();
+
+                  //Here the status code can be retrieved like;
+                  xhr.status;
+
+                  //The message added to Response object in Controller can be retrieved as following.
+                  xhr.responseText;
+              }
+        });
+       
+  }
+
+  $(document).on("submit", "form", function(event)
+  {
+           
+    loadData();
+    event.preventDefault();       
+  });  
+
+</script>
+</body>
+
+</html>

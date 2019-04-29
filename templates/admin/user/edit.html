@@ -1,0 +1,60 @@
+{% extends "admin/base.html" %}
+
+
+{% block body %}
+
+<!-- general form elements -->
+            <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">Users</h3>
+              </div>
+
+
+
+
+              <!-- /.card-header -->
+              <!-- form start -->
+              <form role="form" action="/admin/user/edit/{{item.id}}" method="post" enctype="multipart/form-data">
+
+                <div class="card-body">
+
+                <div class="col-lg-10">
+
+
+                  <div class="form-group">
+                    <label for="username">username</label>
+                    <input type="text" class="form-control" id="username" name="username" placeholder="Enter username" value="{{item.username}}" required="">
+                  </div>
+
+                  <div class="form-group">
+                    <label for="password">password</label>
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Enter password" value="{{item.password}}" required="">
+                  </div>
+
+                  <div class="form-group">
+                    <label for="email">email</label>
+                    <input type="email" class="form-control" id="email" name="email" placeholder="Enter email" value="{{item.email}}" required="">
+                  </div>
+
+                </div>
+
+
+			</div>
+
+				
+		        <!-- /.col-->
+
+                <div class="card-footer">
+                  <button type="submit" class="btn btn-primary">Submit</button>
+                  <a href="/admin/user/show" class="btn btn-warning">Back</a>
+
+                </div>
+
+				</form>
+               </div>
+
+
+<!-- parsley.min -->
+<script src={{ url_for('static',filename="plugins/parsley/dist/parsley.min.js")}}></script>
+
+{% endblock %}

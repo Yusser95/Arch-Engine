@@ -1,0 +1,133 @@
+{% extends "admin/base.html" %}
+
+
+{% block body %}
+
+<div class="card-body">
+          
+
+          <div class="card">
+            <div class="card-header row">
+              <h3 class="col-lg-6 card-title"> Json Restfull API Docs : </h3>
+              <!-- <a href="/admin/product/create" class="offset-3 col-lg-3 btn btn-success" style="float: right;">Add New</a> -->
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+            	<a href="/uploads/food-budget.postman_collection.json.zip">postman project</a>
+				<H4> requests : </H4>
+				<P><h5>route :</h5>http://meal-kit-api.herokuapp.com/api/meal_kits <br><h5>method :</h5>get</P>
+				<P><h5>response :</h5>
+
+				[
+				    {
+				        "id": 271,
+				        "name": "Ketogenisk"
+				    },
+				    {
+				        "id": 281,
+				        "name": "Vegetarisk"
+				    },
+				    {
+				        "id": 291,
+				        "name": "Vegan"
+				    },
+				    {
+				        "id": 301,
+				        "name": "Paleo"
+				    },
+				    {
+				        "id": 311,
+				        "name": "Lean & Clean"
+				    },
+				    {
+				        "id": 321,
+				        "name": "Diabetes venlig"
+				    },
+				    {
+				        "id": 331,
+				        "name": "Pescetar"
+				    }
+				]
+
+				</P>
+				<P><h5>route :</h5>http://meal-kit-api.herokuapp.com/api/categories <br><h5>method :</h5> get</P>
+				<P><h5>response :</h5>
+
+				[
+				    {
+				        "id": 21,
+				        "name": "Aftensmad"
+				    }
+				]
+
+				</P>
+				<P><h5>route :</h5><br>http://meal-kit-api.herokuapp.com/api/grecipes_kits <h5>method :</h5> post</P>
+				<P><h5>body :</h5>
+
+				{
+					"max_childs":3,
+					"max_adults":5,
+					"max_meals":3,
+					"max_days":4,
+					"meal_kit_ids":[281],
+					"category_ids":[21]
+				}
+				</P>
+				<P><h5>response :</h5>
+
+				{
+				    "Vegetarisk": {
+				        "Aftensmad": {
+				            "recipes": [
+				                {
+				                    "image": "http://res.cloudinary.com/hhg5y7wkk/image/upload/c_fill,g_center,h_200,r_0,w_300/vnfmdcxdeuj4irtv0ij0.jpg",
+				                    "name": "#4",
+				                    "total_price": 3.74
+				                },
+				                {
+				                    "image": "http://res.cloudinary.com/hhg5y7wkk/image/upload/c_fill,g_center,h_200,r_0,w_300/n9xisb16imzzr9amd8eb.jpg",
+				                    "name": "#1",
+				                    "total_price": 1.44
+				                },
+				                {
+				                    "image": "http://res.cloudinary.com/hhg5y7wkk/image/upload/c_fill,g_center,h_200,r_0,w_300/bm7afyy0ao3g8ljrok91.jpg",
+				                    "name": "#6",
+				                    "total_price": 1.83
+				                },
+				                {
+				                    "image": "http://res.cloudinary.com/hhg5y7wkk/image/upload/c_fill,g_center,h_200,r_0,w_300/yjvh5mrxf52jawfupdcn.jpg",
+				                    "name": "suppe",
+				                    "total_price": 1.0166666666666666
+				                },
+				                {
+				                    "image": "http://res.cloudinary.com/hhg5y7wkk/image/upload/c_fill,g_center,h_200,r_0,w_300/chh29winttb39unj8npl.jpg",
+				                    "name": "#5",
+				                    "total_price": 0.725
+				                },
+				                {
+				                    "image": "http://res.cloudinary.com/hhg5y7wkk/image/upload/c_fill,g_center,h_200,r_0,w_300/jrcpc32eersxakmjuoq8.jpg",
+				                    "name": "#3",
+				                    "total_price": 5.995
+				                },
+				                {
+				                    "image": "http://res.cloudinary.com/hhg5y7wkk/image/upload/c_fill,g_center,h_200,r_0,w_300/rlnqi2qrp567xmyrkigq.jpg",
+				                    "name": "tomatsuppe og mælk",
+				                    "total_price": 2.05
+				                }
+				            ],
+				            "recipes_num": 7,
+				            "total_price": 114.21733333333333
+				        }
+				    },
+				    "child_adult_percentage": 0.6,
+				    "max_adults": 5,
+				    "max_childs": 3,
+				    "max_days": 4,
+				    "max_meals": 3
+				}
+
+				</P>
+			</div>
+
+
+{% endblock %}
