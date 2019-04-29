@@ -40,8 +40,7 @@
                 </div>
 
                 <br>
-                <br>
-                <br>
+
 
 
                   <div class="form-group">
@@ -192,14 +191,14 @@
     function addFile() {
         fileId++; // increment fileId to get a unique ID for the new element
 
-        var html = '<br><br><div class="input-group">'+
+        var html = '<br><div class="input-group">'+
 
 
                           '<input type="text" class="form-control" id="parm_names" name="parm_names[]" placeholder="Enter param name" required="" />'+
 
                           '<div class="form-control"><select class="select2" id="param-'+fileId+'" name="param_types[]" data-placeholder="Enter param type" required=""></select></div>'+
 
-                          '<textarea rows = "5" class="form-control" style="width: 100%;" id="param_desc" name="param_desc[]" placeholder="Enter param descreption" required=""></textarea>'+
+                          '<textarea rows = "1" class="form-control" style="width: 100%;" id="param_desc" name="param_desc[]" placeholder="Enter param descreption" required=""></textarea>'+
 
                           '<input type="button" value="Remove" onclick="removeElement('+"'"+'file-' + fileId +"'"+ ');" />'+
                   '</div>';
