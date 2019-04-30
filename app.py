@@ -43,8 +43,8 @@ cwd = os.getcwd()
 # app.config['SQLALCHEMY_DATABASE_URI'] =  'sqlite:///'+cwd+'/resources/data.db' 
 # app.config['SQLALCHEMY_DATABASE_URI'] =  os.environ.get("DATABASE_URL") 
 # app.config['SQLALCHEMY_DATABASE_URI'] =  'mysql://rsonbol_foodbudg:13knBd3EvF@mysql.us.cloudlogin.co/rsonbol_foodbudg'
-# app.config['SQLALCHEMY_DATABASE_URI'] =  'mysql://root:root@localhost/flask_arch_engine'
-app.config['SQLALCHEMY_DATABASE_URI'] =  os.environ.get("CLEARDB_DATABASE_URL")[:-15] #or 'mysql://root:root@localhost/food-budget'
+app.config['SQLALCHEMY_DATABASE_URI'] =  'mysql://root:root@localhost/flask_arch_engine'
+# app.config['SQLALCHEMY_DATABASE_URI'] =  os.environ.get("CLEARDB_DATABASE_URL")[:-15] #or 'mysql://root:root@localhost/food-budget'
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_POOL_RECYCLE'] = 200
@@ -526,34 +526,17 @@ def createuser():
 
 
 
-def get_instance_tree(base_page ,instance_object_ids=[]):
-	if base_page.id not in instance_object_ids:
-		dest_dict = {'key':base_page.id, 'title': base_page.name}#, 'desc': base_page.desc }
-		children = base_page.childs
-		if children:
-			dest_dict["expanded"]= True
-			dest_dict['children'] = []
-			for child in children:
-				dest_dict['children'].append(get_instance_tree(child))
-	return dest_dict
-
-@app.route("/user/project/instances/data/tree/<id>", methods=['GET', "POST"])
-def objecttypeparentdatatreeid(id):
-
-	# pick a root of the menu tree
-	root = ObjectTypeModel.query.get(id) #.filter(ObjectTypeModel.object_type_id == None).all()
-	trees = []
-	if root:
-		tree = get_instance_tree(root)
-		trees.append(tree)
-
-	# print(trees)
 
 
-	# results = {"results":trees,"paginate": {"more": True}}
-	# return jsonify(results)
 
-	return jsonify(trees)
+
+
+
+
+
+
+
+
 
 
 
@@ -617,22 +600,12 @@ def createproject():
 		
 		obj = ProjectModel(name=name,desc=desc,user_id=user_id)
 
-		# for i in range(len(parm_names)):
-		# 	p_desc = ""
-		# 	try:
-		# 		p_desc = param_desc[i]
-		# 	except KeyError as e:
-		# 		pass
-		# 	Param = OnjectTypeParamModel(name=parm_names[i],desc=p_desc,param_type=param_types[i])
-		# 	obj.parms.append(Param)
-
 		db.session.add(obj)
 		db.session.flush()
 		db.session.refresh(obj)
 		project_id = obj.id
 		db.session.commit()
 
-		project_id = 42
 		return redirect('/user/project/{}/instance/show'.format(str(project_id)))
 
 	# show  one row
@@ -650,24 +623,6 @@ def editproject(id):
 
 		obj.name = request.form.get('name')
 		obj.desc = request.form.get('desc',default=None,type=str)
-		# obj.object_type_id = request.form.get('parent',default=None,type=int)
-	
-
-		# param_types = request.form.getlist('param_types[]')
-		# parm_names = request.form.getlist('parm_names[]')
-		# param_desc = request.form.getlist('param_desc[]')
-		# print(param_desc)
-
-		# obj.parms.clear()
-		# for i in range(len(parm_names)):
-		# 	p_desc = ""
-		# 	try:
-		# 		p_desc = param_desc[i]
-		# 	except KeyError as e:
-		# 		pass
-
-		# 	Param = OnjectTypeParamModel(name=parm_names[i],desc=p_desc,param_type=param_types[i])
-		# 	obj.parms.append(Param)
 
 		db.session.commit()
 
@@ -680,13 +635,131 @@ def editproject(id):
 	return "404"
 
 
-@app.route("/user/project/<id>/instance/show" , methods =["GET"])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@app.route("/user/object_type/children/data/<i_id>", methods=['GET', "POST"])
+def objecttypeinstancechildsdata(i_id):
+
+	params = request.args.to_dict()
+	print(params)
+
+	if i_id == '-1':
+		q= params['q']
+		if q:
+			objects = ObjectTypeModel.query.filter(ObjectTypeModel.name.like("%"+q+"%")).limit(50).all()
+			db.session.commit()
+			objects = [{"id": i.id, "text": i.name} for i in objects]
+			# objects.append({"id": q, "text": q})
+			return jsonify(objects)
+
+		objects = ObjectTypeModel.query.limit(50).all()
+		db.session.commit()
+		objects = [{"id": i.id, "text": i.name} for i in objects]
+		# objects.append({"id": q, "text": q})
+		return jsonify(objects)
+
+	else:
+		instance = ObjectTypeInstanceModel.query.get(i_id)
+		objects_children_ids = [i.id for i in instance.object_type.childs]
+		q= params['q']
+		if q:
+			objects = ObjectTypeModel.query.filter(ObjectTypeModel.id.in_(objects_children_ids),ObjectTypeModel.name.like("%"+q+"%")).limit(50).all()
+			db.session.commit()
+			objects = [{"id": i.id, "text": i.name} for i in objects]
+			# objects.append({"id": q, "text": q})
+			return jsonify(objects)
+
+		objects = ObjectTypeModel.query.filter(ObjectTypeModel.id.in_(objects_children_ids)).limit(50).all()
+		db.session.commit()
+		objects = [{"id": i.id, "text": i.name} for i in objects]
+		# objects.append({"id": q, "text": q})
+		return jsonify(objects)
+
+
+def get_instance_tree(base_page):
+	dest_dict = {'key':base_page.id, 'title': base_page.object_type.name}#, 'desc': base_page.desc }
+	children = base_page.childs
+	if children:
+		dest_dict["expanded"]= True
+		dest_dict['children'] = []
+		for child in children:
+			dest_dict['children'].append(get_instance_tree(child))
+	return dest_dict
+
+@app.route("/user/instance/data/tree/<id>", methods=['GET', "POST"])
+def objecttypeparentdatatreeid(id):
+
+	# pick a root of the menu tree
+	root = ObjectTypeInstanceModel.query.get(id) #.filter(ObjectTypeModel.object_type_id == None).all()
+	trees = []
+	if root:
+		tree = get_instance_tree(root)
+		trees.append(tree)
+
+	return jsonify(trees)
+
+
+
+@app.route("/user/project/<p_id>/instance/show" , methods =["GET"])
 @flask_login.login_required
-def showprojectinstance(id):
-	item = ProjectModel.query.get(id)
-	return render_template('/user/object_instance/show.html',item=item,data_source = "/user/project/instances/data/tree/{}".format(str(id)))
+def showprojectinstance(p_id):
+	project = ProjectModel.query.get(p_id)
+	root_instance = ObjectTypeInstanceModel.query.filter_by(project_id=p_id , object_instance_id=None).first()
+	if root_instance:
+		return render_template('/user/object_instance/show.html', project=project, instance_data_source="/user/instance/data/tree/{}".format(str(root_instance.id)))
+	else redirect('/user/project/{}/instance/create/-1'.format(p_id))
 
+@app.route("/user/project/<p_id>/instance/create/<i_id>" , methods =["GET" , "POST"])
+@flask_login.login_required
+def createprojectinstance(p_id , i_id):
+	# edit
+	if request.method == "POST":
+		object_type_id = request.form.get('object_type_id')
+		project_id = request.form.get('project_id')
+		# desc = request.form.get('desc',default=None,type=str)
+		object_instance_id = None
+		if i_id != '-1':
+			object_instance_id = i_id
+		user_id = flask_login.current_user.id
+		
+		obj = ObjectTypeInstanceModel(object_type_id=object_type_id,project_id=project_id,object_instance_id=object_instance_id,user_id=user_id)
 
+		db.session.add(obj)
+		db.session.flush()
+		db.session.refresh(obj)
+		instance_id = obj.id
+		db.session.commit()
+
+		return redirect('/user/project/{}/instance/show'.format(str(p_id)))
+
+	# show  one row
+	elif request.method == "GET":
+		project = ProjectModel.query.get(p_id)
+		root_instance = ObjectTypeInstanceModel.query.filter_by(project_id=p_id , object_instance_id=None).first()
+		return render_template('/user/project/create.html', project=project, instance_data_source="/user/instance/data/tree/{}".format(str(root_instance.id)) ,objects_data_source="/user/object_type/children/data/{}".format(str(i_id)))
+
+	return "404"
 
 
 

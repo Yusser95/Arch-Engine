@@ -91,11 +91,6 @@ class ObjectTypeModel(db.Model):
 
     object_type_id = db.Column(db.Integer, db.ForeignKey('object_type.id', ondelete='CASCADE'),
         nullable=True)
-    # parent = db.relationship('ObjectTypeModel',lazy=True)#,
-        # backref=db.backref('childs', lazy=True))
-
-    # parent = db.relationship('ObjectTypeModel', remote_side=[id])
-
     childs = db.relationship("ObjectTypeModel",
                 backref=db.backref('parent', remote_side=[id])
             )
@@ -174,14 +169,23 @@ class ObjectTypeInstanceModel(db.Model):
     project = db.relationship('ProjectModel', lazy=True,
         backref=db.backref('instances', lazy=True))
 
+
+    object_instance_id = db.Column(db.Integer, db.ForeignKey('object_type_instance.id', ondelete='CASCADE'),
+        nullable=True)
+    childs = db.relationship("ObjectTypeInstanceModel",
+                backref=db.backref('parent', remote_side=[id])
+            )
+
     
 
     created_at = db.Column('created_at' , db.DateTime)
 
 
-    def __init__(self  ,user_id ,object_type_id):
+    def __init__(self  ,user_id ,object_type_id ,object_instance_id ,project_id):
         self.object_type_id = object_type_id
         self.user_id = user_id
+        self.object_instance_id = object_instance_id
+        self.project_id = project_id
         self.created_at = datetime.utcnow()
 
 
