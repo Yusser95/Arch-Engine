@@ -666,6 +666,8 @@ def editproject(id):
 		# 	obj.parms.append(Param)
 
 		db.session.commit()
+		
+		return redirect('/user/project/show')
 
 	# show  one row
 	elif request.method == "GET":
