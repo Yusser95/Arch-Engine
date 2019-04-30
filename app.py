@@ -606,7 +606,30 @@ def deleteproject(id):
 def createproject():
 	# edit
 	if request.method == "POST":
-		pass
+		name = request.form.get('name')
+		desc = request.form.get('desc',default=None,type=str)
+		# root_object_id = request.form.get('parent')
+		user_id = flask_login.current_user.id
+		
+		obj = ObjectTypeModel(name=name,desc=desc,user_id=user_id)
+
+		# for i in range(len(parm_names)):
+		# 	p_desc = ""
+		# 	try:
+		# 		p_desc = param_desc[i]
+		# 	except KeyError as e:
+		# 		pass
+		# 	Param = OnjectTypeParamModel(name=parm_names[i],desc=p_desc,param_type=param_types[i])
+		# 	obj.parms.append(Param)
+
+		db.session.add(obj)
+		# db.session.flush()
+		# db.session.refresh(obj)
+		# domain_id = obj.id
+		db.session.commit()
+
+
+	return redirect('/user/project/show')
 
 	# show  one row
 	elif request.method == "GET":
@@ -619,11 +642,43 @@ def createproject():
 def editproject(id):
 	# edit
 	if request.method == "POST":
-		pass
+		obj = ProjectModel.query.get(id)
+
+		obj.name = request.form.get('name')
+		obj.desc = request.form.get('desc',default=None,type=str)
+		# obj.object_type_id = request.form.get('parent',default=None,type=int)
+	
+
+		# param_types = request.form.getlist('param_types[]')
+		# parm_names = request.form.getlist('parm_names[]')
+		# param_desc = request.form.getlist('param_desc[]')
+		# print(param_desc)
+
+		# obj.parms.clear()
+		# for i in range(len(parm_names)):
+		# 	p_desc = ""
+		# 	try:
+		# 		p_desc = param_desc[i]
+		# 	except KeyError as e:
+		# 		pass
+
+		# 	Param = OnjectTypeParamModel(name=parm_names[i],desc=p_desc,param_type=param_types[i])
+		# 	obj.parms.append(Param)
+
+		db.session.commit()
 
 	# show  one row
 	elif request.method == "GET":
-		return render_template('/user/project/edit.html',data_source = "/user/project/instances/data/tree/{}".format(str(id)))
+		item = ProjectModel.query.get(id)
+		return render_template('/user/project/edit.html',item=item)
+	return "404"
+
+
+@app.route("/user/project/<id>/instance/show" , methods =["GET"])
+@flask_login.login_required
+def showprojectinstance(id):
+
+		return render_template('/user/object_instance/show.html',data_source = "/user/project/instances/data/tree/{}".format(str(id)))
 	return "404"
 
 
