@@ -106,14 +106,16 @@ app.jinja_env.filters['datetime'] = format_datetime
 @flask_login.login_required
 def main():
 
-	return render_template('index.html')
+	return redirect('/user/project/show')
+
+	# return render_template('index.html')
 
 
-@app.route("/api/documentation" , methods =["GET"])
-@flask_login.login_required
-def api_documentation():
+# @app.route("/api/documentation" , methods =["GET"])
+# @flask_login.login_required
+# def api_documentation():
 
-	return render_template('api/documentation.html')
+# 	return render_template('api/documentation.html')
  
 
 
@@ -212,7 +214,9 @@ def send_js(path):
 @app.route("/admin" , methods =["GET"])
 @flask_login.login_required
 def admin():
-	return render_template('admin.html')
+
+	return redirect('/admin/object_type/show')
+	# return render_template('admin.html')
 
 
 
