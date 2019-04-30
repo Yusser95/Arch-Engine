@@ -171,7 +171,7 @@ class ObjectTypeInstanceModel(db.Model):
 
 
     object_instance_id = db.Column(db.Integer, db.ForeignKey('object_type_instance.id', ondelete='CASCADE'),
-        nullable=False)
+        nullable=True)
     childs = db.relationship("ObjectTypeInstanceModel",
                 backref=db.backref('parent', remote_side=[id])
             )
