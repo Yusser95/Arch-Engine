@@ -666,7 +666,7 @@ def editproject(id):
 		# 	obj.parms.append(Param)
 
 		db.session.commit()
-		
+
 		return redirect('/user/project/show')
 
 	# show  one row
@@ -679,8 +679,8 @@ def editproject(id):
 @app.route("/user/project/<id>/instance/show" , methods =["GET"])
 @flask_login.login_required
 def showprojectinstance(id):
-
-	return render_template('/user/object_instance/show.html',data_source = "/user/project/instances/data/tree/{}".format(str(id)))
+	item = ProjectModel.query.get(id)
+	return render_template('/user/object_instance/show.html',item=item,data_source = "/user/project/instances/data/tree/{}".format(str(id)))
 
 
 
