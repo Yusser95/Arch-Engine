@@ -611,7 +611,7 @@ def createproject():
 		# root_object_id = request.form.get('parent')
 		user_id = flask_login.current_user.id
 		
-		obj = ObjectTypeModel(name=name,desc=desc,user_id=user_id)
+		obj = ProjectModel(name=name,desc=desc,user_id=user_id)
 
 		# for i in range(len(parm_names)):
 		# 	p_desc = ""
