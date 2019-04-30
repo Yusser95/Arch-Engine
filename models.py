@@ -160,12 +160,12 @@ class ObjectTypeInstanceModel(db.Model):
         backref=db.backref('object_type_instances', lazy=True))
 
     object_type_id = db.Column(db.Integer, db.ForeignKey('object_type.id', ondelete='CASCADE'),
-        nullable=False)
+        nullable=True)
     object_type = db.relationship('ObjectTypeModel', lazy=True,
         backref=db.backref('instances', lazy=True))
 
     project_id = db.Column(db.Integer, db.ForeignKey('project.id', ondelete='CASCADE'),
-        nullable=False)
+        nullable=True)
     project = db.relationship('ProjectModel', lazy=True,
         backref=db.backref('instances', lazy=True))
 
