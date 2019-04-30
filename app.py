@@ -628,8 +628,8 @@ def createproject():
 		project_id = obj.id
 		db.session.commit()
 
-
-		return redirect('/user/project/{}/instance/show'.format(project_id))
+		project_id = 42
+		return redirect('/user/project/{}/instance/show'.format(str(project_id)))
 
 	# show  one row
 	elif request.method == "GET":
