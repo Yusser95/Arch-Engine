@@ -43,8 +43,8 @@ cwd = os.getcwd()
 # app.config['SQLALCHEMY_DATABASE_URI'] =  'sqlite:///'+cwd+'/resources/data.db' 
 # app.config['SQLALCHEMY_DATABASE_URI'] =  os.environ.get("DATABASE_URL") 
 # app.config['SQLALCHEMY_DATABASE_URI'] =  'mysql://rsonbol_foodbudg:13knBd3EvF@mysql.us.cloudlogin.co/rsonbol_foodbudg'
-app.config['SQLALCHEMY_DATABASE_URI'] =  'mysql://root:root@localhost/flask_arch_engine'
-# app.config['SQLALCHEMY_DATABASE_URI'] =  os.environ.get("CLEARDB_DATABASE_URL")[:-15] #or 'mysql://root:root@localhost/food-budget'
+# app.config['SQLALCHEMY_DATABASE_URI'] =  'mysql://root:root@localhost/flask_arch_engine'
+app.config['SQLALCHEMY_DATABASE_URI'] =  os.environ.get("CLEARDB_DATABASE_URL")[:-15] #or 'mysql://root:root@localhost/food-budget'
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_POOL_RECYCLE'] = 200
@@ -66,7 +66,7 @@ login_manager.init_app(app)
 
 from models import *
 
-# db.create_all()
+db.create_all()
  
 # ScheduleLog.__table__.create(db.session.bind)
 # GeneratedRecipesIngrProductModel.__table__.create(db.session.bind)
@@ -606,7 +606,7 @@ def createproject():
 		project_id = obj.id
 		db.session.commit()
 
-		return redirect('/user/project/{}/instance/show'.format(str(project_id)))
+		return redirect('/user/project/{}/instance/show/-1'.format(str(project_id)))
 
 	# show  one row
 	elif request.method == "GET":
@@ -663,6 +663,7 @@ def objecttypeinstancechildsdata(i_id):
 
 	params = request.args.to_dict()
 	print(params)
+
 
 	if i_id == '-1':
 		q= params['q']
@@ -721,14 +722,28 @@ def objecttypeparentdatatreeid(id):
 
 
 
-@app.route("/user/project/<p_id>/instance/show" , methods =["GET"])
+@app.route("/user/project/<p_id>/instance/show/<i_id>" , methods =["GET"])
 @flask_login.login_required
-def showprojectinstance(p_id):
+def showprojectinstance(p_id,i_id):
+	print(p_id)
 	project = ProjectModel.query.get(p_id)
-	root_instance = ObjectTypeInstanceModel.query.filter_by(project_id=p_id , object_instance_id=None).first()
+	root_instance = ObjectTypeInstanceModel.query.filter_by(project_id=int(p_id) , object_instance_id=None).first()
 	if root_instance:
-		return render_template('/user/object_instance/show.html', project=project, instance_data_source="/user/instance/data/tree/{}".format(str(root_instance.id)))
-	else redirect('/user/project/{}/instance/create/-1'.format(p_id))
+		if i_id == '-1':
+			i_id = root_instance.id
+		return render_template('/user/object_instance/show.html', i_id=str(i_id), project=project, instance_data_source="/user/instance/data/tree/{}".format(str(root_instance.id)))
+
+	return redirect('/user/project/{}/instance/create/-1'.format(str(p_id)))
+
+
+@app.route("/user/project/<p_id>/instance/delete/<i_id>" , methods =["GET"])
+@flask_login.login_required
+def deleteprojectinstance(p_id,i_id):
+	print("deleted " , i_id)
+	ObjectTypeInstanceModel.query.filter_by(id=i_id).delete()
+	db.session.commit()
+	return redirect('/user/project/{}/instance/show/{}'.format(str(p_id),str(i_id)))
+
 
 @app.route("/user/project/<p_id>/instance/create/<i_id>" , methods =["GET" , "POST"])
 @flask_login.login_required
@@ -736,14 +751,25 @@ def createprojectinstance(p_id , i_id):
 	# edit
 	if request.method == "POST":
 		object_type_id = request.form.get('object_type_id')
-		project_id = request.form.get('project_id')
+		# project_id = request.form.get('project_id')
 		# desc = request.form.get('desc',default=None,type=str)
+		project_id = int(p_id)
 		object_instance_id = None
 		if i_id != '-1':
-			object_instance_id = i_id
+			object_instance_id = int(i_id)
 		user_id = flask_login.current_user.id
 		
 		obj = ObjectTypeInstanceModel(object_type_id=object_type_id,project_id=project_id,object_instance_id=object_instance_id,user_id=user_id)
+
+		parms_ids = request.form.getlist('parms_ids[]')
+		parms_values = request.form.getlist('parms_values[]')
+
+		# print(parms_ids,parms_values)
+
+
+		for i in range(len(parms_ids)):
+			Param = OnjectTypeInstanceParamModel(value=parms_values[i],param_id=parms_ids[i])
+			obj.parms.append(Param)
 
 		db.session.add(obj)
 		db.session.flush()
@@ -751,18 +777,85 @@ def createprojectinstance(p_id , i_id):
 		instance_id = obj.id
 		db.session.commit()
 
-		return redirect('/user/project/{}/instance/show'.format(str(p_id)))
+		return redirect('/user/project/{}/instance/show/{}'.format(str(p_id),str(instance_id)))
 
 	# show  one row
 	elif request.method == "GET":
 		project = ProjectModel.query.get(p_id)
 		root_instance = ObjectTypeInstanceModel.query.filter_by(project_id=p_id , object_instance_id=None).first()
-		return render_template('/user/project/create.html', project=project, instance_data_source="/user/instance/data/tree/{}".format(str(root_instance.id)) ,objects_data_source="/user/object_type/children/data/{}".format(str(i_id)))
+		rt_id = -1
+		if root_instance:
+			rt_id = root_instance.id
+		return render_template('/user/object_instance/create.html',i_id=str(i_id), project=project, instance_data_source="/user/instance/data/tree/{}".format(str(rt_id)) ,objects_data_source="/user/object_type/children/data/{}".format(str(i_id)))
 
 	return "404"
 
 
 
+@app.route("/user/project/<p_id>/instance/edit/<i_id>" , methods =["GET" , "POST"])
+@flask_login.login_required
+def editprojectinstance(p_id , i_id):
+	# edit
+	if request.method == "POST":
+
+		parms_ids = request.form.getlist('parms_ids[]')
+		parms_values = request.form.getlist('parms_values[]')
+
+		obj = ObjectTypeInstanceModel.query.get(int(i_id))
+		# print('i_id' , i_id ,obj.id)
+
+		# obj.object_type_id = request.form.get('object_type_id')
+		# project_id = request.form.get('project_id')
+		# desc = request.form.get('desc',default=None,type=str)
+
+				# project_id = int(p_id)
+		# object_instance_id = None
+		# if i_id != '-1':
+		# 	object_instance_id = int(i_id)
+		# user_id = flask_login.current_user.id
+		
+		# obj = ObjectTypeInstanceModel(object_type_id=object_type_id,project_id=project_id,object_instance_id=object_instance_id,user_id=user_id)
+
+		
+
+		# print(parms_ids,parms_values)
+
+		obj.parms.clear()
+		for i in range(len(parms_ids)):
+			Param = OnjectTypeInstanceParamModel(value=parms_values[i],param_id=parms_ids[i])
+			obj.parms.append(Param)
+
+
+		
+		db.session.commit()
+
+		instance_id = obj.id
+
+		return redirect('/user/project/{}/instance/show/{}'.format(str(p_id),str(instance_id)))
+
+	# show  one row
+	elif request.method == "GET":
+		item = ObjectTypeInstanceModel.query.get(i_id)
+		project = ProjectModel.query.get(p_id)
+		root_instance = ObjectTypeInstanceModel.query.filter_by(project_id=p_id , object_instance_id=None).first()
+		rt_id = -1
+		if root_instance:
+			rt_id = root_instance.id
+		return render_template('/user/object_instance/edit.html',i_id=str(i_id), item=item, project=project, instance_data_source="/user/instance/data/tree/{}".format(str(rt_id)) ,objects_data_source="/user/object_type/children/data/{}".format(str(i_id)))
+
+	return "404"
+
+
+@app.route('/user/instance/parms_form' , methods =["GET" , "POST"])
+@flask_login.login_required
+def instance_parms_form():
+	# edit
+	if request.method == "POST":
+
+		object_id = request.json.get('object_id')
+		item = ObjectTypeModel.query.get(object_id)
+		return render_template('/user/object_instance/parms_form.html',item=item)
+	return "404"
 
 if __name__ == "__main__":
     # app.run(host='0.0.0.0', port=5001)

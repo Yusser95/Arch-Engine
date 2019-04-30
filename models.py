@@ -53,7 +53,7 @@ class ProjectModel(db.Model):
     __tablename__ = 'project'
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(20), unique=False, nullable=True)
+    name = db.Column(db.String(20), unique=False, nullable=False)
     desc = db.Column(db.String(1000), unique=False, nullable=True)
 
     user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'),
@@ -78,7 +78,7 @@ class ObjectTypeModel(db.Model):
     __tablename__ = 'object_type'
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(20), unique=False, nullable=True)
+    name = db.Column(db.String(20), unique=False, nullable=False)
     desc = db.Column(db.String(1000), unique=False, nullable=True)
     
 
@@ -127,8 +127,8 @@ class OnjectTypeParamModel(db.Model):
     __tablename__ = 'object_type_param'
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(20), unique=False, nullable=True)
-    param_type = db.Column(db.String(20), unique=False, nullable=True)
+    name = db.Column(db.String(20), unique=False, nullable=False)
+    param_type = db.Column(db.String(20), unique=False, nullable=False)
     desc = db.Column(db.String(1000), unique=False, nullable=True)
 
     object_type_id = db.Column(db.Integer, db.ForeignKey('object_type.id', ondelete='CASCADE'),
@@ -160,18 +160,18 @@ class ObjectTypeInstanceModel(db.Model):
         backref=db.backref('object_type_instances', lazy=True))
 
     object_type_id = db.Column(db.Integer, db.ForeignKey('object_type.id', ondelete='CASCADE'),
-        nullable=True)
+        nullable=False)
     object_type = db.relationship('ObjectTypeModel', lazy=True,
         backref=db.backref('instances', lazy=True))
 
     project_id = db.Column(db.Integer, db.ForeignKey('project.id', ondelete='CASCADE'),
-        nullable=True)
+        nullable=False)
     project = db.relationship('ProjectModel', lazy=True,
         backref=db.backref('instances', lazy=True))
 
 
     object_instance_id = db.Column(db.Integer, db.ForeignKey('object_type_instance.id', ondelete='CASCADE'),
-        nullable=True)
+        nullable=False)
     childs = db.relationship("ObjectTypeInstanceModel",
                 backref=db.backref('parent', remote_side=[id])
             )
@@ -195,7 +195,7 @@ class OnjectTypeInstanceParamModel(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
 
-    value = db.Column(db.String(1000), unique=False, nullable=True)
+    value = db.Column(db.String(1000), unique=False, nullable=False)
 
     object_type_instance_id = db.Column(db.Integer, db.ForeignKey('object_type_instance.id', ondelete='CASCADE'),
         nullable=True)
@@ -203,7 +203,7 @@ class OnjectTypeInstanceParamModel(db.Model):
         backref=db.backref('parms', lazy=True))
 
     param_id = db.Column(db.Integer, db.ForeignKey('object_type_param.id', ondelete='CASCADE'),
-        nullable=True)
+        nullable=False)
     param = db.relationship('OnjectTypeParamModel', lazy=True,
         backref=db.backref('param_values', lazy=True))
 
@@ -211,9 +211,9 @@ class OnjectTypeInstanceParamModel(db.Model):
     created_at = db.Column('created_at' , db.DateTime)
 
 
-    def __init__(self ,value, object_type_instance_id ,param_id):
+    def __init__(self ,value ,param_id):
         self.value = value
-        self.object_type_instance_id = object_type_instance_id
+        # self.object_type_instance_id = object_type_instance_id
         self.param_id = param_id
         self.created_at = datetime.utcnow()
 

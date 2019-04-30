@@ -5,7 +5,7 @@
 
 <div class="card col-md-5" >
     <div class="card-header">
-      <h3 class="card-title">Project: {{item.name}}</h3>
+      <h3 class="card-title">Project: {{project.name}}</h3>
     </div>
 
     <div class="card-body">
@@ -85,7 +85,7 @@
 <script src={{ url_for('static',filename="fancytree/jquery.fancytree.dnd5.js")}}></script>
 <script src={{ url_for('static',filename="fancytree/jquery.fancytree.edit.js")}}></script>
 <script src={{ url_for('static',filename="fancytree/jquery.fancytree.glyph.js")}}></script>
-<script src={{ url_for('static',filename="fancytree/jquery.fancytree.table.js")}}></script>
+<!-- <script src={{ url_for('static',filename="fancytree/jquery.fancytree.table.js")}}></script> -->
 <script src={{ url_for('static',filename="fancytree/jquery.fancytree.wide.js")}}></script>
 <script src="//cdn.jsdelivr.net/npm/jquery-contextmenu@2.6.4/dist/jquery.contextMenu.min.js">
 </script>
@@ -136,14 +136,27 @@
           "add": {name: "Add", icon: "add",
               callback: function(key, opt){
                 var node = $.ui.fancytree.getNode(opt.$trigger);
-                alert("Clicked on " + key + " on " + node);
+                // alert("Clicked on " + key + " on " + node);
+                window.location.replace('/user/project/{{project.id}}/instance/create/'+node.key);
               }
             },
           // "copy": {name: "Copy", icon: "copy"},
           // "paste": {name: "Paste", icon: "paste", disabled: false },
           // "sep1": "----",
-          "edit": {name: "Edit", icon: "edit", disabled: true },
-          "delete": {name: "Delete", icon: "delete", disabled: true },
+          "edit": {name: "Edit", icon: "edit", disabled: false,
+              callback: function(key, opt){
+                var node = $.ui.fancytree.getNode(opt.$trigger);
+                // alert("Clicked on " + key + " on " + node);
+                window.location.replace('/user/project/{{project.id}}/instance/edit/'+node.key);
+              }  
+            },
+          "delete": {name: "Delete", icon: "delete", disabled: false,
+              callback: function(key, opt){
+                var node = $.ui.fancytree.getNode(opt.$trigger);
+                // alert("Clicked on " + key + " on " + node);
+                window.location.replace('/user/project/{{project.id}}/instance/delete/'+node.key);
+              }  
+            },
           // "more": {name: "More", items: {
           //   "sub1": {name: "Sub 1"},
           //   "sub1": {name: "Sub 2"}
