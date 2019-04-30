@@ -678,8 +678,7 @@ def editproject(id):
 @flask_login.login_required
 def showprojectinstance(id):
 
-		return render_template('/user/object_instance/show.html',data_source = "/user/project/instances/data/tree/{}".format(str(id)))
-	return "404"
+	return render_template('/user/object_instance/show.html',data_source = "/user/project/instances/data/tree/{}".format(str(id)))
 
 
 
