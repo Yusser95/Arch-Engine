@@ -623,13 +623,13 @@ def createproject():
 		# 	obj.parms.append(Param)
 
 		db.session.add(obj)
-		# db.session.flush()
-		# db.session.refresh(obj)
-		# domain_id = obj.id
+		db.session.flush()
+		db.session.refresh(obj)
+		project_id = obj.id
 		db.session.commit()
 
 
-		return redirect('/user/project/show')
+		return redirect('/user/project/{}/instance/show'.format(project_id))
 
 	# show  one row
 	elif request.method == "GET":
