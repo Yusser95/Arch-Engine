@@ -362,7 +362,9 @@ def editobject_typ(id):
 		print(param_desc)
 
 
+
 		# obj.parms.clear()
+		new_parms = []
 		for i in range(len(parm_names)):
 			# p_desc = ""
 			# try:
@@ -371,10 +373,14 @@ def editobject_typ(id):
 			# 	pass
 
 			Param = OnjectTypeParamModel.filter_by(name=parm_names[i],desc=p_desc,param_type=param_types[i]).first()
-
 			if not Param:
 				Param = OnjectTypeParamModel(name=parm_names[i],desc=p_desc,param_type=param_types[i])
+			new_parms.append(Param)
 			obj.parms.append(Param)
+
+		for p in obj.parms:
+			if p not in new_parms:
+				obj.parms.remove(p)
 
 		db.session.commit()
 
