@@ -96,29 +96,25 @@
                                 {% if i.param.desc %}
                                   <a href="#">&emsp;<i class="nav-icon fa fa-info-circle" data-toggle="tooltip" data-placement="top" title="{{i.param.desc}}"></i></a>
                                   {% endif %}
-                            </div>
+                              </div>
 
                           {% endif %}
                         {% endfor %}
                         {% if ns.flag == "true" %}
-                            <p>{{j.desc}}</p>
 
-                            <div class="input-group">
+
 
 
                             <input type="hidden"  id="parms_ids" name="parms_ids[]" placeholder="Enter param name" value="{{j.id}}" />
 
-                            <input type="text" class="form-control" id="parm_names" name="parm_names[]" placeholder="Enter param name" value="{{j.name}}" disabled="" />
-
-
-                            <div class="form-control"><select class="select2" name="param_types[]" data-placeholder="Enter param type" required="" disabled="">
-                              <option id="{{j.id}}" value="{{j.param_type}}" selected="">{{j.param_type}}</option>
-                            </select></div>
-
-
-                            <input type="text" class="form-control" id="values" name="parms_values[]" placeholder="Enter value" required="" />
+                            <div class="form-group form-inline">                            
+                              <label for="parms_values">
+                              {{j.param.name}} ({{j.param_type}}) :&emsp;</label>
+                              <input type="text" class="form-control" id="parms_values" name="parms_values[]" placeholder="Enter value" required="" />
+                              {% if j.desc %}
+                                <a href="#">&emsp;<i class="nav-icon fa fa-info-circle" data-toggle="tooltip" data-placement="top" title="{{j.desc}}"></i></a>
+                                {% endif %}
                             </div>
-                            <br>
 
 
                         {% endif %}
