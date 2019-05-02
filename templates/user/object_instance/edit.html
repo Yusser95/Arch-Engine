@@ -65,6 +65,8 @@
               </select>
               </div>
 
+              <div id="error_message"></div>
+
               <div class="form-group">
                 <label for="name">instance name *</label>
                 <input type="text" class="form-control" id="name" name="name" placeholder="Enter name" value="{{item.name}}" required="">
@@ -174,6 +176,35 @@
 
     <script type="text/javascript">
     $(function() {
+
+
+      $("#name").change(function(){
+      var value = $('#name').val();
+      {% if item %}
+      var name = '{{item.name}}';
+      {% endif %}
+      if(name == value){
+        $('#error_message').empty();
+
+      }else{
+        $.ajax({
+              url: '/validator/uniquename/instance',
+              data: {
+                  name: value
+              },
+              success: function(response) {
+                  if(response.valid === 'true') {
+                    $('#error_message').empty();
+                  }
+                  else {
+                      $('#name').val('');
+                      $('#error_message').empty();
+                      $('#error_message').append('<div class="alert alert-danger" role="alert">name is alerady exists !!</div>');
+                  }
+              }
+          });
+      }
+    });
 
 
 

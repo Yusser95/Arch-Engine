@@ -96,6 +96,56 @@ app.jinja_env.filters['datetime'] = format_datetime
 
 
 
+
+
+
+
+
+
+
+@app.route("/validator/uniquename/instance" , methods =['GET',"POST"])
+@flask_login.login_required
+def ingredient_name_validator():
+	response = {'valid':'true'}
+	name = request.args.get('name')
+	print(name)
+
+	# item = IngredientModel.query.filter_by(name=name).first()
+	item = ObjectTypeInstanceModel.query.filter(func.lower(ObjectTypeInstanceModel.name) == func.lower(name)).first()
+
+	if item:
+		response['valid'] = 'false'
+
+
+	return jsonify(response)
+
+
+@app.route("/validator/uniquename/object" , methods =['GET',"POST"])
+@flask_login.login_required
+def ingredient_name_validator():
+	response = {'valid':'true'}
+	name = request.args.get('name')
+	print(name)
+
+	# item = IngredientModel.query.filter_by(name=name).first()
+	item = ObjectTypeInstanceModel.query.filter(func.lower(ObjectTypeInstanceModel.name) == func.lower(name)).first()
+
+	if item:
+		response['valid'] = 'false'
+
+
+	return jsonify(response)
+
+
+
+
+
+
+
+
+
+
+
 # @app.before_request
 # def make_session_permanent():
 #     session.permanent = True
