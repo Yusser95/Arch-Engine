@@ -361,15 +361,19 @@ def editobject_typ(id):
 		param_desc = request.form.getlist('param_desc[]')
 		print(param_desc)
 
-		obj.parms.clear()
-		for i in range(len(parm_names)):
-			p_desc = ""
-			try:
-				p_desc = param_desc[i]
-			except KeyError as e:
-				pass
 
-			Param = OnjectTypeParamModel(name=parm_names[i],desc=p_desc,param_type=param_types[i])
+		# obj.parms.clear()
+		for i in range(len(parm_names)):
+			# p_desc = ""
+			# try:
+			p_desc = param_desc[i]
+			# except KeyError as e:
+			# 	pass
+
+			Param = OnjectTypeParamModel.filter_by(name=parm_names[i],desc=p_desc,param_type=param_types[i]).first()
+
+			if not Param:
+				Param = OnjectTypeParamModel(name=parm_names[i],desc=p_desc,param_type=param_types[i])
 			obj.parms.append(Param)
 
 		db.session.commit()
