@@ -12,13 +12,13 @@
 
         <div class="form-group form-inline">                            
           <label for="parms_values">
-          {{j.param.name}} ({{j.param_type}}) :&emsp;</label>
+          {{j.name}} ({{j.param_type}}) :&emsp;</label>
           <input type="text" class="form-control" id="parms_values" name="parms_values[]" placeholder="Enter value" required="" />
           {% if j.desc %}
             <a href="#">&emsp;<i class="nav-icon fa fa-info-circle" data-toggle="tooltip" data-placement="top" title="{{j.desc}}"></i></a>
             {% endif %}
         </div>
-        
+
     {% endfor %}
   </div>
 </div>
