@@ -105,7 +105,7 @@ app.jinja_env.filters['datetime'] = format_datetime
 
 @app.route("/validator/uniquename/instance" , methods =['GET',"POST"])
 @flask_login.login_required
-def ingredient_name_validator():
+def instance_name_validator():
 	response = {'valid':'true'}
 	name = request.args.get('name')
 	print(name)
@@ -122,7 +122,7 @@ def ingredient_name_validator():
 
 @app.route("/validator/uniquename/object" , methods =['GET',"POST"])
 @flask_login.login_required
-def ingredient_name_validator():
+def object_name_validator():
 	response = {'valid':'true'}
 	name = request.args.get('name')
 	print(name)
