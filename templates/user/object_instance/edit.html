@@ -86,16 +86,11 @@
                               {% set ns.flag = "false" %}
                           
 
-                              <p></p>
-
-                              <button type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="top" title="Tooltip on top">
-                                {{i.param.desc}}
-                              </button>
 
                               <input type="hidden"  id="parms_ids" name="parms_ids[]" placeholder="Enter param name" value="{{i.param.id}}" />
 
                               <div class="form-group form-inline">                            
-                                <label for="parms_values">{{i.param.name}} ({{i.param.param_type}}) <i class="nav-icon fa fa-edit" data-toggle="tooltip" data-placement="top" title="{{i.param.desc}}"></i>  :  </label>
+                                <label for="parms_values">{{i.param.name}} ({{i.param.param_type}}) &emsp;<a href="#"><i class="nav-icon fa fa-info-circle" data-toggle="tooltip" data-placement="top" title="{{i.param.desc}}"></i></a> &emsp;  :  &emsp;</label>
                                 <input type="text" class="form-control" id="parms_values" name="parms_values[]" placeholder="Enter value" required="" value="{{i.value}}" />
                             </div>
 
