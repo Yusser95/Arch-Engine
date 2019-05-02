@@ -88,7 +88,14 @@
 
                               <p>{{i.param.desc}}</p>
 
-                              <div class="input-group">
+                              <input type="hidden"  id="parms_ids" name="parms_ids[]" placeholder="Enter param name" value="{{i.param.id}}" />
+
+                              <div class="form-group form-inline">                            
+                                <label for="parms_values">{{i.param.name}} ({{i.param.param_type}}) :</label>
+                                <input type="text" class="form-control" id="parms_values" name="parms_values[]" placeholder="Enter value" required="" value="{{i.value}}" />
+                            </div>
+
+                              <!-- <div class="input-group">
 
                               <input type="hidden"  id="parms_ids" name="parms_ids[]" placeholder="Enter param name" value="{{i.param.id}}" />
 
@@ -101,7 +108,7 @@
 
 
                               <input type="text" class="form-control" id="parms_values" name="parms_values[]" placeholder="Enter value" required="" value="{{i.value}}" />
-                              </div>
+                              </div> -->
                               <br>
                           {% endif %}
                         {% endfor %}
