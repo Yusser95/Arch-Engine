@@ -153,6 +153,7 @@ class ObjectTypeInstanceModel(db.Model):
     __tablename__ = 'object_type_instance'
 
     id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), unique=False, nullable=False)
 
     user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'),
         nullable=True)
@@ -181,7 +182,8 @@ class ObjectTypeInstanceModel(db.Model):
     created_at = db.Column('created_at' , db.DateTime)
 
 
-    def __init__(self  ,user_id ,object_type_id ,object_instance_id ,project_id):
+    def __init__(self ,name ,user_id ,object_type_id ,object_instance_id ,project_id):
+        self.name = name
         self.object_type_id = object_type_id
         self.user_id = user_id
         self.object_instance_id = object_instance_id

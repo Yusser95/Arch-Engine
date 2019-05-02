@@ -699,7 +699,7 @@ def objecttypeinstancechildsdata(i_id):
 
 
 def get_instance_tree(base_page):
-	dest_dict = {'key':base_page.id, 'title': base_page.object_type.name}#, 'desc': base_page.desc }
+	dest_dict = {'key':base_page.id, 'title':"{} ({})".format(base_page.name, base_page.object_type.name)}#, 'desc': base_page.desc }
 	children = base_page.childs
 	if children:
 		dest_dict["expanded"]= True
@@ -751,6 +751,7 @@ def createprojectinstance(p_id , i_id):
 	# edit
 	if request.method == "POST":
 		object_type_id = request.form.get('object_type_id',type=int)
+		name = request.form.get('str',type=int)
 		# project_id = request.form.get('project_id')
 		# desc = request.form.get('desc',default=None,type=str)
 		project_id = int(p_id)
@@ -759,7 +760,7 @@ def createprojectinstance(p_id , i_id):
 			object_instance_id = int(i_id)
 		user_id = flask_login.current_user.id
 		
-		obj = ObjectTypeInstanceModel(object_type_id=object_type_id,project_id=project_id,object_instance_id=object_instance_id,user_id=user_id)
+		obj = ObjectTypeInstanceModel(name=name,object_type_id=object_type_id,project_id=project_id,object_instance_id=object_instance_id,user_id=user_id)
 
 		parms_ids = request.form.getlist('parms_ids[]')
 		parms_values = request.form.getlist('parms_values[]')
@@ -798,27 +799,15 @@ def editprojectinstance(p_id , i_id):
 	# edit
 	if request.method == "POST":
 
+
+
 		parms_ids = request.form.getlist('parms_ids[]')
 		parms_values = request.form.getlist('parms_values[]')
 
 		obj = ObjectTypeInstanceModel.query.get(int(i_id))
-		# print('i_id' , i_id ,obj.id)
 
-		# obj.object_type_id = request.form.get('object_type_id')
-		# project_id = request.form.get('project_id')
-		# desc = request.form.get('desc',default=None,type=str)
+		obj.name = request.form.get('str',type=int)
 
-				# project_id = int(p_id)
-		# object_instance_id = None
-		# if i_id != '-1':
-		# 	object_instance_id = int(i_id)
-		# user_id = flask_login.current_user.id
-		
-		# obj = ObjectTypeInstanceModel(object_type_id=object_type_id,project_id=project_id,object_instance_id=object_instance_id,user_id=user_id)
-
-		
-
-		# print(parms_ids,parms_values)
 
 		obj.parms.clear()
 		for i in range(len(parms_ids)):
