@@ -20,7 +20,7 @@ from urllib.parse import urlparse
 
 from datatables import ColumnDT, DataTables
 from flask import  jsonify
-
+from sqlalchemy import func
 # from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.ext.declarative import DeclarativeMeta
 
@@ -128,7 +128,7 @@ def object_name_validator():
 	print(name)
 
 	# item = IngredientModel.query.filter_by(name=name).first()
-	item = ObjectTypeModel.query.filter(func.lower(ObjectTypeInstanceModel.name) == func.lower(name)).first()
+	item = ObjectTypeModel.query.filter(func.lower(ObjectTypeModel.name) == func.lower(name)).first()
 
 	if item:
 		response['valid'] = 'false'
