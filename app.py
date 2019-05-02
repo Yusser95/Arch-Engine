@@ -372,11 +372,12 @@ def editobject_typ(id):
 			# except KeyError as e:
 			# 	pass
 
-			Param = OnjectTypeParamModel.query.filter_by(name=parm_names[i],desc=p_desc,param_type=param_types[i]).first()
+			Param = OnjectTypeParamModel.query.filter_by(object_type_id=int(id),name=parm_names[i],desc=p_desc,param_type=param_types[i]).first()
 			if not Param:
 				Param = OnjectTypeParamModel(name=parm_names[i],desc=p_desc,param_type=param_types[i])
+				obj.parms.append(Param)
+
 			new_parms.append(Param)
-			obj.parms.append(Param)
 
 		for p in obj.parms:
 			if p not in new_parms:
