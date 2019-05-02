@@ -254,7 +254,9 @@
               callback: function(key, opt){
                 var node = $.ui.fancytree.getNode(opt.$trigger);
                 // alert("Clicked on " + key + " on " + node);
-                window.location.replace('/user/project/{{project.id}}/instance/delete/'+node.key);
+                if(confirm('Are you sure, You Want to delete this?')) {
+                  window.location.replace('/user/project/{{project.id}}/instance/delete/'+node.key);
+                }
               } 
             },
           // "more": {name: "More", items: {
