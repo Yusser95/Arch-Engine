@@ -752,7 +752,7 @@ def createprojectinstance(p_id , i_id):
 	# edit
 	if request.method == "POST":
 		object_type_id = request.form.get('object_type_id',type=int)
-		name = request.form.get('str',type=int)
+		name = request.form.get('name',type=str)
 		# project_id = request.form.get('project_id')
 		# desc = request.form.get('desc',default=None,type=str)
 		project_id = int(p_id)
@@ -807,7 +807,7 @@ def editprojectinstance(p_id , i_id):
 
 		obj = ObjectTypeInstanceModel.query.get(int(i_id))
 
-		obj.name = request.form.get('str',type=int)
+		obj.name = request.form.get('name',type=str)
 
 
 		obj.parms.clear()
