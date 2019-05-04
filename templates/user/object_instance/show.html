@@ -108,10 +108,10 @@
         glyph: glyph_opts,
 
         checkbox: false,
-        select: function(event, data) {
+        click: function(event, data) {
           alert(event, data, "current state=" + data.node.isSelected());
-          var s = data.tree.getSelectedNodes().join(", ");
-          alert(s);
+          // var s = data.tree.getSelectedNodes().join(", ");
+          // alert(s);
         },
         selectMode: 3,
         dnd5: {
