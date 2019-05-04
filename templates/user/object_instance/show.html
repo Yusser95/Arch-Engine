@@ -160,6 +160,10 @@
           // alert(data.node.key);
           window.location.replace('/user/project/{{project.id}}/instance/show/'+data.node.key);
         },
+        init: function(event, data, flag) {
+        // logEvent(event, data, "flag=" + flag);
+        data.tree.activateKey("{{i_id}}")
+      },
         selectMode: 3,
         dnd5: {
           dragStart: function(node, data) { return true; },
@@ -244,7 +248,7 @@
       $("#tree .fancytree-container").css("font-size",14+"pt");
 
 
-      $("#tree").fancytree("getTree").getNodeByKey("{{i_id}}").setActive();
+      // $("#tree").fancytree("getTree").getNodeByKey("{{i_id}}").setActive();
 
 
 
