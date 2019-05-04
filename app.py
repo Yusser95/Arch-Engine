@@ -731,13 +731,11 @@ def objecttypeinstancechildsdata(i_id):
 		q= params['q']
 		if q:
 			objects = ObjectTypeModel.query.filter(ObjectTypeModel.name.like("%"+q+"%")).limit(50).all()
-			db.session.commit()
 			objects = [{"id": i.id, "text": i.name} for i in objects]
 			# objects.append({"id": q, "text": q})
 			return jsonify(objects)
 
 		objects = ObjectTypeModel.query.limit(50).all()
-		db.session.commit()
 		objects = [{"id": i.id, "text": i.name} for i in objects]
 		# objects.append({"id": q, "text": q})
 		return jsonify(objects)
@@ -748,13 +746,11 @@ def objecttypeinstancechildsdata(i_id):
 		q= params['q']
 		if q:
 			objects = ObjectTypeModel.query.filter(ObjectTypeModel.id.in_(objects_children_ids),ObjectTypeModel.name.like("%"+q+"%")).limit(50).all()
-			db.session.commit()
 			objects = [{"id": i.id, "text": i.name} for i in objects]
 			# objects.append({"id": q, "text": q})
 			return jsonify(objects)
 
 		objects = ObjectTypeModel.query.filter(ObjectTypeModel.id.in_(objects_children_ids)).limit(50).all()
-		db.session.commit()
 		objects = [{"id": i.id, "text": i.name} for i in objects]
 		# objects.append({"id": q, "text": q})
 		return jsonify(objects)
@@ -807,7 +803,7 @@ def deleteprojectinstance(p_id,i_id):
 	print("deleted " , i_id)
 	ObjectTypeInstanceModel.query.filter_by(id=i_id).delete()
 	db.session.commit()
-	return redirect('/user/project/{}/instance/show/{}'.format(str(p_id),str(i_id)))
+	return redirect('/user/project/{}/instance/show/{}'.format(str(p_id),str("-1")))#i_id)))
 
 
 @app.route("/user/project/<p_id>/instance/create/<i_id>" , methods =["GET" , "POST"])
