@@ -51,16 +51,22 @@
 
     <div class="card-body">
 
+      <h4>Instance info:</h4>
+      <br>
+
       <table>
         <tr>
           <td>parent</td>
-          <td>item.object_type.parent.name</td>
+          <td>{{item.object_type.parent.name}}</td>
         </tr>
         <tr>
           <td>name</td>
-          <td>item.name</td>
+          <td>{{item.name}}</td>
         </tr>
       </table>
+      <br>
+      <h4> Instance paremters info:</h4>
+      <br>
       <table>
 
         {% for j in item.object_type.parms %}
@@ -72,7 +78,7 @@
 
                 <tr>
                   <td>{{i.param.name}} ({{i.param.param_type}}) :{% if i.param.desc %}
-                    <a href="#">&emsp;<i class="nav-icon fa fa-info-circle" data-toggle="tooltip" data-placement="top" title="{{i.param.desc}}"></i></a>
+                    <a href="#">&emsp;<i class="nav-icon fa fa-info-circle" data-toggle="tooltip" data-placement="top" title="{{i.param.desc}}"></i>&emsp;</a>
                     {% endif %}</td>
                   <td>{{i.value}}</td>
                 </tr>
@@ -84,7 +90,7 @@
 
                 <tr>
                   <td>{{j.name}} ({{j.param_type}}) :{% if j.desc %}
-                  <a href="#">&emsp;<i class="nav-icon fa fa-info-circle" data-toggle="tooltip" data-placement="top" title="{{j.desc}}"></i></a>
+                  <a href="#">&emsp;<i class="nav-icon fa fa-info-circle" data-toggle="tooltip" data-placement="top" title="{{j.desc}}"></i>&emsp;</a>
                   {% endif %}</td>
                   <td>null</td>
                 </tr>
@@ -151,7 +157,8 @@
 
         checkbox: false,
         click: function(event, data) {
-          alert(data.node.key);
+          // alert(data.node.key);
+          window.location.replace('/user/project/{{project.id}}/instance/show/'+data.node.key);
         },
         selectMode: 3,
         dnd5: {

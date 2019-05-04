@@ -248,7 +248,8 @@
 
         checkbox: false,
         click: function(event, data) {
-          alert(data.node.key);
+          // alert(data.node.key);
+          window.location.replace('/user/project/{{project.id}}/instance/show/'+data.node.key);
         },
         selectMode: 3,
         dnd5: {
