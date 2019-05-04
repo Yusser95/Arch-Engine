@@ -108,6 +108,11 @@
         glyph: glyph_opts,
 
         checkbox: false,
+        select: function(event, data) {
+          alert(event, data, "current state=" + data.node.isSelected());
+          var s = data.tree.getSelectedNodes().join(", ");
+          alert(s);
+        },
         selectMode: 3,
         dnd5: {
           dragStart: function(node, data) { return true; },
@@ -163,11 +168,12 @@
           //   "sub1": {name: "Sub 1"},
           //   "sub1": {name: "Sub 2"}
           //   }}
-          },
-        callback: function(itemKey, opt) {
-          var node = $.ui.fancytree.getNode(opt.$trigger);
-          alert("select " + itemKey + " on " + node);
-        }
+          }
+        //   ,
+        // callback: function(itemKey, opt) {
+        //   var node = $.ui.fancytree.getNode(opt.$trigger);
+        //   alert("select " + itemKey + " on " + node);
+        // }
       });
 
 
