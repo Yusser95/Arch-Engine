@@ -241,6 +241,9 @@
         glyph: glyph_opts,
 
         checkbox: false,
+        click: function(event, data) {
+          alert(data.node.key);
+        },
         selectMode: 3,
         dnd5: {
           dragStart: function(node, data) { return true; },
