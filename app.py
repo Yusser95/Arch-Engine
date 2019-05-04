@@ -793,7 +793,10 @@ def showprojectinstance(p_id,i_id):
 	if root_instance:
 		if i_id == '-1':
 			i_id = root_instance.id
-		return render_template('/user/object_instance/show.html', i_id=str(i_id), project=project, instance_data_source="/user/instance/data/tree/{}".format(str(root_instance.id)))
+			selected_instance = root_instance
+		else:
+			selected_instance = ObjectTypeInstanceModel.query.get(i_id)
+		return render_template('/user/object_instance/show.html',item=selected_instance, i_id=str(i_id), project=project, instance_data_source="/user/instance/data/tree/{}".format(str(root_instance.id)))
 
 	return redirect('/user/project/{}/instance/create/-1'.format(str(p_id)))
 

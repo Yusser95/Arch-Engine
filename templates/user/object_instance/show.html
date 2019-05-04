@@ -51,6 +51,48 @@
 
     <div class="card-body">
 
+      <table>
+        <tr>
+          <td>parent</td>
+          <td>item.object_type.parent.name</td>
+        </tr>
+        <tr>
+          <td>name</td>
+          <td>item.name</td>
+        </tr>
+      </table>
+      <table>
+
+        {% for j in item.object_type.parms %}
+          {% set ns = namespace (flag = "true") %}
+          {% for i in item.parms %}
+
+            {% if j == i.param %}
+                {% set ns.flag = "false" %}
+
+                <tr>
+                  <td>{{i.param.name}} ({{i.param.param_type}}) :{% if i.param.desc %}
+                    <a href="#">&emsp;<i class="nav-icon fa fa-info-circle" data-toggle="tooltip" data-placement="top" title="{{i.param.desc}}"></i></a>
+                    {% endif %}</td>
+                  <td>{{i.value}}</td>
+                </tr>
+            
+
+            {% endif %}
+          {% endfor %}
+          {% if ns.flag == "true" %}
+
+                <tr>
+                  <td>{{j.name}} ({{j.param_type}}) :{% if j.desc %}
+                  <a href="#">&emsp;<i class="nav-icon fa fa-info-circle" data-toggle="tooltip" data-placement="top" title="{{j.desc}}"></i></a>
+                  {% endif %}</td>
+                  <td>null</td>
+                </tr>
+
+          {% endif %}
+        {% endfor %}
+      </table>
+
       
 
       </div>
