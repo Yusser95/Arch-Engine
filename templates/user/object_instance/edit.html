@@ -338,6 +338,8 @@
 
       $("#tree .fancytree-container").css("font-size",14+"pt");
 
+      $("#tree").fancytree("getTree").getNodeByKey("{{i_id}}").setActive();
+
 
 
       // $("#create_project").click(function(){
@@ -355,6 +357,8 @@
       // // alert("{{i_id}}");
       // node.setSelected(true);
       // node.setActive(true);
+
+
 
 
     });
