@@ -109,7 +109,8 @@
 
         checkbox: false,
         click: function(event, data) {
-          alert(event, data, "current state=" + data.node.isSelected());
+          alert(data.node.key);
+          alert(data);
           // var s = data.tree.getSelectedNodes().join(", ");
           // alert(s);
         },
