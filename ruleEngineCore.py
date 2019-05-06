@@ -146,18 +146,19 @@ class DynamicRuleEngine():
             exec(codeobj,{},env)
             self.logs.extend(env.get('logs'))
         except Exception as e:
-            self.add_to_log('[run][run Exception]: '+str(e))
+            self.add_to_log('[run][Exception]: '+str(e))
             
             self.logs.extend(x.data)
-            self.logs.append(self.base)
             sys.stdout = sys.__stdout__
+            print(self.base)
 
             return False
         except RuntimeError as e:
-            self.add_to_log('[run][run RuntimeError]: '+str(e))
+            self.add_to_log('[run][RuntimeError]: '+str(e))
             
             self.logs.extend(x.data)
             sys.stdout = sys.__stdout__
+            print(self.base)
 
             return False
 
