@@ -72,7 +72,7 @@ login_manager.init_app(app)
 from models import *
 
 # c
-# db.create_all()
+db.create_all()
  
 # ScheduleLog.__table__.create(db.session.bind)
 # GeneratedRecipesIngrProductModel.__table__.create(db.session.bind)
