@@ -149,6 +149,7 @@ class DynamicRuleEngine():
             self.add_to_log('[run][run Exception]: '+str(e))
             
             self.logs.extend(x.data)
+            self.logs.append(self.base)
             sys.stdout = sys.__stdout__
 
             return False
