@@ -122,6 +122,31 @@ class ObjectTypeModel(db.Model):
             yield itertools.chain.from_iterable((self.childs,), ch.children)
 
 
+class OnjectTypeRuleModel(db.Model):
+    __tablename__ = 'object_type_rule'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(20), unique=False, nullable=False)
+    syntax = db.Column(db.String(1000), unique=False, nullable=False)
+
+    object_type_id = db.Column(db.Integer, db.ForeignKey('object_type.id', ondelete='CASCADE'),
+        nullable=True)
+    object_type = db.relationship('ObjectTypeModel',lazy=True,
+        backref=db.backref('rules', lazy=True))
+
+
+    created_at = db.Column('created_at' , db.DateTime)
+
+
+    def __init__(self ,name  ,syntax ):
+        self.name = name
+        # self.param_type = param_type
+        self.syntax = syntax
+        # self.object_type_id = object_type_id
+
+        self.created_at = datetime.utcnow()
+
+
 
 class OnjectTypeParamModel(db.Model):
     __tablename__ = 'object_type_param'

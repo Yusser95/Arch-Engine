@@ -1,0 +1,241 @@
+{% extends "admin/base.html" %}
+
+
+{% block body %}
+
+<!-- general form elements -->
+            <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">Object-Type</h3>
+              </div>
+
+
+
+
+              <!-- /.card-header -->
+              <!-- form start -->
+              <form role="form" action="/admin/object_type/rules/edit/{{item.id}}" method="post" enctype="multipart/form-data">
+
+                <div class="card-body">
+
+                <div class="col-lg-10">
+
+
+                  <div id="error_message"></div>
+
+
+                
+
+                
+
+
+
+                  <div class="form-group">
+
+                    <label for="files">Rules</label>
+                    <div id="files">
+                      {% if not item.rules %}
+                        <br>
+                        <div id="filee00-0re">
+                          <div class="input-group">
+
+                          <input type="hidden"  id="param_ids" name="param_ids[]" value="" />
+
+
+                          <input type="text" class="form-control" id="parm_names" name="parm_names[]" placeholder="Enter rule name"  required="" />
+
+                          <textarea class="textarea form-control" id="param_desc" name="param_desc[]" placeholder="Enter rule code" required="" style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"></textarea>
+
+                          <input type="button" value="Remove" onclick="removeElement('filee00-0re');" />
+                          </div>
+                        </div>
+                      {% endif %}
+                      {% for i in item.rules %}
+                        <br>
+                        <div id="filee00-0{{i.id}}">
+                          <div class="input-group">
+
+                          <input type="hidden"  id="param_ids" name="param_ids[]" value="{{i.id}}" />
+
+
+                          <input type="text" class="form-control" id="parm_names" name="parm_names[]" placeholder="Enter rule name" value="{{i.name}}" required="" />
+
+
+                          <textarea class="textarea form-control" id="param_desc_e{{i.id}}" name="param_desc[]" placeholder="Enter rule code" required="" style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;">{{i.syntax}}</textarea>
+
+
+
+                          <input type="button" value="Remove" onclick="removeElement('filee00-0{{i.id}}');" />
+                          </div>
+                        </div>
+                      {% endfor %}
+                    </div>
+                    <br>
+                    <p><input type="button" value="Add Parameter" onclick="addFile();" /></p>
+                  </div>
+
+                  <br>
+
+
+                </div>
+
+
+      </div>
+
+        
+            <!-- /.col-->
+
+                <div class="card-footer">
+                  <button type="submit" class="btn btn-primary">Submit</button>
+                  <a href="/admin/object_type/show" class="btn btn-warning">Back</a>
+
+                </div>
+
+        </form>
+               </div>
+
+<!-- jQuery -->
+<script src={{ url_for('static',filename="plugins/jquery/jquery.min.js")}}></script>
+
+<!-- Bootstrap 4 -->
+<script src={{ url_for('static',filename="plugins/bootstrap/js/bootstrap.bundle.min.js")}}></script>
+
+
+
+<!-- parsley.min -->
+<script src={{ url_for('static',filename="plugins/parsley/dist/parsley.min.js")}}></script>
+
+<!-- bootstrap-duration-picker -->
+<script src={{ url_for('static',filename="dist/js/bootstrap-duration-picker.js")}}></script>
+
+<!-- Select2 -->
+<script src={{ url_for('static',filename="plugins/select2/select2.full.min.js")}}></script>
+
+
+
+<!-- Bootstrap WYSIHTML5 -->
+<script src={{ url_for('static',filename="plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js")}}></script>
+
+<!-- <script src={{ url_for('static',filename="plugins/bootstrap-wysihtml5/tmp/bootstrap3-wysihtml5.min.js")}}></script> -->
+
+
+
+
+
+<script type="text/javascript">
+  // $(function() {
+
+
+  // $('.textarea').wysihtml5({
+  //     toolbar: false //{ fa: true }
+  //   });
+
+  {% for i in item.rules %}
+  var editor = new wysihtml5.Editor("param_desc_e{{i.id}}", {
+              toolbar:      false,//"wysihtml-toolbar",
+            });
+  {% endfor %}
+
+  var editor = new wysihtml5.Editor("param_desc", {
+              toolbar:      false,//"wysihtml-toolbar",
+            });
+
+
+  $("#param_desc").change(function(){
+      var value = $(this).val();
+      alert(value);
+      
+        // $.ajax({
+        //       url: '/validator/uniquename/object',
+        //       data: {
+        //           name: value
+        //       },
+        //       async:false,
+        //       success: function(response) {
+        //           if(response.valid === 'true') {
+        //             $('#error_message').empty();
+        //           }
+        //           else {
+        //               $('#name').val('');
+        //               $('#error_message').empty();
+        //               $('#error_message').append('<div class="alert alert-danger" role="alert">name is alerady exists !!</div>');
+        //           }
+        //       }
+        //   });
+    
+    });
+
+
+
+
+
+    function addElement(parentId, elementTag, elementId, html) {
+    // Adds an element to the document
+    var p = document.getElementById(parentId);
+    var newElement = document.createElement(elementTag);
+    newElement.setAttribute('id', elementId);
+    newElement.innerHTML = html;
+    p.appendChild(newElement);
+    }
+
+
+    function removeElement(elementId) {
+
+      // event.preventDefault();
+
+      // alert('removing')
+
+
+    // Removes an element from the document
+    var element = document.getElementById(elementId);
+    element.parentNode.removeChild(element);
+    
+    // $('#'+elementId).remove();
+
+    // return false;
+    }
+
+
+
+
+    var fileId = 0; // used by the addFile() function to keep track of IDs
+    function addFile() {
+        fileId++; // increment fileId to get a unique ID for the new element
+
+        var html = '<br><div class="input-group">'+
+                          '<input type="hidden"  id="param_ids" name="param_ids[]" value="" />'+
+
+                          '<input type="text" class="form-control" id="parm_names" name="parm_names[]" placeholder="Enter rule name"  required="" />'+
+
+                          '<textarea class="textarea2 form-control" id="param_desc_'+fileId+'" name="param_desc[]" placeholder="Enter rule code" required="" style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"></textarea>'+
+
+                          '<input type="button" value="Remove" onclick="removeElement('+"'"+'file-' + fileId +"'"+ ');" />'+
+                  '</div>';
+
+
+
+
+            addElement('files', 'div', 'file-' + fileId, html);
+
+
+            // $('.textarea2').wysihtml5({
+            // toolbar: false //{ fa: true }
+          // });
+
+          var editor = new wysihtml5.Editor("param_desc_"+fileId, {
+              toolbar:      false,//"wysihtml-toolbar",
+            });
+
+
+    }
+
+
+  // });
+
+
+
+
+</script>
+
+
+{% endblock %}

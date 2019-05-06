@@ -3,6 +3,8 @@
 
 {% block body %}
 
+<div class="col-md-11" id="rules_error_message"></div>
+
 <div class="card col-md-5" >
     <div class="card-header">
       <h3 class="card-title">Project: {{project.name}}</h3>
@@ -21,6 +23,7 @@
       <div class="panel panel-default">
         <div class="panel-heading">
           <b>Project Taxonomy</b>
+          <button id="btnCheckRules" class="btn btn-xs btn-primary">check rules</button>
         </div>
         <div id="tree" class="panel-body fancytree-colorize-hover fancytree-fade-expander">
         </div>
@@ -239,6 +242,41 @@
         node.setExpanded(false);
       });
     });
+
+    $("#btnCheckRules").click(function(){
+      $.ajax({
+              url: '/validator/object/rules',
+              data: {
+                  project_id: {{project.id}}
+              },
+              async:false,
+              success: function(response) {
+
+                  var i;
+                  for (i = 0; i < response.logs.length; i++) {
+                    text = response.logs[i] + "<br>";
+                    $('#rules_error_message').empty();
+                    if(text.startsWith("[")){
+                      $('#rules_error_message').append('<div class="alert alert-danger" role="alert">'+text+'</div>');
+                    }else{
+                      $('#rules_error_message').append('<div class="alert alert-success" role="alert">'+text+'</div>');
+                    }
+                    
+                  }
+                  // if(response.valid === 'true') {
+                  //   $('#error_message').empty();
+                  // }
+                  // else {
+                  //     $('#name').val('');
+                  //     $('#error_message').empty();
+                  //     $('#error_message').append('<div class="alert alert-danger" role="alert">name is alerady exists !!</div>');
+                  // }
+              }
+          });
+    });
+
+
+    
     $( "#fontSize" ).change(function(){
       $("#tree .fancytree-container").css("font-size", $(this).prop("value") + "pt");
     });//.prop("value", 12);

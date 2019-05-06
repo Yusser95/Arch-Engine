@@ -15,6 +15,7 @@ import re
 from settings import *
 from urllib.parse import urlparse
 
+import sys
 # from cloudinary.uploader import upload
 # from cloudinary.utils import cloudinary_url
 
@@ -25,9 +26,13 @@ from sqlalchemy import func
 from sqlalchemy.ext.declarative import DeclarativeMeta
 
 
+from ruleEngineCore import DynamicRuleEngine
+
+
+
+
 # from flask_sqlalchemy import SQLAlchemy
 from flask_sqlalchemy import SQLAlchemy as BaseSQLAlchemy
-
 class SQLAlchemy(BaseSQLAlchemy):
     def apply_pool_defaults(self, app, options):
         super(SQLAlchemy, self).apply_pool_defaults(app, options)
@@ -43,8 +48,8 @@ cwd = os.getcwd()
 # app.config['SQLALCHEMY_DATABASE_URI'] =  'sqlite:///'+cwd+'/resources/data.db' 
 # app.config['SQLALCHEMY_DATABASE_URI'] =  os.environ.get("DATABASE_URL") 
 # app.config['SQLALCHEMY_DATABASE_URI'] =  'mysql://rsonbol_foodbudg:13knBd3EvF@mysql.us.cloudlogin.co/rsonbol_foodbudg'
-# app.config['SQLALCHEMY_DATABASE_URI'] =  'mysql://root:root@localhost/flask_arch_engine'
-app.config['SQLALCHEMY_DATABASE_URI'] =  os.environ.get("CLEARDB_DATABASE_URL")[:-15] #or 'mysql://root:root@localhost/food-budget'
+app.config['SQLALCHEMY_DATABASE_URI'] =  'mysql://root:root@localhost/flask_arch_engine'
+# app.config['SQLALCHEMY_DATABASE_URI'] =  os.environ.get("CLEARDB_DATABASE_URL")[:-15] #or 'mysql://root:root@localhost/food-budget'
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_POOL_RECYCLE'] = 200
@@ -67,7 +72,7 @@ login_manager.init_app(app)
 from models import *
 
 # c
-# db.create_all()
+db.create_all()
  
 # ScheduleLog.__table__.create(db.session.bind)
 # GeneratedRecipesIngrProductModel.__table__.create(db.session.bind)
@@ -139,6 +144,33 @@ def object_name_validator():
 
 
 
+@app.route("/validator/object/rules" , methods =['GET',"POST"])
+@flask_login.login_required
+def object_rules_validator():
+	response = {'logs':[]}
+	project_id = request.args.get('project_id')
+	print(project_id)
+
+	root_instance = ObjectTypeInstanceModel.query.filter_by(project_id=int(project_id) , object_instance_id=None).first()
+	root_instances = ObjectTypeInstanceModel.query.filter_by(project_id=int(project_id)).all()
+	ids = list(set([i.object_type_id for i in root_instances]))
+	objects = ObjectTypeModel.query.filter(ObjectTypeModel.id.in_(ids)).all()
+
+	rule_engine = DynamicRuleEngine()
+	rule_engine.fit(objects,root_instance)
+	# rule_engine.add_validation_rule("1","for i in building.Floors:\n\tprint(i.f1)")
+	rule_engine.run()
+
+	print(rule_engine.get_logs())
+	if rule_engine.get_logs():
+		response['logs'] = rule_engine.get_logs()
+
+
+	return jsonify(response)
+
+
+
+
 
 
 
@@ -148,8 +180,20 @@ def object_name_validator():
 
 # @app.before_request
 # def make_session_permanent():
-#     session.permanent = True
-#     app.permanent_session_lifetime = timedelta(minutes=1000)
+# 	root_instance = ObjectTypeInstanceModel.query.filter_by(project_id=int(1) , object_instance_id=None).first()
+# 	root_instances = ObjectTypeInstanceModel.query.filter_by(project_id=int(1)).all()
+# 	ids = list(set([i.object_type_id for i in root_instances]))
+# 	objects = ObjectTypeModel.query.filter(ObjectTypeModel.id.in_(ids)).all()
+
+# 	rule_engine = DynamicRuleEngine()
+# 	rule_engine.fit(objects,root_instance)
+# 	# rule_engine.add_validation_rule("1","for i in building.Floors:\n\tprint(i.f1)")
+# 	rule_engine.run()
+
+# 	print(rule_engine.get_logs())
+
+#     # session.permanent = True
+#     # app.permanent_session_lifetime = timedelta(minutes=1000)
 
 
 
@@ -490,7 +534,56 @@ def create_object_type():
 
 
 
+@app.route("/admin/object_type/rules/edit/<id>" , methods =["GET" , "POST"])
+@flask_login.login_required
+def editobject_type_rules(id):
+	print(id)
+	# edit
+	if request.method == "POST":
 
+		obj = ObjectTypeModel.query.get(id)
+
+		param_ids = request.form.getlist('param_ids[]')
+		parm_names = request.form.getlist('parm_names[]')
+		param_desc = request.form.getlist('param_desc[]')
+		print(param_ids)
+
+
+
+		# obj.rules.clear()
+		new_rules = []
+		for i in range(len(parm_names)):
+			# p_desc = ""
+			# try:
+			p_desc = param_desc[i]
+			
+			# except KeyError as e:
+			# 	pass
+
+			Rule = OnjectTypeRuleModel.query.get(param_ids[i])
+			if not Rule:
+				Rule = OnjectTypeRuleModel(name=parm_names[i],syntax=p_desc)
+				obj.rules.append(Rule)
+			else:
+				Rule.name=parm_names[i]
+				Rule.syntax=p_desc
+				db.session.commit()
+
+
+			new_rules.append(Rule)
+
+		for p in obj.rules:
+			if p not in new_rules:
+				obj.rules.remove(p)
+
+		db.session.commit()
+
+		return redirect('/admin/object_type/show')
+	# show  one row
+	elif request.method == "GET":
+		item = ObjectTypeModel.query.get(id)
+		return render_template('/admin/object_type/rules_page.html',item = item)
+	return "404"
 
 
 
