@@ -12,7 +12,7 @@ class DynamicRuleEngine():
     def __init__(self):
 
         self.logs = []
-        self.base1 ="""class BaseClass(object):\n\tdef __init__(self, classtype):\n\t\tself._type = classtype\n\ndef ClassFactory(name, argnames=[], BaseClass=BaseClass):\n\tdef __init__(self, **kwargs):\n\t\tsetattr(self, "logs", [])\n\t\tfor key, value in kwargs.items():\n\t\t\tif argnames:\n\t\t\t\tif key not in argnames:\n\t\t\t\t\traise TypeError("Argument %s not valid for %s" % (key, self.__class__.__name__))\n\t\t\tsetattr(self, key, value)\n\t\tBaseClass.__init__(self, name)\n\tdef check_rules(self):\n\t\tbase=self.logging+self.att_str+self.rule_str\n\t\tcodeobj = compile(base, 'fakemodule', 'exec')\n\t\tself.env = self.exec_env\n\t\texec(codeobj,self.env,self.env)\n\t\tself.logs.extend(self.env.get('inner_logs'))\n\tnewclass = type(name, (BaseClass,),{"__init__": __init__,"check_rules":check_rules})\n\treturn newclass"""
+        self.base1 ="""class BaseClass(object):\n\tdef __init__(self, classtype):\n\t\tself._type = classtype\n\ndef ClassFactory(name, argnames=[], BaseClass=BaseClass):\n\tdef __init__(self, **kwargs):\n\t\tsetattr(self, "logs", [])\n\t\tfor key, value in kwargs.items():\n\t\t\tif argnames:\n\t\t\t\tif key not in argnames:\n\t\t\t\t\traise TypeError("Argument %s not valid for %s" % (key, self.__class__.__name__))\n\t\t\tsetattr(self, key, value)\n\t\tBaseClass.__init__(self, name)\n\tdef check_rules(self):\n\t\tbase=self.logging+self.att_str+self.rule_str\n\t\tprint(base)\n\t\tcodeobj = compile(base, 'fakemodule', 'exec')\n\t\tself.env = self.exec_env\n\t\texec(codeobj,self.env,self.env)\n\t\tself.logs.extend(self.env.get('inner_logs'))\n\tnewclass = type(name, (BaseClass,),{"__init__": __init__,"check_rules":check_rules})\n\treturn newclass"""
         
         self.base2 = """\nlogs=[]\ndef add_to_log(error):\n\tlogs.append(error)\n"""
 
@@ -119,7 +119,7 @@ class DynamicRuleEngine():
 
     
     def fit(self, objects, instances_root):
-        sys.stdout = x = ListStream()
+        # sys.stdout = x = ListStream()
 
         
         self.base2+= self.classes_generation(objects)
@@ -134,7 +134,7 @@ class DynamicRuleEngine():
         
     def run(self,log_level= 0):
 
-        sys.stdout = x = ListStream()
+        # sys.stdout = x = ListStream()
 
 
         try:
@@ -150,7 +150,7 @@ class DynamicRuleEngine():
             
             self.logs.extend(x.data)
             sys.stdout = sys.__stdout__
-            print(self.base)
+            # print(self.base)
 
             return False
         except RuntimeError as e:
@@ -158,7 +158,7 @@ class DynamicRuleEngine():
             
             self.logs.extend(x.data)
             sys.stdout = sys.__stdout__
-            print(self.base)
+            # print(self.base)
 
             return False
 
