@@ -126,9 +126,8 @@ class DynamicRuleEngine():
         self.base2+= self.instances_generation(instances_root)
         # print(self.base2)
 
-        self.logs.extend(x.data)
-
-        sys.stdout = sys.__stdout__
+        # self.logs.extend(x.data)
+        # sys.stdout = sys.__stdout__
 
         
         
@@ -148,16 +147,16 @@ class DynamicRuleEngine():
         except Exception as e:
             self.add_to_log('[run][Exception]: '+str(e))
             
-            self.logs.extend(x.data)
-            sys.stdout = sys.__stdout__
+            # self.logs.extend(x.data)
+            # sys.stdout = sys.__stdout__
             # print(self.base)
 
             return False
         except RuntimeError as e:
             self.add_to_log('[run][RuntimeError]: '+str(e))
             
-            self.logs.extend(x.data)
-            sys.stdout = sys.__stdout__
+            # self.logs.extend(x.data)
+            # sys.stdout = sys.__stdout__
             # print(self.base)
 
             return False
