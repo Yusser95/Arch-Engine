@@ -139,7 +139,7 @@ class DynamicRuleEngine():
         try:
             self.base = self.base1 + self.base2 + self.rules
             # self.base+="\nprint('finished with no errors yeaah !!')"
-            # print(self.base)
+            print(self.base)
             codeobj = compile(self.base, 'fakemodule', 'exec')
             env = {}
             exec(codeobj,{},env)
