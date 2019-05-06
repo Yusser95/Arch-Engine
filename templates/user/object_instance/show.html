@@ -252,8 +252,10 @@
               async:false,
               success: function(response) {
 
+                  var json = $.parseJSON(response);
+
                   var i;
-                  for (i = 0; i < response.logs.length; i++) {
+                  for (i = 0; i < json.logs.length; i++) {
                     text = response.logs[i] + "<br>";
                     $('#rules_error_message').empty();
                     if(text.startsWith("[")){
