@@ -119,27 +119,27 @@ class DynamicRuleEngine():
 
     
     def fit(self, objects, instances_root):
-        # sys.stdout = x = ListStream()
+        sys.stdout = x = ListStream()
 
         
         self.base2+= self.classes_generation(objects)
         self.base2+= self.instances_generation(instances_root)
         # print(self.base2)
 
-        # self.logs.extend(x.data)
-        # sys.stdout = sys.__stdout__
+        self.logs.extend(x.data)
+        sys.stdout = sys.__stdout__
 
         
         
     def run(self,log_level= 0):
 
-        # sys.stdout = x = ListStream()
+        sys.stdout = x = ListStream()
 
 
         try:
             self.base = self.base1 + self.base2 + self.rules
             # self.base+="\nprint('finished with no errors yeaah !!')"
-            print(self.base)
+            # print(self.base)
             codeobj = compile(self.base, 'fakemodule', 'exec')
             env = {}
             exec(codeobj,{},env)
@@ -147,17 +147,17 @@ class DynamicRuleEngine():
         except Exception as e:
             self.add_to_log('[run][Exception]: '+str(e))
             
-            # self.logs.extend(x.data)
-            # sys.stdout = sys.__stdout__
-            # print(self.base)
+            self.logs.extend(x.data)
+            sys.stdout = sys.__stdout__
+            print(self.base)
 
             return False
         except RuntimeError as e:
             self.add_to_log('[run][RuntimeError]: '+str(e))
             
-            # self.logs.extend(x.data)
-            # sys.stdout = sys.__stdout__
-            # print(self.base)
+            self.logs.extend(x.data)
+            sys.stdout = sys.__stdout__
+            print(self.base)
 
             return False
 
