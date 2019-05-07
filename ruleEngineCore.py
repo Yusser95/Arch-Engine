@@ -110,7 +110,7 @@ class DynamicRuleEngine():
     def check_validation_rule(self, rule_id, rule):
         try:
             temp = compile(rule, 'fakerule', 'exec')
-            exec(temp)
+            # exec(temp)
         except SyntaxError as e:
             self.add_to_log('[check_validation_rule][rule ({})]: '.format(rule_id)+str(e)+"\n"+'Syntax error {} ({}-{}): {}'.format(e.filename, e.lineno, e.offset, e.text))
             return False

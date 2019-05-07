@@ -194,7 +194,7 @@ def object_rules_syntax_validator():
 
 	try:
 	    temp = compile(syntax, 'fakerule', 'exec')
-	    exec(temp)
+	    # exec(temp)
 	except SyntaxError as e:
 		response['valid'] = "false"
 		response['error'] = '[check_validation_rule]: '+str(e)+r"\n"+'Syntax error {} ({}-{}): {}'.format(e.filename, e.lineno, e.offset, e.text)
