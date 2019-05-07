@@ -55,6 +55,8 @@
                         <div id="filee00-0{{i.id}}">
                           <div class="input-group">
 
+                          <input type="hidden"  id="param_ids" name="param_ids[]" value="{{i.id}}" />
+
 
                           <input type="text" class="form-control" id="parm_names" name="parm_names[]" placeholder="Enter param name" value="{{i.name}}" required="" />
 
@@ -227,6 +229,8 @@
         fileId++; // increment fileId to get a unique ID for the new element
 
         var html = '<br><div class="input-group">'+
+
+                          '<input type="hidden"  id="param_ids" name="param_ids[]" value="" />'+
 
 
                           '<input type="text" class="form-control" id="parm_names" name="parm_names[]" placeholder="Enter param name" required="" />'+

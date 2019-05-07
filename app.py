@@ -451,7 +451,7 @@ def editobject_typ(id):
 		obj.desc = request.form.get('desc',default=None,type=str)
 		obj.object_type_id = request.form.get('parent',default=None,type=int)
 	
-
+		param_ids = request.form.getlist('param_ids[]')
 		param_types = request.form.getlist('param_types[]')
 		parm_names = request.form.getlist('parm_names[]')
 		param_desc = request.form.getlist('param_desc[]')
@@ -468,10 +468,15 @@ def editobject_typ(id):
 			# except KeyError as e:
 			# 	pass
 
-			Param = OnjectTypeParamModel.query.filter_by(object_type_id=int(id),name=parm_names[i],desc=p_desc,param_type=param_types[i]).first()
+			Param = OnjectTypeParamModel.query.get(param_ids[i])#filter_by(object_type_id=int(id),name=parm_names[i],desc=p_desc,param_type=param_types[i]).first()
 			if not Param:
 				Param = OnjectTypeParamModel(name=parm_names[i],desc=p_desc,param_type=param_types[i])
 				obj.parms.append(Param)
+			else:
+				Param.name=parm_names[i]
+				Param.desc=p_desc
+				Param.param_type=param_types[i]
+				db.session.commit()
 
 			new_parms.append(Param)
 
