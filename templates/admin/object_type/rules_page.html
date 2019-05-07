@@ -141,7 +141,7 @@
             });
 
 
-  $('.textarea').on('change', function (e) {
+  $('.textarea').contents().find('body').on('change', function (e) {
 
       var value = this.value;
       // var value = $(this).val();
