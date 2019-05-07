@@ -68,7 +68,7 @@ class DynamicRuleEngine():
             syntax = syntax.replace(r"<div>",r"\n").replace(r"</div>","")
             syntax = r"{}".format(syntax)
 
-            rule_to_add += self.create_validation_rule( i.id, r"{}".format(syntax))
+            rule_to_add += self.create_validation_rule( i.name, r"{}".format(syntax))
         attributs += ',{} = "{}"'.format("rule_str",str(r"\n"+rule_to_add+r"\n"))
 
         return "{} = {}({})\n{}.check_rules()\nlogs.extend({}.logs)".format(obj.name,obj.object_type.name,attributs ,obj.name,obj.name)
@@ -157,7 +157,7 @@ class DynamicRuleEngine():
             self.logs.extend(env.get('logs'))
 
         except SyntaxError as e:
-            self.add_to_log('[run][SyntaxError]: '+str(e)+"\n"+'Syntax error {} ({}-{}): {}'.format(e.filename, e.lineno, e.offset, e.text))
+            self.add_to_log('[error][run][SyntaxError]: '+str(e)+"\n"+'Syntax error {} ({}-{}): {}'.format(e.filename, e.lineno, e.offset, e.text))
 
             self.logs.extend(x.data)
             sys.stdout = sys.__stdout__
@@ -165,7 +165,7 @@ class DynamicRuleEngine():
 
             return False
         except Exception as e:
-            self.add_to_log('[run][Exception]: '+str(e))
+            self.add_to_log('[error][run][Exception]: '+str(e))
             
             self.logs.extend(x.data)
             sys.stdout = sys.__stdout__
@@ -173,7 +173,7 @@ class DynamicRuleEngine():
 
             return False
         except RuntimeError as e:
-            self.add_to_log('[run][RuntimeError]: '+str(e))
+            self.add_to_log('[error][run][RuntimeError]: '+str(e))
             
             self.logs.extend(x.data)
             sys.stdout = sys.__stdout__
