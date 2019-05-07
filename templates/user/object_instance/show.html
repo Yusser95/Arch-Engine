@@ -250,6 +250,11 @@
                   project_id: {{project.id}}
               },
               async:false,
+              error: function(XMLHttpRequest, textStatus, errorThrown) { 
+                $('#rules_error_message').empty();
+                $('#rules_error_message').append('<div class="alert alert-danger" role="alert">'+"Status: " + textStatus+'</div>');
+                $('#rules_error_message').append('<div class="alert alert-danger" role="alert">'+"Error: " + errorThrown+'</div>');
+              },      
               success: function(response) {
 
                   // var json = $.parseJSON(response);
