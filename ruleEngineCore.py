@@ -99,12 +99,12 @@ class DynamicRuleEngine():
 
     def add_validation_rule(self, rule_id, rule):
         if self.check_validation_rule(rule_id,rule) is True:
-            self.rules += "try:\n\t" + rule.replace("\n","\n\t") + "\nexcept Exception as e:\n\tadd_to_log('[exec][rule ({})]: '+str(e))".format(str(rule_id))
+            self.rules += "try:\n\t" + rule.replace("\n","\n\t") + "\nexcept Exception as e:\n\tadd_to_log('[error][exec][rule ({})]: '+str(e))".format(str(rule_id))
         # else:
             # raise Exception
 
     def create_validation_rule(self, rule_id, rule):
-        return r"{}".format(r"\ntry:\n\t" + rule.replace(r"\n",r"\n\t") + r"\nexcept Exception as e:\n\tadd_to_log('[exec][rule ({})]: '+str(e))\n".format(str(rule_id)) )
+        return r"{}".format(r"\ntry:\n\t" + rule.replace(r"\n",r"\n\t") + r"\nexcept Exception as e:\n\tadd_to_log('[error][exec][rule ({})]: '+str(e))\n".format(str(rule_id)) )
 
 
     def check_validation_rule(self, rule_id, rule):
