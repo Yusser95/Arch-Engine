@@ -177,7 +177,35 @@ def object_rules_validator():
 
 
 
+@app.route("/validator/object/rule/syntax" , methods =['GET',"POST"])
+@flask_login.login_required
+def object_rules_validator():
+	response = {'valid':"true"}
+	syntax = request.args.get('syntax')
+	print(syntax)
 
+	syntax = syntax.replace("\u2003",r"\t").replace("\t",r"\t")
+    syntax = syntax.replace(r"&lt;" ,r"<").replace(r"&gt;" ,r">")
+    syntax = syntax.replace(r"<br>",r"\n")
+    syntax = syntax.replace(r"<p>",r"\n").replace(r"</p>","")
+    syntax = syntax.replace(r"<div>",r"\n").replace(r"</div>","")
+    syntax = r"{}".format(syntax)
+
+
+	try:
+	    temp = compile(syntax, 'fakerule', 'exec')
+	except SyntaxError as e:
+		response['valid'] = "false"
+		response['error'] = '[check_validation_rule][rule ({})]: '.format(rule_id)+str(e)+"\n"+'Syntax error {} ({}-{}): {}'.format(e.filename, e.lineno, e.offset, e.text)
+	    print('[check_validation_rule][rule ({})]: '.format(rule_id)+str(e)+"\n"+'Syntax error {} ({}-{}): {}'.format(e.filename, e.lineno, e.offset, e.text))
+	except Exception as e:
+	    print('[check_validation_rule][rule ({})]: '.format(rule_id)+str(e))
+	except RuntimeError as e:
+	    print('[check_validation_rule][rule ({})]: '.format(rule_id)+str(e))
+
+
+
+	return jsonify(response)
 
 
 

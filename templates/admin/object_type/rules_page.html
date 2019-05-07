@@ -44,6 +44,8 @@
 
                           <input type="text" class="form-control" id="parm_names" name="parm_names[]" placeholder="Enter rule name"  required="" />
 
+                          <div id="error_message" style="width: 100%;"></div>
+
                           <textarea class="textarea form-control" id="param_desc" name="param_desc[]" placeholder="Enter rule code" required="" style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"></textarea>
 
                           <input type="button" value="Remove" onclick="removeElement('filee00-0re');" />
@@ -58,7 +60,11 @@
                           <input type="hidden"  id="param_ids" name="param_ids[]" value="{{i.id}}" />
 
 
+
+
                           <input type="text" class="form-control" id="parm_names" name="parm_names[]" placeholder="Enter rule name" value="{{i.name}}" required="" />
+
+                          <div id="error_message_{{i.id}}" style="width: 100%;"></div>
 
 
                           <textarea class="textarea form-control" id="param_desc_e{{i.id}}" name="param_desc[]" placeholder="Enter rule code" required="" style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;">{{i.syntax}}</textarea>
@@ -137,8 +143,25 @@
             });
   editor.on("change", function() {
                       var html = this.textarea.getValue();
-                      alert(html);
+                      // alert(html);
                       //ajax method
+                      $.ajax({
+                          url: '/validator/object/rule/syntax',
+                          data: {
+                              syntax: value
+                          },
+                          async:false,
+                          success: function(response) {
+                              if(response.valid === 'true') {
+                                $('#error_message_{{i.id}}').empty();
+                              }
+                              else {
+                                  
+                                  $('#error_message_{{i.id}}').empty();
+                                  $('#error_message_{{i.id}}').append('<div class="alert alert-danger" role="alert">'+response.error+'</div>');
+                              }
+                          }
+                      });
                   });
   {% endfor %}
 
@@ -148,36 +171,28 @@
             });
   editor.on("change", function() {
                       var html = this.textarea.getValue();
-                      alert(html);
+                      // alert(html);
                       //ajax method
+                      $.ajax({
+                          url: '/validator/object/rule/syntax',
+                          data: {
+                              syntax: value
+                          },
+                          async:false,
+                          success: function(response) {
+                              if(response.valid === 'true') {
+                                $('#error_message').empty();
+                              }
+                              else {
+                                  
+                                  $('#error_message').empty();
+                                  $('#error_message').append('<div class="alert alert-danger" role="alert">'+response.error+'</div>');
+                              }
+                          }
+                      });
                   });
 
 
-  // $('.textarea').contents().find('body').on('change', function (e) {
-
-      // var value = this.value;
-      // var value = $(this).val();
-      // alert(value);
-      
-        // $.ajax({
-        //       url: '/validator/uniquename/object',
-        //       data: {
-        //           name: value
-        //       },
-        //       async:false,
-        //       success: function(response) {
-        //           if(response.valid === 'true') {
-        //             $('#error_message').empty();
-        //           }
-        //           else {
-        //               $('#name').val('');
-        //               $('#error_message').empty();
-        //               $('#error_message').append('<div class="alert alert-danger" role="alert">name is alerady exists !!</div>');
-        //           }
-        //       }
-        //   });
-    
-    // });
 
 
 
@@ -214,7 +229,11 @@
         var html = '<br><div class="input-group">'+
                           '<input type="hidden"  id="param_ids" name="param_ids[]" value="" />'+
 
+
+
                           '<input type="text" class="form-control" id="parm_names" name="parm_names[]" placeholder="Enter rule name"  required="" />'+
+
+                          '<div id="error_message_m'+fileId+'" style="width: 100%;"></div>'+
 
                           '<textarea class="textarea2 form-control" id="param_desc_'+fileId+'" name="param_desc[]" placeholder="Enter rule code" required="" style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"></textarea>'+
 
@@ -236,8 +255,26 @@
             });
           editor.on("change", function() {
                       var html = this.textarea.getValue();
-                      alert(html);
+                      // alert(html);
                       //ajax method
+                      $.ajax({
+                          url: '/validator/object/rule/syntax',
+                          data: {
+                              syntax: value
+                          },
+                          async:false,
+                          success: function(response) {
+                              if(response.valid === 'true') {
+                                $('#error_message_m'+fileId).empty();
+                              }
+                              else {
+                                  
+                                  $('#error_message_m'+fileId).empty();
+                                  $('#error_message_m'+fileId).append('<div class="alert alert-danger" role="alert">'+response.error+'</div>');
+                              }
+                          }
+                      });
+
                   });
 
 
