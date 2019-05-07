@@ -165,10 +165,8 @@ def object_rules_validator():
 	if rule_engine.get_logs():
 		response['logs'] = rule_engine.get_logs()
 
-	# resp = make_response(json.dumps(response))
-	# resp.headers["Content-Type"]='application/json; charset=utf-8'
-
-	resp = json.dumps(response)
+	resp = make_response(json.dumps(response))
+	resp.headers["Content-Type"]='application/json; charset=utf-8'
 
 	return resp
 
