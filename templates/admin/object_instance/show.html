@@ -1,0 +1,378 @@
+{% extends "admin/base.html" %}
+
+
+
+{% block body %}
+
+
+     
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" />
+    
+
+
+
+
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+
+
+
+    <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+
+    <link href={{ url_for('static',filename="fancytree/ui.fancytree.css")}} rel="stylesheet"  class="skinswitcher">
+
+
+
+<div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">Object-Type</h3>
+              </div>
+
+
+
+
+              <!-- /.card-header -->
+              <!-- form start -->
+
+
+                  <div class="card-body">
+
+                    <div class="col-lg-12">
+
+
+
+                    
+
+<div class="card col-md-6" >
+    <div class="card-header">
+      <h3 class="card-title">Project: {{project.name}}</h3>
+    </div>
+
+    <div class="card-body">
+
+      <p>
+        Font size: <span id="curSize"></span>
+        <input id="fontSize" type="number" min="4" max="48" value="14"> pt
+      </p>
+
+      <!-- Tree wrapper -->
+      <!-- <div id="tree"></div> -->
+
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <b>Project Taxonomy</b>
+          <button id="btnCheckRules" class="btn btn-xs btn-primary">check rules</button>
+        </div>
+        <div id="tree" class="panel-body fancytree-colorize-hover fancytree-fade-expander">
+        </div>
+        <div class="panel-footer">
+          <button id="btnExpandAll" class="btn btn-xs btn-primary">Expand all</button>
+          <button id="btnCollapseAll" class="btn btn-xs btn-warning">Collapse all</button>
+        </div>
+      </div>
+
+      <hr />
+
+      <!-- <div id="selected-action">Click right mouse button on node</div> -->
+
+
+      </div>
+    <!-- /.card-body -->
+  </div>
+
+  <!-- <div class="col-md-1">
+  </div> -->
+
+  
+
+  <div class="card col-md-6 ">
+    <div class="card-header">
+      <h3 class="card-title">Object Instance</h3>
+    </div>
+
+    <div class="card-body">
+
+      <h4>Instance info:</h4>
+      <br>
+
+      <table>
+        <tr>
+          <td>parent :</td>
+          <td>&emsp;{{item.parent.name}}</td>
+        </tr>
+        <tr>
+          <td>name :</td>
+          <td>&emsp;{{item.name}}</td>
+        </tr>
+      </table>
+      <br>
+      <h4> Instance paremters info:</h4>
+      <br>
+      <table>
+
+        {% for j in item.object_type.parms %}
+          {% set ns = namespace (flag = "true") %}
+          {% for i in item.parms %}
+
+            {% if j == i.param %}
+                {% set ns.flag = "false" %}
+
+                <tr>
+                  <td>{{i.param.name}} ({{i.param.param_type}}) :{% if i.param.desc %}
+                    <a href="#">&emsp;<i class="nav-icon fa fa-info-circle" data-toggle="tooltip" data-placement="top" title="{{i.param.desc}}"></i>&emsp;</a>
+                    {% endif %}</td>
+                  <td>{{i.value}}</td>
+                </tr>
+            
+
+            {% endif %}
+          {% endfor %}
+          {% if ns.flag == "true" %}
+
+                <tr>
+                  <td>{{j.name}} ({{j.param_type}}) :{% if j.desc %}
+                  <a href="#">&emsp;<i class="nav-icon fa fa-info-circle" data-toggle="tooltip" data-placement="top" title="{{j.desc}}"></i>&emsp;</a>
+                  {% endif %}</td>
+                  <td>null</td>
+                </tr>
+
+          {% endif %}
+        {% endfor %}
+      </table>
+
+      
+
+      </div>
+    <!-- /.card-body -->
+  </div>
+
+
+
+
+  <div class="card col-md-12" >
+    <div class="card-header">
+      <h3 class="card-title">Check Rules Results :</h3>
+    </div>
+
+    <div class="card-body">
+
+      <div class="col-md-11" id="rules_error_message"></div>
+
+
+
+      </div>
+    <!-- /.card-body -->
+  </div>
+
+
+
+</div>
+
+
+                   </div>
+
+                
+                    <!-- /.col-->
+
+                        <div class="card-footer">
+                          <a href="/admin/project/show" class="btn btn-warning">Back</a>
+
+                        </div>
+
+            </div>
+
+
+<!-- jQuery -->
+<script src={{ url_for('static',filename="plugins/jquery/jquery.min.js")}}></script>
+
+<!-- Bootstrap 4 -->
+<script src={{ url_for('static',filename="plugins/bootstrap/js/bootstrap.bundle.min.js")}}></script>
+
+<!-- parsley.min -->
+<script src={{ url_for('static',filename="plugins/parsley/dist/parsley.min.js")}}></script>
+
+<!-- bootstrap-duration-picker -->
+<script src={{ url_for('static',filename="dist/js/bootstrap-duration-picker.js")}}></script>
+
+<!-- Select2 -->
+<script src={{ url_for('static',filename="plugins/select2/select2.full.min.js")}}></script>
+
+
+
+
+
+
+<script src="//code.jquery.com/jquery-1.12.4.min.js"></script>
+<script src="//code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src={{ url_for('static',filename="fancytree/jquery.fancytree.js")}}></script>
+<script src={{ url_for('static',filename="fancytree/jquery.fancytree.dnd5.js")}}></script>
+<script src={{ url_for('static',filename="fancytree/jquery.fancytree.edit.js")}}></script>
+<script src={{ url_for('static',filename="fancytree/jquery.fancytree.glyph.js")}}></script>
+<!-- <script src={{ url_for('static',filename="fancytree/jquery.fancytree.table.js")}}></script> -->
+<script src={{ url_for('static',filename="fancytree/jquery.fancytree.wide.js")}}></script>
+<script src="//cdn.jsdelivr.net/npm/jquery-contextmenu@2.6.4/dist/jquery.contextMenu.min.js">
+</script>
+
+
+
+
+    <script type="text/javascript">
+    // $(function() {
+
+      var glyph_opts = {
+      preset: "bootstrap3",
+      map: {
+      }
+    };
+
+
+      $("#tree").fancytree({
+        extensions: ["dnd5", "edit", "glyph", "wide"],
+        glyph: glyph_opts,
+
+        checkbox: false,
+        click: function(event, data) {
+          // alert(data.node.key);
+          window.location.replace('/admin/project/{{project.id}}/instance/show/'+data.node.key);
+        },
+        init: function(event, data, flag) {
+          // logEvent(event, data, "flag=" + flag);
+          data.tree.activateKey("{{i_id}}")
+        },
+        selectMode: 3,
+        dnd5: {
+          dragStart: function(node, data) { return true; },
+          dragEnter: function(node, data) { return true; },
+          dragDrop: function(node, data) { data.otherNode.copyTo(node, data.hitMode); }
+        },
+        wide: {
+          iconWidth: "1em",       // Adjust this if @fancy-icon-width != "16px"
+          iconSpacing: "0.5em",   // Adjust this if @fancy-icon-spacing != "3px"
+          labelSpacing: "0.1em",  // Adjust this if padding between icon and label != "3px"
+          levelOfs: "1.5em"       // Adjust this if ul padding != "16px"
+        },
+
+
+        source: {
+          url: "{{instance_data_source}}" //"/admin/object_type/parent/data/tree"
+        },
+        // lazyLoad: function(event, data) {
+        //   data.result = { url: "ajax-sub2.json" }
+        // }
+      });
+
+      // $.contextMenu({
+      //   selector: "#tree span.fancytree-title",
+      //   items: {
+      //     "add": {name: "Add", icon: "add",
+      //         callback: function(key, opt){
+      //           var node = $.ui.fancytree.getNode(opt.$trigger);
+      //           // alert("Clicked on " + key + " on " + node);
+      //           window.location.replace('/user/project/{{project.id}}/instance/create/'+node.key);
+      //         }
+      //       },
+      //     // "copy": {name: "Copy", icon: "copy"},
+      //     // "paste": {name: "Paste", icon: "paste", disabled: false },
+      //     // "sep1": "----",
+      //     "edit": {name: "Edit", icon: "edit", disabled: false,
+      //         callback: function(key, opt){
+      //           var node = $.ui.fancytree.getNode(opt.$trigger);
+      //           // alert("Clicked on " + key + " on " + node);
+      //           window.location.replace('/user/project/{{project.id}}/instance/edit/'+node.key);
+      //         }  
+      //       },
+      //     "delete": {name: "Delete", icon: "delete", disabled: false,
+      //         callback: function(key, opt){
+      //           var node = $.ui.fancytree.getNode(opt.$trigger);
+      //           // alert("Clicked on " + key + " on " + node);
+      //           if(confirm('Are you sure, You Want to delete this?')) {
+      //             window.location.replace('/user/project/{{project.id}}/instance/delete/'+node.key);
+      //           }
+      //         }  
+      //       },
+      //     // "more": {name: "More", items: {
+      //     //   "sub1": {name: "Sub 1"},
+      //     //   "sub1": {name: "Sub 2"}
+      //     //   }}
+      //     }
+      //   //   ,
+      //   // callback: function(itemKey, opt) {
+      //   //   var node = $.ui.fancytree.getNode(opt.$trigger);
+      //   //   alert("select " + itemKey + " on " + node);
+      //   // }
+      // });
+
+
+
+      $("#btnExpandAll").click(function(){
+      $("#tree").fancytree("getTree").visit(function(node){
+        node.setExpanded(true);
+      });
+    });
+    $("#btnCollapseAll").click(function(){
+      $("#tree").fancytree("getTree").visit(function(node){
+        node.setExpanded(false);
+      });
+    });
+
+    $("#btnCheckRules").click(function(){
+      $.ajax({
+              url: '/validator/object/rules',
+              data: {
+                  project_id: {{project.id}}
+              },
+              async:false,
+              error: function(XMLHttpRequest, textStatus, errorThrown) { 
+                $('#rules_error_message').empty();
+                $('#rules_error_message').append('<div class="alert alert-danger" role="alert">'+"Status: " + textStatus+'</div>');
+                $('#rules_error_message').append('<div class="alert alert-danger" role="alert">'+"Error: " + errorThrown+'</div>');
+              },      
+              success: function(response) {
+
+                  // var json = $.parseJSON(response);
+                   var json = response;
+                   // alert(json);
+                   // alert(response);
+                   // alert(response.logs);
+
+                   $('#rules_error_message').empty();
+
+                  var i;
+                  for (i = 0; i < json.logs.length; i++) {
+                    text = json.logs[i] + "<br>";
+                    
+                    if(text.startsWith("[error]")){
+                      $('#rules_error_message').append('<div class="alert alert-danger" role="alert">'+text+'</div>');
+                    }else{
+                      $('#rules_error_message').append('<div class="alert alert-success" role="alert">'+text+'</div>');
+                    }
+                    
+                  }
+                  // if(response.valid === 'true') {
+                  //   $('#error_message').empty();
+                  // }
+                  // else {
+                  //     $('#name').val('');
+                  //     $('#error_message').empty();
+                  //     $('#error_message').append('<div class="alert alert-danger" role="alert">name is alerady exists !!</div>');
+                  // }
+              }
+          });
+    });
+
+
+    
+    $( "#fontSize" ).change(function(){
+      $("#tree .fancytree-container").css("font-size", $(this).prop("value") + "pt");
+    });//.prop("value", 12);
+
+
+
+      $("#tree .fancytree-container").css("font-size",14+"pt");
+
+
+
+    // });
+    </script>
+
+{% endblock %}

@@ -1,0 +1,76 @@
+{% extends "admin/base.html" %}
+
+
+{% block body %}
+
+<!-- general form elements -->
+            <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">Object-Type</h3>
+              </div>
+
+
+
+
+              <!-- /.card-header -->
+              <!-- form start -->
+                <form role="form" action="/admin/project/create" method="post" enctype="multipart/form-data">
+
+                  <div class="card-body">
+
+                    <div class="col-lg-10">
+
+                      <div class="form-group">
+                        <label for="name">project name *</label>
+                        <input type="text" class="form-control" id="name" name="name" placeholder="Enter name" value="" required="">
+                      </div>
+
+                      <div class="form-group">
+                        <label for="desc">project desc</label>
+                        <textarea rows = "5" class="form-control" id="desc" name="desc" placeholder="Enter desc"></textarea>
+                      </div>
+
+                    </div>
+
+
+                   </div>
+
+                
+                    <!-- /.col-->
+
+                        <div class="card-footer">
+                          <button type="submit" class="btn btn-primary">Submit</button>
+                          <a href="/admin/project/show" class="btn btn-warning">Back</a>
+
+                        </div>
+
+                </form>
+            </div>
+
+<!-- jQuery -->
+<script src={{ url_for('static',filename="plugins/jquery/jquery.min.js")}}></script>
+
+<!-- Bootstrap 4 -->
+<script src={{ url_for('static',filename="plugins/bootstrap/js/bootstrap.bundle.min.js")}}></script>
+
+<!-- parsley.min -->
+<script src={{ url_for('static',filename="plugins/parsley/dist/parsley.min.js")}}></script>
+
+<!-- bootstrap-duration-picker -->
+<script src={{ url_for('static',filename="dist/js/bootstrap-duration-picker.js")}}></script>
+
+<!-- Select2 -->
+<script src={{ url_for('static',filename="plugins/select2/select2.full.min.js")}}></script>
+
+
+
+
+
+<script type="text/javascript">
+
+
+
+</script>
+
+
+{% endblock %}

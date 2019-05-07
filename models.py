@@ -14,11 +14,11 @@ class User(db.Model):
     registered_on = db.Column('registered_on' , db.DateTime)
     is_admin = db.Column(db.Integer, unique=False, nullable=True)
  
-    def __init__(self , username ,password , email):
+    def __init__(self , username ,password , email ,is_admin =0):
         self.username = username
         self.password = password
         self.email = email
-        self.is_admin = 0
+        self.is_admin = is_admin
         self.registered_on = datetime.utcnow()
  
     def is_authenticated(self):

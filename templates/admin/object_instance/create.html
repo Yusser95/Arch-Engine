@@ -1,0 +1,343 @@
+{% extends "user/base.html" %}
+
+
+{% block body %}
+
+<div class="card col-md-5" >
+    <div class="card-header">
+      <h3 class="card-title">Project: {{project.name}}</h3>
+    </div>
+
+    <div class="card-body">
+
+      <p>
+        Font size: <span id="curSize"></span>
+        <input id="fontSize" type="number" min="4" max="48" value="14"> pt
+      </p>
+
+      <!-- Tree wrapper -->
+      <!-- <div id="tree"></div> -->
+
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <b>Project Taxonomy</b>
+        </div>
+        <div id="tree" class="panel-body fancytree-colorize-hover fancytree-fade-expander">
+        </div>
+        <div class="panel-footer">
+          <button id="btnExpandAll" class="btn btn-xs btn-primary">Expand all</button>
+          <button id="btnCollapseAll" class="btn btn-xs btn-warning">Collapse all</button>
+        </div>
+      </div>
+
+      <hr />
+
+      <div id="selected-action">Click right mouse button on node</div>
+
+
+      </div>
+    <!-- /.card-body -->
+  </div>
+
+  <!-- <div class="col-md-1">
+  </div> -->
+
+  
+
+  <div class="card col-md-6 ">
+    <div class="card-header">
+      <h3 class="card-title">Object Instance</h3>
+    </div>
+
+    <div class="card-body">
+
+      <form id="create-project-form" role="form" action="/user/project/{{project.id}}/instance/create/{{i_id}}" method="post" enctype="multipart/form-data">
+
+            <div class="col-lg-11">
+
+
+
+
+              <div class="form-group">
+              <label>object *</label>
+              <select class="form-control select22" name="object_type_id" data-placeholder="select parent" required="">
+              </select>
+              </div>
+
+
+              <div id="error_message"></div>
+
+              <div class="form-group">
+                <label for="name">instance name *</label>
+                <input type="text" class="form-control" id="name" name="name" placeholder="Enter name" required="">
+              </div>
+
+
+              <div id="parms_form"></div>
+
+
+
+              
+
+
+
+              <button type="submit" class="btn btn-primary">Save</button>
+
+
+
+            </div>
+
+    </form>
+
+      </div>
+    <!-- /.card-body -->
+  </div>
+
+
+<!-- jQuery -->
+<!-- <script src={{ url_for('static',filename="plugins/jquery/jquery.min.js")}}></script> -->
+
+<!-- Bootstrap 4 -->
+<!-- <script src={{ url_for('static',filename="plugins/bootstrap/js/bootstrap.bundle.min.js")}}></script> -->
+
+<!-- parsley.min -->
+<!-- <script src={{ url_for('static',filename="plugins/parsley/dist/parsley.min.js")}}></script>
+ -->
+
+<!-- Select2 -->
+<!-- <script src={{ url_for('static',filename="plugins/select2/select2.full.min.js")}}></script> -->
+
+
+
+
+
+
+<script src="//code.jquery.com/jquery-1.12.4.min.js"></script>
+<script src="//code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src={{ url_for('static',filename="fancytree/jquery.fancytree.js")}}></script>
+<script src={{ url_for('static',filename="fancytree/jquery.fancytree.dnd5.js")}}></script>
+<script src={{ url_for('static',filename="fancytree/jquery.fancytree.edit.js")}}></script>
+<script src={{ url_for('static',filename="fancytree/jquery.fancytree.glyph.js")}}></script>
+<!-- <script src={{ url_for('static',filename="fancytree/jquery.fancytree.table.js")}}></script> -->
+<script src={{ url_for('static',filename="fancytree/jquery.fancytree.wide.js")}}></script>
+<script src="//cdn.jsdelivr.net/npm/jquery-contextmenu@2.6.4/dist/jquery.contextMenu.min.js">
+</script>
+
+<script src={{ url_for('static',filename="plugins/parsley/dist/parsley.min.js")}}></script>
+
+
+<!-- Select2 -->
+<script src={{ url_for('static',filename="plugins/select2/select2.full.min.js")}}></script>
+
+    <script type="text/javascript">
+    $(function() {
+
+      // $('#create-project-form').submit(function() {
+      //   // do something
+      //   $('#name').trigger("change");
+      // });
+
+
+      $("#name").change(function(){
+      var value = $('#name').val();
+      {% if item %}
+      var name = '{{item.name}}';
+      {% endif %}
+      if(name == value){
+        $('#error_message').empty();
+
+      }else{
+        $.ajax({
+              url: '/validator/uniquename/instance',
+              data: {
+                  name: value
+              },
+              async:false,
+              success: function(response) {
+                  if(response.valid === 'true') {
+                    $('#error_message').empty();
+                  }
+                  else {
+                      $('#name').val('');
+                      $('#error_message').empty();
+                      $('#error_message').append('<div class="alert alert-danger" role="alert">name is alerady exists !!</div>');
+                  }
+              }
+          });
+      }
+    });
+
+
+      
+
+
+      
+
+
+      $('.select22').select2({
+          tags: false,
+          width: '100%',
+          // maximumSelectionLength: 1,
+          tokenSeparators: [','],
+          
+          ajax: {
+              url: '{{objects_data_source}}', //'/admin/object_type/parent/data',
+              dataType: 'json',
+              allowClear: true,
+              delay: 700,
+              processResults: function (data) {
+                  return {
+                      results: $.map(data, function (item) {
+                          return {
+                              text: item.text,
+                              id: item.id
+                          }
+                      })
+                  };
+              }
+          }
+        });
+
+
+
+      $('.select22').on('change', function(e) {
+          // console.log('Selecting: ' , e.params.args.data);
+          // alert(e.params.args.data);
+          var json = {
+                'object_id': $(this).val(),
+            }
+      $.ajax({
+          type: 'POST',
+          data: JSON.stringify(json),
+          contentType: 'application/json',
+          url:'/user/instance/parms_form',
+          success: function(data, textStatus, jqXHR){
+              // document.write(data);
+              // alert(data);
+              $('#parms_form').empty().append(data)
+          },
+          error: function(jqXHR, textStatus, errorThrown){
+              console.log(errorThrown);
+          }
+      });
+        });
+
+
+
+
+
+
+
+      var glyph_opts = {
+      preset: "bootstrap3",
+      map: {
+      }
+    };
+
+
+      $("#tree").fancytree({
+        extensions: ["dnd5", "edit", "glyph", "wide"],
+        glyph: glyph_opts,
+
+        checkbox: false,
+        click: function(event, data) {
+          // alert(data.node.key);
+          window.location.replace('/user/project/{{project.id}}/instance/show/'+data.node.key);
+        },
+        init: function(event, data, flag) {
+          // logEvent(event, data, "flag=" + flag);
+          data.tree.activateKey("{{i_id}}")
+        },
+        selectMode: 3,
+        dnd5: {
+          dragStart: function(node, data) { return true; },
+          dragEnter: function(node, data) { return true; },
+          dragDrop: function(node, data) { data.otherNode.copyTo(node, data.hitMode); }
+        },
+        wide: {
+          iconWidth: "1em",       // Adjust this if @fancy-icon-width != "16px"
+          iconSpacing: "0.5em",   // Adjust this if @fancy-icon-spacing != "3px"
+          labelSpacing: "0.1em",  // Adjust this if padding between icon and label != "3px"
+          levelOfs: "1.5em"       // Adjust this if ul padding != "16px"
+        },
+
+
+        source: {
+          url: "{{instance_data_source}}",//"/admin/object_type/parent/data/tree"
+        },
+        // lazyLoad: function(event, data) {
+        //   data.result = { url: "ajax-sub2.json" }
+        // }
+
+      });
+
+      $.contextMenu({
+        selector: "#tree span.fancytree-title",
+        items: {
+          "add": {name: "Add", icon: "add",
+              callback: function(key, opt){
+                var node = $.ui.fancytree.getNode(opt.$trigger);
+                // alert("Clicked on " + key + " on " + node);
+                window.location.replace('/user/project/{{project.id}}/instance/create/'+node.key);
+              }
+            },
+          // "copy": {name: "Copy", icon: "copy"},
+          // "paste": {name: "Paste", icon: "paste", disabled: false },
+          // "sep1": "----",
+          "edit": {name: "Edit", icon: "edit", disabled: false,
+              callback: function(key, opt){
+                var node = $.ui.fancytree.getNode(opt.$trigger);
+                // alert("Clicked on " + key + " on " + node);
+                window.location.replace('/user/project/{{project.id}}/instance/edit/'+node.key);
+              }  
+            },
+          "delete": {name: "Delete", icon: "delete", disabled: false,
+              callback: function(key, opt){
+                var node = $.ui.fancytree.getNode(opt.$trigger);
+                // alert("Clicked on " + key + " on " + node);
+                if(confirm('Are you sure, You Want to delete this?')) {
+                  window.location.replace('/user/project/{{project.id}}/instance/delete/'+node.key);
+                }
+              } 
+            },
+          // "more": {name: "More", items: {
+          //   "sub1": {name: "Sub 1"},
+          //   "sub1": {name: "Sub 2"}
+          //   }}
+          },
+        callback: function(itemKey, opt) {
+          var node = $.ui.fancytree.getNode(opt.$trigger);
+          alert("select " + itemKey + " on " + node);
+        }
+      });
+
+
+
+      $("#btnExpandAll").click(function(){
+      $("#tree").fancytree("getTree").visit(function(node){
+        node.setExpanded(true);
+      });
+    });
+    $("#btnCollapseAll").click(function(){
+      $("#tree").fancytree("getTree").visit(function(node){
+        node.setExpanded(false);
+      });
+    });
+    $( "#fontSize" ).change(function(){
+      $("#tree .fancytree-container").css("font-size", $(this).prop("value") + "pt");
+    });//.prop("value", 12);
+
+
+
+      $("#tree .fancytree-container").css("font-size",14+"pt");
+
+
+
+    });
+
+
+
+    </script>
+
+{% endblock %}

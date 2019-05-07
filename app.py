@@ -47,7 +47,6 @@ app.debug = True
 cwd = os.getcwd()
 # app.config['SQLALCHEMY_DATABASE_URI'] =  'sqlite:///'+cwd+'/resources/data.db' 
 # app.config['SQLALCHEMY_DATABASE_URI'] =  os.environ.get("DATABASE_URL") 
-# app.config['SQLALCHEMY_DATABASE_URI'] =  'mysql://rsonbol_foodbudg:13knBd3EvF@mysql.us.cloudlogin.co/rsonbol_foodbudg'
 # app.config['SQLALCHEMY_DATABASE_URI'] =  'mysql://root:root@localhost/flask_arch_engine'
 app.config['SQLALCHEMY_DATABASE_URI'] =  os.environ.get("CLEARDB_DATABASE_URL")[:-15] #or 'mysql://root:root@localhost/food-budget'
 
@@ -232,7 +231,6 @@ def object_rules_syntax_validator():
 @app.route("/" , methods =["GET"])
 @flask_login.login_required
 def main():
-
 	return redirect('/user/project/show')
 
 	# return render_template('index.html')
@@ -355,6 +353,8 @@ def admin():
 
 @app.route("/admin/object_type/parent/data", methods=['GET', "POST"])
 def objecttypeparentdata():
+	if flask_login.current_user.is_admin == 0:
+		return redirect('/')
 
 	params = request.args.to_dict()
 	print(params)
@@ -388,6 +388,8 @@ def get_tree(base_page):
 
 @app.route("/admin/object_type/parent/data/tree", methods=['GET', "POST"])
 def objecttypeparentdatatree():
+	if flask_login.current_user.is_admin == 0:
+		return redirect('/')
 
 
 
@@ -410,6 +412,8 @@ def objecttypeparentdatatree():
 
 @app.route("/admin/object_type/param_types/data", methods=['GET', "POST"])
 def recipekitsdata():
+	if flask_login.current_user.is_admin == 0:
+		return redirect('/')
 
 	params = request.args.to_dict()
 	print(params)
@@ -426,43 +430,47 @@ def recipekitsdata():
 @app.route('/admin/object_type/data')
 @flask_login.login_required
 def object_typdata():
-    """Return server side data."""
-    # defining columns
-
-    ObjectTypeModel2 = db.aliased(ObjectTypeModel)
+	if flask_login.current_user.is_admin == 0:
+		return redirect('/')
 
 
-    columns = [
-        ColumnDT(ObjectTypeModel.id),
-        ColumnDT(ObjectTypeModel.name),
-        ColumnDT(ObjectTypeModel.desc),
-        ColumnDT(ObjectTypeModel2.name)
+	ObjectTypeModel2 = db.aliased(ObjectTypeModel)
 
-    ]
+	columns = [
+	    ColumnDT(ObjectTypeModel.id),
+	    ColumnDT(ObjectTypeModel.name),
+	    ColumnDT(ObjectTypeModel.desc),
+	    ColumnDT(ObjectTypeModel2.name)
 
-    # defining the initial query depending on your purpose
-    query = db.session.query().select_from(ObjectTypeModel).outerjoin(ObjectTypeModel2,ObjectTypeModel.parent) #RecipeModel.query()
-    db.session.commit()
+	]
 
-    # GET parameters
-    params = request.args.to_dict()
-    print(params)
+	# defining the initial query depending on your purpose
+	query = db.session.query().select_from(ObjectTypeModel).outerjoin(ObjectTypeModel2,ObjectTypeModel.parent) #RecipeModel.query()
+	db.session.commit()
 
-    # instantiating a DataTable for the query and table needed
-    rowTable = DataTables(params, query, columns)
+	# GET parameters
+	params = request.args.to_dict()
+	print(params)
 
-    # returns what is needed by DataTable
-    return jsonify(rowTable.output_result())
+	# instantiating a DataTable for the query and table needed
+	rowTable = DataTables(params, query, columns)
+
+	# returns what is needed by DataTable
+	return jsonify(rowTable.output_result())
 
 
 @app.route("/admin/object_type/show" , methods =["GET"])
 @flask_login.login_required
 def showobject_typ():
+	if flask_login.current_user.is_admin == 0:
+		return redirect('/')
 	return render_template('admin/object_type/show.html')
 
 @app.route("/admin/object_type/delete/<id>" , methods =["GET"])
 @flask_login.login_required
 def deleteobject_typ(id):
+	if flask_login.current_user.is_admin == 0:
+		return redirect('/')
 	print("deleted " , id)
 	ObjectTypeModel.query.filter_by(id=id).delete()
 	db.session.commit()
@@ -471,6 +479,8 @@ def deleteobject_typ(id):
 @app.route("/admin/object_type/edit/<id>" , methods =["GET" , "POST"])
 @flask_login.login_required
 def editobject_typ(id):
+	if flask_login.current_user.is_admin == 0:
+		return redirect('/')
 	print(id)
 	# edit
 	if request.method == "POST":
@@ -526,6 +536,8 @@ def editobject_typ(id):
 @app.route("/admin/object_type/create" , methods =["GET" , "POST"])
 @flask_login.login_required
 def create_object_type():
+	if flask_login.current_user.is_admin == 0:
+		return redirect('/')
 	_url = urlparse(request.base_url)
 	master_url = '{0}://{1}'.format(_url.scheme, _url.netloc)
 	# edit
@@ -574,6 +586,8 @@ def create_object_type():
 @app.route("/admin/object_type/rules/edit/<id>" , methods =["GET" , "POST"])
 @flask_login.login_required
 def editobject_type_rules(id):
+	if flask_login.current_user.is_admin == 0:
+		return redirect('/')
 	print(id)
 	# edit
 	if request.method == "POST":
@@ -643,6 +657,8 @@ def editobject_type_rules(id):
 @app.route("/admin/user/show" , methods =["GET"])
 @flask_login.login_required
 def showuser():
+	if flask_login.current_user.is_admin == 0:
+		return redirect('/')
 	# print(flask_login.current_user.id)
 
 	items = User.query.all()
@@ -652,6 +668,8 @@ def showuser():
 @app.route("/admin/user/delete/<id>" , methods =["GET"])
 @flask_login.login_required
 def deleteuser(id):
+	if flask_login.current_user.is_admin == 0:
+		return redirect('/')
 	print("deleted " , id)
 	User.query.filter_by(id=id).delete()
 	db.session.commit()
@@ -660,6 +678,8 @@ def deleteuser(id):
 @app.route("/admin/user/edit/<id>" , methods =["GET" , "POST"])
 @flask_login.login_required
 def edituser(id):
+	if flask_login.current_user.is_admin == 0:
+		return redirect('/')
 	print(id)
 	# edit
 	if request.method == "POST":
@@ -688,6 +708,8 @@ def edituser(id):
 @app.route("/admin/user/create" , methods =["GET" , "POST"])
 @flask_login.login_required
 def createuser():
+	if flask_login.current_user.is_admin == 0:
+		return redirect('/')
 	# edit
 	if request.method == "POST":
 		username = request.form.get('username')
@@ -725,6 +747,153 @@ def createuser():
 
 
 
+@app.route('/admin/project/data')
+@flask_login.login_required
+def admin_projectdata():
+	if flask_login.current_user.is_admin == 0:
+		return redirect('/')
+
+	columns = [
+			ColumnDT(ProjectModel.id),
+			ColumnDT(ProjectModel.name),
+			ColumnDT(ProjectModel.desc),
+			ColumnDT(User.username),
+			ColumnDT(ProjectModel.created_at)
+		]
+
+
+	# defining the initial query depending on your purpose
+	query = db.session.query().select_from(ProjectModel).outerjoin(User,ProjectModel.user) #RecipeModel.query()
+	db.session.commit()
+	
+	# GET parameters
+	params = request.args.to_dict()
+	print(params)
+
+	# instantiating a DataTable for the query and table needed
+	rowTable = DataTables(params, query, columns)
+
+	# returns what is needed by DataTable
+	return jsonify(rowTable.output_result())
+
+@app.route("/admin/project/show" , methods =["GET"])
+@flask_login.login_required
+def admin_showproject():
+	if flask_login.current_user.is_admin == 0:
+		return redirect('/')
+	# edit
+	return render_template('/admin/project/show.html')
+
+@app.route("/admin/project/delete/<id>" , methods =["GET"])
+@flask_login.login_required
+def admin_deleteproject(id):
+	if flask_login.current_user.is_admin == 0:
+		return redirect('/')
+	print("deleted " , id)
+	ProjectModel.query.filter_by(id=id).delete()
+	db.session.commit()
+	return redirect('/admin/project/show')
+
+@app.route("/admin/project/create" , methods =["GET" , "POST"])
+@flask_login.login_required
+def admin_createproject():
+	if flask_login.current_user.is_admin == 0:
+		return redirect('/')
+	# edit
+	if request.method == "POST":
+		name = request.form.get('name')
+		desc = request.form.get('desc',default=None,type=str)
+		# root_object_id = request.form.get('parent')
+		user_id = flask_login.current_user.id
+		
+		obj = ProjectModel(name=name,desc=desc,user_id=user_id)
+
+		db.session.add(obj)
+		db.session.flush()
+		db.session.refresh(obj)
+		project_id = obj.id
+		db.session.commit()
+
+		return redirect('/admin/project/show'.format(str(project_id)))
+
+	# show  one row
+	elif request.method == "GET":
+		return render_template('/admin/project/create.html')
+	return "404"
+
+
+@app.route("/admin/project/edit/<id>" , methods =["GET" , "POST"])
+@flask_login.login_required
+def admin_editproject(id):
+	if flask_login.current_user.is_admin == 0:
+		return redirect('/')
+	# edit
+	if request.method == "POST":
+		obj = ProjectModel.query.get(id)
+
+		obj.name = request.form.get('name')
+		obj.desc = request.form.get('desc',default=None,type=str)
+
+		db.session.commit()
+
+		return redirect('/admin/project/show')
+
+	# show  one row
+	elif request.method == "GET":
+		item = ProjectModel.query.get(id)
+		return render_template('/admin/project/edit.html',item=item)
+	return "404"
+
+
+@app.route("/admin/project/<p_id>/instance/show/<i_id>" , methods =["GET"])
+@flask_login.login_required
+def admin_showprojectinstance(p_id,i_id):
+	if flask_login.current_user.is_admin == 0:
+		return redirect('/')
+	print(p_id)
+	project = ProjectModel.query.get(p_id)
+	root_instance = ObjectTypeInstanceModel.query.filter_by(project_id=int(p_id) , object_instance_id=None).first()
+	if root_instance:
+		if i_id == '-1':
+			i_id = root_instance.id
+			selected_instance = root_instance
+		else:
+			selected_instance = ObjectTypeInstanceModel.query.get(i_id)
+
+		return render_template('/admin/object_instance/show.html',item=selected_instance, i_id=str(i_id), project=project, instance_data_source="/user/instance/data/tree/{}".format(str(root_instance.id)))
+	return redirect('/admin/project/show')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -737,7 +906,7 @@ def createuser():
 
 @app.route('/user/project/data')
 @flask_login.login_required
-def projectdata():
+def user_projectdata():
     """Return server side data."""
     # defining columns
 
@@ -753,7 +922,7 @@ def projectdata():
     ]
 
     # defining the initial query depending on your purpose
-    query = db.session.query().select_from(ProjectModel)#.outerjoin(ObjectTypeModel2,ObjectTypeModel.parent) #RecipeModel.query()
+    query = db.session.query().select_from(ProjectModel).filter(ProjectModel.user_id == flask_login.current_user.id) #RecipeModel.query()
     db.session.commit()
 
     # GET parameters
@@ -768,13 +937,13 @@ def projectdata():
 
 @app.route("/user/project/show" , methods =["GET"])
 @flask_login.login_required
-def showproject():
+def user_showproject():
 	# edit
 	return render_template('/user/project/show.html')
 
 @app.route("/user/project/delete/<id>" , methods =["GET"])
 @flask_login.login_required
-def deleteproject(id):
+def user_deleteproject(id):
 	print("deleted " , id)
 	ProjectModel.query.filter_by(id=id).delete()
 	db.session.commit()
@@ -782,7 +951,7 @@ def deleteproject(id):
 
 @app.route("/user/project/create" , methods =["GET" , "POST"])
 @flask_login.login_required
-def createproject():
+def user_createproject():
 	# edit
 	if request.method == "POST":
 		name = request.form.get('name')
@@ -808,7 +977,7 @@ def createproject():
 
 @app.route("/user/project/edit/<id>" , methods =["GET" , "POST"])
 @flask_login.login_required
-def editproject(id):
+def user_editproject(id):
 	# edit
 	if request.method == "POST":
 		obj = ProjectModel.query.get(id)

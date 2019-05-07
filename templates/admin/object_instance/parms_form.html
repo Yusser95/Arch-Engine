@@ -1,0 +1,22 @@
+<div class="form-group">
+
+<label for="files">parameters</label>
+<div id="files">
+    {% for j in item.parms %}
+      
+
+
+        <input type="hidden"  id="parms_ids" name="parms_ids[]" placeholder="Enter param name" value="{{j.id}}" />
+
+        <div class="form-group form-inline">                            
+          <label for="parms_values">
+          {{j.name}} ({{j.param_type}}) :&emsp;</label>
+          <input type="text" class="form-control" id="parms_values" name="parms_values[]" placeholder="Enter value" required="" />
+          {% if j.desc %}
+            <a href="#">&emsp;<i class="nav-icon fa fa-info-circle" data-toggle="tooltip" data-placement="top" title="{{j.desc}}"></i></a>
+            {% endif %}
+        </div>
+
+    {% endfor %}
+  </div>
+</div>
