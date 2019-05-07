@@ -179,7 +179,7 @@ def object_rules_validator():
 
 @app.route("/validator/object/rule/syntax" , methods =['GET',"POST"])
 @flask_login.login_required
-def object_rules_validator():
+def object_rules_syntax_validator():
 	response = {'valid':"true"}
 	syntax = request.args.get('syntax')
 	print(syntax)
