@@ -291,7 +291,7 @@
                   for (i = 0; i < json.logs.length; i++) {
                     text = json.logs[i] + "<br>";
                     
-                    if(text.startsWith("[")){
+                    if(text.startsWith("[error]")){
                       $('#rules_error_message').append('<div class="alert alert-danger" role="alert">'+text+'</div>');
                     }else{
                       $('#rules_error_message').append('<div class="alert alert-success" role="alert">'+text+'</div>');
