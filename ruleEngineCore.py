@@ -25,7 +25,7 @@ class DynamicRuleEngine():
     def ORMScriptClassInstanceGeneration(self, obj):
         attributs = ""
         exec_env = "{}"
-        if obj.parms:
+        if obj.object_type.parms:
             temp_parms = []
             temp_parms2= []
             for i in obj.parms:
