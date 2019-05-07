@@ -34,7 +34,9 @@ class DynamicRuleEngine():
                 if i not in temp_parms:
                     temp_parms2.append("{} = {}".format(i.name ,"None"))
 
-            attributs += ", ".join(["{} = '{}'".format(i.param.name ,i.value) for i in obj.parms].extend(temp_parms2)) + ", "
+            temp_parms = ["{} = '{}'".format(i.param.name ,i.value) for i in obj.parms]
+            temp_parms.extend(temp_parms2)
+            attributs += ", ".join(temp_parms) + ", "
         if obj.childs:
 
             chids_Arrays = {}
