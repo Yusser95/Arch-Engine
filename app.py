@@ -450,7 +450,7 @@ def editobject_typ(id):
 
 		obj = ObjectTypeModel.query.get(id)
 
-		obj.name = request.form.get('name')
+		obj.name = request.form.get('name').replace(" ","_")
 		obj.desc = request.form.get('desc',default=None,type=str)
 		obj.object_type_id = request.form.get('parent',default=None,type=int)
 	
@@ -473,10 +473,10 @@ def editobject_typ(id):
 
 			Param = OnjectTypeParamModel.query.get(param_ids[i])#filter_by(object_type_id=int(id),name=parm_names[i],desc=p_desc,param_type=param_types[i]).first()
 			if not Param:
-				Param = OnjectTypeParamModel(name=parm_names[i],desc=p_desc,param_type=param_types[i])
+				Param = OnjectTypeParamModel(name=parm_names[i].replace(" ","_"),desc=p_desc,param_type=param_types[i])
 				obj.parms.append(Param)
 			else:
-				Param.name=parm_names[i]
+				Param.name=parm_names[i].replace(" ","_")
 				Param.desc=p_desc
 				Param.param_type=param_types[i]
 				db.session.commit()
@@ -504,7 +504,7 @@ def create_object_type():
 	# edit
 	if request.method == "POST":
 		with db.session.no_autoflush:
-			name = request.form.get('name')
+			name = request.form.get('name').replace(" ","_")
 			desc = request.form.get('desc',default=None,type=str)
 			object_type_id = request.form.get('parent')
 
@@ -516,7 +516,7 @@ def create_object_type():
 			param_desc = request.form.getlist('param_desc[]')
 
 
-			obj = ObjectTypeModel(name=name,desc=desc,user_id=user_id,object_type_id=object_type_id)
+			obj = ObjectTypeModel(name=name.replace(" ","_"),desc=desc,user_id=user_id,object_type_id=object_type_id)
 
 			for i in range(len(parm_names)):
 				p_desc = ""
@@ -524,7 +524,7 @@ def create_object_type():
 					p_desc = param_desc[i]
 				except KeyError as e:
 					pass
-				Param = OnjectTypeParamModel(name=parm_names[i],desc=p_desc,param_type=param_types[i])
+				Param = OnjectTypeParamModel(name=parm_names[i].replace(" ","_"),desc=p_desc,param_type=param_types[i])
 				obj.parms.append(Param)
 
 			db.session.add(obj)
@@ -915,7 +915,7 @@ def createprojectinstance(p_id , i_id):
 	# edit
 	if request.method == "POST":
 		object_type_id = request.form.get('object_type_id',type=int)
-		name = request.form.get('name',type=str)
+		name = request.form.get('name',type=str).replace(" ","_")
 		# project_id = request.form.get('project_id')
 		# desc = request.form.get('desc',default=None,type=str)
 		project_id = int(p_id)
@@ -924,7 +924,7 @@ def createprojectinstance(p_id , i_id):
 			object_instance_id = int(i_id)
 		user_id = flask_login.current_user.id
 		
-		obj = ObjectTypeInstanceModel(name=name,object_type_id=object_type_id,project_id=project_id,object_instance_id=object_instance_id,user_id=user_id)
+		obj = ObjectTypeInstanceModel(name=name.replace(" ","_"),object_type_id=object_type_id,project_id=project_id,object_instance_id=object_instance_id,user_id=user_id)
 
 		parms_ids = request.form.getlist('parms_ids[]')
 		parms_values = request.form.getlist('parms_values[]')
@@ -970,7 +970,7 @@ def editprojectinstance(p_id , i_id):
 
 		obj = ObjectTypeInstanceModel.query.get(int(i_id))
 
-		obj.name = request.form.get('name',type=str)
+		obj.name = request.form.get('name',type=str).replace(" ","_")
 
 
 		obj.parms.clear()
