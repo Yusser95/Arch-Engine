@@ -184,13 +184,13 @@ def object_rules_syntax_validator():
 	syntax = request.args.get('syntax')
 	print(syntax)
 
-	syntax = syntax.replace("\u2003",r"\t").replace("\t",r"\t")
-    syntax = syntax.replace(r"&lt;" ,r"<").replace(r"&gt;" ,r">")
-    syntax = syntax.replace(r"<br>",r"\n")
-    syntax = syntax.replace(r"<p>",r"\n").replace(r"</p>","")
-    syntax = syntax.replace(r"<div>",r"\n").replace(r"</div>","")
-    syntax = r"{}".format(syntax)
 
+	syntax = syntax.replace("\u2003",r"\t").replace("\t",r"\t")
+	syntax = syntax.replace(r"&lt;" ,r"<").replace(r"&gt;" ,r">")
+	syntax = syntax.replace(r"<br>",r"\n")
+	syntax = syntax.replace(r"<p>",r"\n").replace(r"</p>","")
+	syntax = syntax.replace(r"<div>",r"\n").replace(r"</div>","")
+	syntax = r"{}".format(syntax)
 
 	try:
 	    temp = compile(syntax, 'fakerule', 'exec')
@@ -202,9 +202,7 @@ def object_rules_syntax_validator():
 	    print('[check_validation_rule][rule ({})]: '.format(rule_id)+str(e))
 	except RuntimeError as e:
 	    print('[check_validation_rule][rule ({})]: '.format(rule_id)+str(e))
-
-
-
+	    
 	return jsonify(response)
 
 
