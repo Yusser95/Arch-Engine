@@ -134,7 +134,7 @@
   var editor = new wysihtml5.Editor("param_desc_e{{i.id}}", {
               toolbar:      false,//"wysihtml-toolbar",
               events: {
-                  change: function() {
+                  "change": function() {
                       var html = this.textarea.getValue();
                       alert(html);
                       //ajax method
@@ -146,7 +146,7 @@
   var editor = new wysihtml5.Editor("param_desc", {
               toolbar:      false,//"wysihtml-toolbar",
               events: {
-                  change: function() {
+                  "change": function() {
                       var html = this.textarea.getValue();
                       alert(html);
                       //ajax method
@@ -236,7 +236,7 @@
           var editor = new wysihtml5.Editor("param_desc_"+fileId, {
               toolbar:      false,//"wysihtml-toolbar",
               events: {
-                  change: function() {
+                  "change": function() {
                       var html = this.textarea.getValue();
                       alert(html);
                       //ajax method
