@@ -101,7 +101,7 @@ class DynamicRuleEngine():
         try:
             temp = compile(rule, 'fakerule', 'exec')
         except SyntaxError as e:
-            self.add_to_log('[check_validation_rule][rule ({})]: '.format(rule_id)+str(e))
+            self.add_to_log('[check_validation_rule][rule ({})]: '.format(rule_id)+str(e)+"\n"+'Syntax error {} ({}-{}): {}'.format(e.filename, e.lineno, e.offset, e.text))
             return False
         except Exception as e:
             self.add_to_log('[check_validation_rule][rule ({})]: '.format(rule_id)+str(e))
@@ -144,6 +144,15 @@ class DynamicRuleEngine():
             env = {}
             exec(codeobj,{},env)
             self.logs.extend(env.get('logs'))
+
+        except SyntaxError as e:
+            self.add_to_log('[check_validation_rule][rule ({})]: '.format(rule_id)+str(e)+"\n"+'Syntax error {} ({}-{}): {}'.format(e.filename, e.lineno, e.offset, e.text))
+
+            self.logs.extend(x.data)
+            sys.stdout = sys.__stdout__
+            print(self.base)
+
+            return False
         except Exception as e:
             self.add_to_log('[run][Exception]: '+str(e))
             
