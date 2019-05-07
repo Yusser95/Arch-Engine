@@ -185,11 +185,11 @@ def object_rules_syntax_validator():
 	print(syntax)
 
 
-	syntax = syntax.replace("\u2003",r"\t").replace("\t",r"\t")
-	syntax = syntax.replace(r"&lt;" ,r"<").replace(r"&gt;" ,r">")
-	syntax = syntax.replace(r"<br>",r"\n")
-	syntax = syntax.replace(r"<p>",r"\n").replace(r"</p>","")
-	syntax = syntax.replace(r"<div>",r"\n").replace(r"</div>","")
+	syntax = syntax.replace("\u2003","\t").replace("\t","\t")
+	syntax = syntax.replace("&lt;" ,"<").replace("&gt;" ,">")
+	syntax = syntax.replace("<br>","\n")
+	syntax = syntax.replace("<p>","\n").replace("</p>","")
+	syntax = syntax.replace("<div>","\n").replace("</div>","")
 	syntax = r"{}".format(syntax)
 
 	try:
