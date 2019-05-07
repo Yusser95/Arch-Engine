@@ -141,8 +141,10 @@
             });
 
 
-  $("#param_desc").change(function(){
-      var value = $(this).val();
+  $('select').on('change', function (e) {
+
+      var value = this.value;
+      // var value = $(this).val();
       alert(value);
       
         // $.ajax({
