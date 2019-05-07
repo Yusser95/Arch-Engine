@@ -197,12 +197,12 @@ def object_rules_syntax_validator():
 	    exec(temp)
 	except SyntaxError as e:
 		response['valid'] = "false"
-		response['error'] = '[check_validation_rule][rule ({})]: '.format(rule_id)+str(e)+r"\n"+'Syntax error {} ({}-{}): {}'.format(e.filename, e.lineno, e.offset, e.text)
-		print('[check_validation_rule][rule ({})]: '.format(rule_id)+str(e)+"\n"+'Syntax error {} ({}-{}): {}'.format(e.filename, e.lineno, e.offset, e.text))
+		response['error'] = '[check_validation_rule]: '+str(e)+r"\n"+'Syntax error {} ({}-{}): {}'.format(e.filename, e.lineno, e.offset, e.text)
+		print('[check_validation_rule]: '+str(e)+"\n"+'Syntax error {} ({}-{}): {}'.format(e.filename, e.lineno, e.offset, e.text))
 	except Exception as e:
-		print('[check_validation_rule][rule ({})]: '.format(rule_id)+str(e))
+		print('[check_validation_rule]: '+str(e))
 	except RuntimeError as e:
-		print('[check_validation_rule][rule ({})]: '.format(rule_id)+str(e))
+		print('[check_validation_rule]: '+str(e))
 
 	return jsonify(response)
 
