@@ -133,26 +133,24 @@
   {% for i in item.rules %}
   var editor = new wysihtml5.Editor("param_desc_e{{i.id}}", {
               toolbar:      false,//"wysihtml-toolbar",
-              events: {
-                  "change": function() {
+              
+            });
+  editor.on("change", function() {
                       var html = this.textarea.getValue();
                       alert(html);
                       //ajax method
-                  }
-              }
-            });
+                  });
   {% endfor %}
 
   var editor = new wysihtml5.Editor("param_desc", {
               toolbar:      false,//"wysihtml-toolbar",
-              events: {
-                  "change": function() {
+              
+            });
+  editor.on("change", function() {
                       var html = this.textarea.getValue();
                       alert(html);
                       //ajax method
-                  }
-              }
-            });
+                  });
 
 
   // $('.textarea').contents().find('body').on('change', function (e) {
@@ -235,14 +233,12 @@
 
           var editor = new wysihtml5.Editor("param_desc_"+fileId, {
               toolbar:      false,//"wysihtml-toolbar",
-              events: {
-                  "change": function() {
+            });
+          editor.on("change", function() {
                       var html = this.textarea.getValue();
                       alert(html);
                       //ajax method
-                  }
-              }
-            });
+                  });
 
 
     }
