@@ -161,9 +161,12 @@ def object_rules_validator():
 	# rule_engine.add_validation_rule("1","for i in building.Floors:\n\tprint(i.f1)")
 	rule_engine.run()
 
-	print(rule_engine.get_logs())
-	if rule_engine.get_logs():
-		response['logs'] = rule_engine.get_logs()
+
+	logs = rule_engine.get_logs()
+
+	print(logs)
+	if logs:
+		response['logs'] = logs
 
 	resp = make_response(json.dumps(response))
 	resp.headers["Content-Type"]='application/json; charset=utf-8'
