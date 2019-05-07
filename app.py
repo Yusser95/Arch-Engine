@@ -168,10 +168,10 @@ def object_rules_validator():
 	if logs:
 		response['logs'] = logs
 
-	resp = make_response(json.dumps(response))
-	resp.headers["Content-Type"]='application/json; charset=utf-8'
+	# resp = make_response(json.dumps(response))
+	# resp.headers["Content-Type"]='application/json; charset=utf-8'
 
-	return resp
+	return jsonify(response)
 
 
 
