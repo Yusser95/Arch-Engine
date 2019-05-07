@@ -26,7 +26,15 @@ class DynamicRuleEngine():
         attributs = ""
         exec_env = "{}"
         if obj.parms:
-            attributs += ", ".join(["{} = '{}'".format(i.param.name ,i.value) for i in obj.parms]) + ", "
+            temp_parms = []
+            temp_parms2= []
+            for i in obj.parms:
+                temp_parms.append(i.Param)
+            for i in obj.object_type.parms:
+                if i not in temp_parms:
+                    temp_parms2.append("{} = '{}'".format(i.name ,"null"))
+
+            attributs += ", ".join(["{} = '{}'".format(i.param.name ,i.value) for i in obj.parms].extend(temp_parms2)) + ", "
         if obj.childs:
 
             chids_Arrays = {}
