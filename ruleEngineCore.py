@@ -38,12 +38,12 @@ class DynamicRuleEngine():
                 chids_Arrays[i.object_type.name+"s"].append(i.name)
 
             attributs +=  ", ".join(["{} = {}".format(k,str("["+",".join(chids_Arrays[k])+"]")) for k in chids_Arrays]) + ", "
-            attributs +=  ", ".join(["{} = {}".format(i.name ,i.name) for i in obj.childs])
+            attributs +=  ", ".join(["{} = {}".format(i.name ,i.name) for i in obj.childs]) + ", "
 
             exec_env = "{"+",".join(["'{}' : {}".format(i.name ,i.name) for i in obj.childs])+"}" #str({i.name:i.name for i in obj.childs})
 
         
-        attributs += ',{} = "{}"'.format("att_str",str(r"\n"+attributs.replace(", ",r"\n")+r"\n"))
+        attributs += '{} = "{}"'.format("att_str",str(r"\n"+attributs.replace(", ",r"\n")+r"\n"))
         attributs += ",{} = '{}'".format("logging",r"""\ninner_logs=[]\ndef add_to_log(error):\n\tinner_logs.append(error)\n""")
         attributs += ',{} = {}'.format("exec_env",exec_env)
 
