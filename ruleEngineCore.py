@@ -29,7 +29,7 @@ class DynamicRuleEngine():
             temp_parms = []
             temp_parms2= []
             for i in obj.parms:
-                temp_parms.append(i.Param)
+                temp_parms.append(i.param)
             for i in obj.object_type.parms:
                 if i not in temp_parms:
                     temp_parms2.append("{} = {}".format(i.name ,"None"))
