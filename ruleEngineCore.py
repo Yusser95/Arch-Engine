@@ -146,7 +146,7 @@ class DynamicRuleEngine():
             self.logs.extend(env.get('logs'))
 
         except SyntaxError as e:
-            self.add_to_log('[check_validation_rule][rule ({})]: '.format(rule_id)+str(e)+"\n"+'Syntax error {} ({}-{}): {}'.format(e.filename, e.lineno, e.offset, e.text))
+            self.add_to_log('[run][SyntaxError]: '+str(e)+"\n"+'Syntax error {} ({}-{}): {}'.format(e.filename, e.lineno, e.offset, e.text))
 
             self.logs.extend(x.data)
             sys.stdout = sys.__stdout__
