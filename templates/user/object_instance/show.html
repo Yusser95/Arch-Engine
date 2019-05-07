@@ -254,11 +254,16 @@
 
                   // var json = $.parseJSON(response);
                    var json = response;
+                   // alert(json);
+                   // alert(response);
+                   // alert(response.logs);
+
+                   $('#rules_error_message').empty();
 
                   var i;
                   for (i = 0; i < json.logs.length; i++) {
-                    text = response.logs[i] + "<br>";
-                    $('#rules_error_message').empty();
+                    text = json.logs[i] + "<br>";
+                    
                     if(text.startsWith("[")){
                       $('#rules_error_message').append('<div class="alert alert-danger" role="alert">'+text+'</div>');
                     }else{
