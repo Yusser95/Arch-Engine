@@ -36,8 +36,10 @@ class DynamicRuleEngine():
 
             temp_parms = ["{} = '{}'".format(i.param.name ,i.value) for i in obj.parms]
             temp_parms.extend(temp_parms2)
-            attributs += ", ".join(temp_parms) + ", "
-        if obj.childs:
+            attributs += ", ".join(temp_parms)
+            if attributs:
+                attributs+= ", "
+        if obj.object_type.childs:
 
             chids_Arrays = {}
             for i in obj.object_type.childs:
@@ -47,8 +49,12 @@ class DynamicRuleEngine():
             for i in obj.childs:
                 chids_Arrays[i.object_type.name+"s"].append(i.name)
 
-            attributs +=  ", ".join(["{} = {}".format(k,str("["+",".join(chids_Arrays[k])+"]")) for k in chids_Arrays]) + ", "
-            attributs +=  ", ".join(["{} = {}".format(i.name ,i.name) for i in obj.childs]) + ", "
+            tmp1 =  ", ".join(["{} = {}".format(k,str("["+",".join(chids_Arrays[k])+"]")) for k in chids_Arrays])
+            if tmp1:
+                attributs+= tmp1 +", "
+            tmp1 +=  ", ".join(["{} = {}".format(i.name ,i.name) for i in obj.childs])
+            if tmp1:
+                attributs+= tmp1 +", "
 
             exec_env = "{"+",".join(["'{}' : {}".format(i.name ,i.name) for i in obj.childs])+"}" #str({i.name:i.name for i in obj.childs})
 
