@@ -35,6 +35,21 @@
                     <label for="email">email</label>
                     <input type="email" class="form-control" id="email" name="email" placeholder="Enter email" value="{{item.email}}" required="">
                   </div>
+
+                  <!-- radio -->
+                <div class="form-group">
+                  <label>is admin :</label>
+                  <div class="form-control">
+                  <label>
+                    <input type="radio" name="activate" value="1" class="minimal" id="isadmin_1">
+                    Yes
+                  </label>
+                  <label>
+                    <input type="radio" name="activate" value="0" class="minimal" id="isadmin_0" >
+                    No
+                  </label>
+                </div>
+                </div>
                   
                 </div>
 
@@ -56,5 +71,8 @@
 
 <!-- parsley.min -->
 <script src={{ url_for('static',filename="plugins/parsley/dist/parsley.min.js")}}></script>
+<script>
+  document.getElementById("isadmin_{{item['is_admin']}}").checked = true;
+</script>
 
 {% endblock %}
