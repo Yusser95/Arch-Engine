@@ -339,6 +339,8 @@ def send_js(path):
 @app.route("/admin" , methods =["GET"])
 @flask_login.login_required
 def admin():
+	if flask_login.current_user.is_admin == 0:
+		return redirect('/')
 
 	return redirect('/admin/object_type/show')
 	# return render_template('admin.html')
@@ -765,7 +767,7 @@ def admin_projectdata():
 	# defining the initial query depending on your purpose
 	query = db.session.query().select_from(ProjectModel).outerjoin(User,ProjectModel.user) #RecipeModel.query()
 	db.session.commit()
-	
+
 	# GET parameters
 	params = request.args.to_dict()
 	print(params)
@@ -860,12 +862,24 @@ def admin_showprojectinstance(p_id,i_id):
 		else:
 			selected_instance = ObjectTypeInstanceModel.query.get(i_id)
 
-		return render_template('/admin/object_instance/show.html',item=selected_instance, i_id=str(i_id), project=project, instance_data_source="/user/instance/data/tree/{}".format(str(root_instance.id)))
+		return render_template('/admin/object_instance/show.html',item=selected_instance, i_id=str(i_id), project=project, instance_data_source="/admin/instance/data/tree/{}".format(str(root_instance.id)))
 	return redirect('/admin/project/show')
 
 
 
+@app.route("/admin/instance/data/tree/<id>", methods=['GET', "POST"])
+def admin_objecttypeparentdatatreeid(id):
+	if flask_login.current_user.is_admin == 0:
+		return redirect('/')
 
+	# pick a root of the menu tree
+	root = ObjectTypeInstanceModel.query.get(id) #.filter(ObjectTypeModel.object_type_id == None).all()
+	trees = []
+	if root:
+		tree = get_instance_tree(root)
+		trees.append(tree)
+
+	return jsonify(trees)
 
 
 
@@ -1069,7 +1083,7 @@ def get_instance_tree(base_page):
 def objecttypeparentdatatreeid(id):
 
 	# pick a root of the menu tree
-	root = ObjectTypeInstanceModel.query.get(id) #.filter(ObjectTypeModel.object_type_id == None).all()
+	root = ObjectTypeInstanceModel.query.filter_by(user_id=int(flask_login.current_user.id)).get(id) #.filter(ObjectTypeModel.object_type_id == None).all()
 	trees = []
 	if root:
 		tree = get_instance_tree(root)
