@@ -52,7 +52,7 @@ class DynamicRuleEngine():
             tmp1 =  ", ".join(["{} = {}".format(k,str("["+",".join(chids_Arrays[k])+"]")) for k in chids_Arrays])
             if tmp1:
                 attributs+= tmp1 +", "
-            tmp1 +=  ", ".join(["{} = {}".format(i.name ,i.name) for i in obj.childs])
+            tmp1 =  ", ".join(["{} = {}".format(i.name ,i.name) for i in obj.childs])
             if tmp1:
                 attributs+= tmp1 +", "
 
