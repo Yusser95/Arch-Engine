@@ -1083,7 +1083,7 @@ def get_instance_tree(base_page):
 def objecttypeparentdatatreeid(id):
 
 	# pick a root of the menu tree
-	root = ObjectTypeInstanceModel.query.filter_by(user_id=int(flask_login.current_user.id)).get(id) #.filter(ObjectTypeModel.object_type_id == None).all()
+	root = ObjectTypeInstanceModel.query.filter_by(user_id=int(flask_login.current_user.id),id=int(id)).first() #.filter(ObjectTypeModel.object_type_id == None).all()
 	trees = []
 	if root:
 		tree = get_instance_tree(root)
