@@ -3,29 +3,18 @@
 
 {% block body %}
 
-<!-- Default box -->
-     <!--  <div class="card">
-        <div class="card-header">
-          <h3 class="card-title">Meal-Kits</h3>
-
-          <div class="card-tools">
-            <button type="button" class="btn btn-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
-              <i class="fa fa-minus"></i></button>
-
-          </div>
-        </div> -->
 
         <div class="card-body">
           
 
           <div class="card">
             <div class="card-header row">
-              <h3 class="col-lg-6 card-title">Users Crud System</h3>
+              <h3 class="col-lg-6 card-title">Object-Types Crud System</h3>
               <a href="/admin/user/create" class="offset-3 col-lg-3 btn btn-success" style="float: right;">Add New</a>
             </div>
             <!-- /.card-header -->
             <div class="card-body">
-              <table id="example1" class="table table-bordered table-striped" style="width:100%">
+              <table id="dt_110x" class="table table-bordered table-striped" style="width:100%">
                 <thead>
                 <tr>
                   <th>id</th>
@@ -35,36 +24,10 @@
                   <th>role</th>
                   <th>Edit</th>
                   <th>Delete</th>
-                  <!-- <th>Delete</th> -->
                 </tr>
                 </thead>
-                <tbody>
-                  <?php 
-                  {% for item in items %}
-                    <tr>
-                      <td>{{ item['id'] }}</td>
-                      <td>{{ item['username'] }}</td>
-                      <td>{{ item['password']|password }}</td>
-                      <td>{{ item['email'] }}</td>
-                      <td>{{ item['is_admin']|isAdmin }}</td>
-                      <td> <a href="/admin/user/edit/{{ item['id'] }}" class="nav-link"><i class="nav-icon fa fa-edit"></i></a></td>
-                      <td> <a href="/admin/user/delete/{{ item['id'] }}" class="nav-link" onclick="delete_confirm()"><i class="nav-icon fa fa-trash"></i></a></td>
-                  
-                    </tr>
-                  {% endfor %}
                 
-                </tbody>
-                <tfoot>
-                <tr>
-                  <th>id</th>
-                  <th>username</th>
-                  <th>password</th>
-                  <th>email</th>
-                  <th>Edit</th>
-                  <th>Delete</th>
-                  <!-- <th>Delete</th> -->
-                </tr>
-                </tfoot>
+               
               </table>
             </div>
             <!-- /.card-body -->
@@ -73,23 +36,74 @@
 
 
         </div>
-        <!-- /.card-body -->
-         <!-- <div class="card-footer">
-          Footer
-        </div>
-          <!-- /.card-footer -->
-      <!-- </div> -->
-      <!-- /.card -->
 
-<script>
-  
+<script src={{ url_for('static',filename="plugins/jquery/jquery.min.js")}}></script>
+ <script src="https://cdn.datatables.net/1.10.10/js/jquery.dataTables.min.js"></script>
 
-  function delete_confirm(){
+  <script type="text/javascript" charset="utf-8">
+    $(document).ready(function () {
+      var table = $('#dt_110x').DataTable({
+        "stateSave": true,
+        // "responsive": true,
+        "paging":true,
+        "lengthMenu": [[10, 25, 50, 100, 1000, -1], [10, 25, 50, 100, 1000, "All"]],
+      // "lengthChange": true,
+        "pagingType": "full_numbers",
+        "processing": true,
+        "serverSide": true,
+        "pageLength": 10,
+        // "jQueryUI": true, 
+        "ajax": "/admin/user/data",
+        "columns": [
+            {"data": "0"},
+            {"data": "1"}, 
+            {
+              "targets": 2,
+              "data": "2",
+              "render": function ( data, type, row, meta ) {
+                return data.replace(/[^\s]/g, "*");
+              }
+            },
+            {"data": "3"},
+            {
+              "targets": 4,
+              "data": "4",
+              "render": function ( data, type, row, meta ) {
+                if(data == 1){
+                  return "admin";
+                }else{
+                  return "user";
+                }
+              }
+            },
+            {
+              "targets": 5,
+              "data": "0",
+              "render": function ( data, type, row, meta ) {
+                return '<a href="/admin/user/edit/'+data+'" class="nav-link"><i class="nav-icon fa fa-edit"></i></a>';
+                
+              }
+            },
+            {
+              "targets": 6,
+              "data": "0",
+              "render": function ( data, type, row, meta ) {
+                return '<a href="/admin/user/delete/'+data+'" class="nav-link"><i class="nav-icon fa fa-edit"></i></a>';
+              }
+            },
+          ]
+      });
+    });
+
+    function delete_confirm(){
       if(confirm('Are you sure, You Want to delete this?')) {
       } else {
        event.preventDefault(); 
      }
     }
-</script>
+
+   
+  </script>
+
 
 {% endblock %}

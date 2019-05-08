@@ -1,0 +1,95 @@
+{% extends "admin/base.html" %}
+
+
+{% block body %}
+
+<!-- Default box -->
+     <!--  <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Meal-Kits</h3>
+
+          <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
+              <i class="fa fa-minus"></i></button>
+
+          </div>
+        </div> -->
+
+        <div class="card-body">
+          
+
+          <div class="card">
+            <div class="card-header row">
+              <h3 class="col-lg-6 card-title">Users Crud System</h3>
+              <a href="/admin/user/create" class="offset-3 col-lg-3 btn btn-success" style="float: right;">Add New</a>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+              <table id="example1" class="table table-bordered table-striped" style="width:100%">
+                <thead>
+                <tr>
+                  <th>id</th>
+                  <th>username</th>
+                  <th>password</th>
+                  <th>email</th>
+                  <th>role</th>
+                  <th>Edit</th>
+                  <th>Delete</th>
+                  <!-- <th>Delete</th> -->
+                </tr>
+                </thead>
+                <tbody>
+                  <?php 
+                  {% for item in items %}
+                    <tr>
+                      <td>{{ item['id'] }}</td>
+                      <td>{{ item['username'] }}</td>
+                      <td>{{ item['password']|password }}</td>
+                      <td>{{ item['email'] }}</td>
+                      <td>{{ item['is_admin']|isAdmin }}</td>
+                      <td> <a href="/admin/user/edit/{{ item['id'] }}" class="nav-link"><i class="nav-icon fa fa-edit"></i></a></td>
+                      <td> <a href="/admin/user/delete/{{ item['id'] }}" class="nav-link" onclick="delete_confirm()"><i class="nav-icon fa fa-trash"></i></a></td>
+                  
+                    </tr>
+                  {% endfor %}
+                
+                </tbody>
+                <tfoot>
+                <tr>
+                  <th>id</th>
+                  <th>username</th>
+                  <th>password</th>
+                  <th>email</th>
+                  <th>Edit</th>
+                  <th>Delete</th>
+                  <!-- <th>Delete</th> -->
+                </tr>
+                </tfoot>
+              </table>
+            </div>
+            <!-- /.card-body -->
+          </div>
+          <!-- /.card -->
+
+
+        </div>
+        <!-- /.card-body -->
+         <!-- <div class="card-footer">
+          Footer
+        </div>
+          <!-- /.card-footer -->
+      <!-- </div> -->
+      <!-- /.card -->
+
+<script>
+  
+
+  function delete_confirm(){
+      if(confirm('Are you sure, You Want to delete this?')) {
+      } else {
+       event.preventDefault(); 
+     }
+    }
+</script>
+
+{% endblock %}

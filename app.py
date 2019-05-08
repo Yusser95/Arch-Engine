@@ -663,6 +663,36 @@ def editobject_type_rules(id):
 
 ###########      domain routes
 
+
+@app.route('/admin/user/data')
+@flask_login.login_required
+def admin_userdata():
+	if flask_login.current_user.is_admin == 0:
+		return redirect('/')
+
+	columns = [
+			ColumnDT(User.id),
+			ColumnDT(User.username),
+			ColumnDT(User.password),
+			ColumnDT(User.email),
+			ColumnDT(User.is_admin)
+		]
+
+
+	# defining the initial query depending on your purpose
+	query = db.session.query().select_from(User) #.outerjoin(User,ProjectModel.user) #RecipeModel.query()
+	db.session.commit()
+
+	# GET parameters
+	params = request.args.to_dict()
+	print(params)
+
+	# instantiating a DataTable for the query and table needed
+	rowTable = DataTables(params, query, columns)
+
+	# returns what is needed by DataTable
+	return jsonify(rowTable.output_result())
+
 @app.route("/admin/user/show" , methods =["GET"])
 @flask_login.login_required
 def showuser():
