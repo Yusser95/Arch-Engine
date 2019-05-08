@@ -32,6 +32,7 @@
                   <th>username</th>
                   <th>password</th>
                   <th>email</th>
+                  <th>role</th>
                   <th>Edit</th>
                   <th>Delete</th>
                   <!-- <th>Delete</th> -->
@@ -45,6 +46,7 @@
                       <td>{{ item['username'] }}</td>
                       <td>{{ item['password']|password }}</td>
                       <td>{{ item['email'] }}</td>
+                      <td>{{ item['is_admin']|isAdmin }}</td>
                       <td> <a href="/admin/user/edit/{{ item['id'] }}" class="nav-link"><i class="nav-icon fa fa-edit"></i></a></td>
                       <td> <a href="/admin/user/delete/{{ item['id'] }}" class="nav-link" onclick="delete_confirm()"><i class="nav-icon fa fa-trash"></i></a></td>
                   

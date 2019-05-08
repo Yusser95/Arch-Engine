@@ -81,6 +81,12 @@ from models import *
 def format_password(value):
 	return "".join(['*' for i in value])
 
+def format_isAdmin(value):
+	if int(value) == 1:
+		return "admin"
+	else:
+		return "user"
+
 def format_datetime(value):
 	res = '00:00:00'
 	try:
@@ -90,6 +96,7 @@ def format_datetime(value):
 	return res
 
 app.jinja_env.filters['password'] = format_password
+app.jinja_env.filters['isAdmin'] = format_isAdmin
 app.jinja_env.filters['datetime'] = format_datetime
 
 
@@ -685,6 +692,7 @@ def edituser(id):
 	print(id)
 	# edit
 	if request.method == "POST":
+		is_admin = request.form.get('is_admin',default=0)
 		username = request.form.get('username')
 		password = request.form.get('password')
 		email = request.form.get('email')
@@ -695,6 +703,7 @@ def edituser(id):
 		obj.username = username
 		obj.password = password
 		obj.email = email
+		obj.is_admin = int(is_admin)
 		db.session.commit()
 
 		return redirect('/admin/user/show')
@@ -714,12 +723,13 @@ def createuser():
 		return redirect('/')
 	# edit
 	if request.method == "POST":
+		is_admin = request.form.get('is_admin',default=0)
 		username = request.form.get('username')
 		password = request.form.get('password')
 		email = request.form.get('email')
 		user_id = flask_login.current_user.id
 
-		obj = User(username=username,email=email,password=password)
+		obj = User(username=username,email=email,password=password,is_admin=int(is_admin))
 		db.session.add(obj)
 		db.session.flush()
 		db.session.refresh(obj)
