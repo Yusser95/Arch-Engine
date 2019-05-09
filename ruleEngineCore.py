@@ -131,7 +131,7 @@ class DynamicRuleEngine():
         # self.logs = list(set(self.logs))
         if "\n" in self.logs:
             self.logs.remove("\n")
-        return reversed(self.logs)
+        return self.logs[::-1]
         
 
     
