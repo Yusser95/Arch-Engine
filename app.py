@@ -42,7 +42,7 @@ class SQLAlchemy(BaseSQLAlchemy):
 
 ######.  init app
 app = Flask(__name__)
-app.secret_key = 'yusserbaby'
+app.secret_key = 'y#S%bbdEErdsbjk'
 app.debug = True
 cwd = os.getcwd()
 # app.config['SQLALCHEMY_DATABASE_URI'] =  'sqlite:///'+cwd+'/resources/data.db' 
@@ -71,7 +71,7 @@ login_manager.init_app(app)
 from models import *
 
 # c
-# db.create_all()
+db.create_all()
  
 # ScheduleLog.__table__.create(db.session.bind)
 # GeneratedRecipesIngrProductModel.__table__.create(db.session.bind)
