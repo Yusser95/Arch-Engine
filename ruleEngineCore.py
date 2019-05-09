@@ -72,6 +72,7 @@ class DynamicRuleEngine():
             syntax = syntax.replace(r"<br>",r"\n")
             syntax = syntax.replace(r"<p>",r"\n").replace(r"</p>","")
             syntax = syntax.replace(r"<div>",r"\n").replace(r"</div>","")
+            syntax = syntax.replace(r'"',r"'")
             syntax = r"{}".format(syntax)
 
             rule_to_add += self.create_validation_rule( i.name, r"{}".format(syntax))

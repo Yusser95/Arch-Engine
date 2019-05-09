@@ -196,6 +196,7 @@ def object_rules_syntax_validator():
 	syntax = syntax.replace("<br>","\n")
 	syntax = syntax.replace("<p>","\n").replace("</p>","")
 	syntax = syntax.replace("<div>","\n").replace("</div>","")
+	syntax = syntax.replace(r'"',r"'")
 	syntax = r"{}".format(syntax)
 
 	try:
