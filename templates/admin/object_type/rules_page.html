@@ -237,7 +237,7 @@
 
                           '<div id="error_message_m'+fileId+'" style="width: 100%;"></div>'+
 
-                          '<textarea class="textarea2 form-control" id="param_desc_'+fileId+'" name="param_desc[]" placeholder="Enter rule code" required="" style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"></textarea>'+
+                          '<textarea class="textarea2 form-control" id="param_desc_m'+fileId+'" name="param_desc[]" placeholder="Enter rule code" required="" style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"></textarea>'+
 
                           '<input type="button" value="Remove" onclick="removeElement('+"'"+'file-' + fileId +"'"+ ');" />'+
                   '</div>';
@@ -252,7 +252,7 @@
             // toolbar: false //{ fa: true }
           // });
 
-          var editor = new wysihtml5.Editor("param_desc_"+fileId, {
+          var editor = new wysihtml5.Editor("param_desc_m"+fileId, {
               toolbar:      false,//"wysihtml-toolbar",
             });
           editor.on("change", function() {
