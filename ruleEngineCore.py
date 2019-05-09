@@ -64,7 +64,7 @@ class DynamicRuleEngine():
         attributs += ',{} = {}'.format("exec_env",exec_env)
 
         # to do loop over rules and create_validation_rule
-        rule_to_add = ""
+        rule_to_add = """"""
         for i in obj.object_type.rules:
             syntax =i.syntax
             syntax = syntax.replace("\u2003",r"\t").replace("\t",r"\t")
