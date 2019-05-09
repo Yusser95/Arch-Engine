@@ -54,7 +54,7 @@
                       {% endif %}
                       {% for i in item.rules %}
                         <br>
-                        <div id="filee00-0{{i.id}}">
+                        <div id="filee00-0l{{i.id}}">
                           <div class="input-group">
 
                           <input type="hidden"  id="param_ids" name="param_ids[]" value="{{i.id}}" />
@@ -71,7 +71,7 @@
 
 
 
-                          <input type="button" value="Remove" onclick="removeElement('filee00-0{{i.id}}');" />
+                          <input type="button" value="Remove" onclick="removeElement('filee00-0l{{i.id}}');" />
                           </div>
                         </div>
                       {% endfor %}
