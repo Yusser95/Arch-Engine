@@ -129,9 +129,10 @@ class DynamicRuleEngine():
     def get_logs(self):
         sys.stdout = sys.__stdout__
         # self.logs = list(set(self.logs))
-        if "\n" in self.logs:
+        while "\n" in self.logs:
             self.logs.remove("\n")
-        return self.logs[::-1]
+        self.logs = self.logs[::-1]
+        return self.logs
         
 
     
