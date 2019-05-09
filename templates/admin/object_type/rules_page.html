@@ -194,7 +194,6 @@
                       });
                   });
 
-  var fileId = 0; // used by the addFile() function to keep track of IDs
 
 });
 
@@ -227,8 +226,8 @@
 
 
 
+    var fileId = 0; // used by the addFile() function to keep track of IDs
 
-    
     function addFile() {
         fileId++; // increment fileId to get a unique ID for the new element
 
@@ -239,24 +238,24 @@
 
                           '<input type="text" class="form-control" id="parm_names" name="parm_names[]" placeholder="Enter rule name"  required="" />'+
 
-                          '<div id="error_message_m'+fileId+'" style="width: 100%;"></div>'+
+                          '<div id="error_message_m'+fileId.toString()+'" style="width: 100%;"></div>'+
 
-                          '<textarea class="textarea2 form-control" id="param_desc_m'+fileId+'" name="param_desc[]" placeholder="Enter rule code" required="" style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"></textarea>'+
+                          '<textarea class="textarea2 form-control" id="param_desc_m'+fileId.toString()+'" name="param_desc[]" placeholder="Enter rule code" required="" style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"></textarea>'+
 
-                          '<input type="button" value="Remove" onclick="removeElement('+"'"+'file-' + fileId +"'"+ ');" />'+
+                          '<input type="button" value="Remove" onclick="removeElement('+"'"+'file-' + fileId.toString() +"'"+ ');" />'+
                   '</div>';
 
 
 
 
-            addElement('files', 'div', 'file-' + fileId, html);
+            addElement('files', 'div', 'file-' + fileId.toString(), html);
 
 
             // $('.textarea2').wysihtml5({
             // toolbar: false //{ fa: true }
           // });
 
-          var editor = new wysihtml5.Editor("param_desc_m"+fileId, {
+          var editor = new wysihtml5.Editor("param_desc_m"+fileId.toString(), {
               toolbar:      false,//"wysihtml-toolbar",
             });
           editor.on("change", function() {
@@ -271,12 +270,12 @@
                           async:false,
                           success: function(response) {
                               if(response.valid === 'true') {
-                                $('#error_message_m'+fileId).empty();
+                                $('#error_message_m'+fileId.toString()).empty();
                               }
                               else {
                                   
-                                  $('#error_message_m'+fileId).empty();
-                                  $('#error_message_m'+fileId).append('<div class="alert alert-danger" role="alert">'+response.error+'</div>');
+                                  $('#error_message_m'+fileId.toString()).empty();
+                                  $('#error_message_m'+fileId.toString()).append('<div class="alert alert-danger" role="alert">'+response.error+'</div>');
                               }
                           }
                       });
