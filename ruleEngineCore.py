@@ -131,7 +131,7 @@ class DynamicRuleEngine():
         # self.logs = list(set(self.logs))
         while "\n" in self.logs:
             self.logs.remove("\n")
-        self.logs = self.logs[::-1]
+        self.logs.reverse()
         return self.logs
         
 
