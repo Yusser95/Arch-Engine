@@ -172,14 +172,7 @@ class DynamicRuleEngine():
             print(self.base)
 
             return False
-        except Exception as e:
-            self.add_to_log('[error][run][Exception]: '+str(e))
-            
-            self.logs.extend(x.data)
-            sys.stdout = sys.__stdout__
-            print(self.base)
 
-            return False
         except RuntimeError as e:
             self.add_to_log('[error][run][RuntimeError]: '+str(e))
             
@@ -188,6 +181,21 @@ class DynamicRuleEngine():
             print(self.base)
 
             return False
+
+        except Exception as e:
+            if "name 'x' is not defined" in  str(e):
+                self.add_to_log('[error][run][Exception]: '+" tring to use undefined parameter check rules parms names")
+            else:
+                self.add_to_log('[error][run][Exception]: '+str(e))
+
+
+            
+            self.logs.extend(x.data)
+            sys.stdout = sys.__stdout__
+            print(self.base)
+
+            return False
+        
 
         self.logs.extend(x.data)
         sys.stdout = sys.__stdout__
