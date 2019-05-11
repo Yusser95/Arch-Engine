@@ -184,7 +184,7 @@ class DynamicRuleEngine():
 
         except Exception as e:
             if "name 'x' is not defined" in  str(e):
-                self.add_to_log('[error][run][Exception]: '+" tring to use undefined parameter check rules parms names")
+                self.add_to_log('[error][run][Exception]: '+" trying to use undefined parameter check rules parms names")
             else:
                 self.add_to_log('[error][run][Exception]: '+str(e))
 
