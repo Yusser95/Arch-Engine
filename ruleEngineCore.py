@@ -174,7 +174,10 @@ class DynamicRuleEngine():
             return False
 
         except RuntimeError as e:
-            self.add_to_log('[error][run][RuntimeError]: '+str(e))
+            if "name 'x' is not defined" in  str(e):
+                self.add_to_log('[error][run][Exception]: '+" trying to use undefined parameter check rules parms names")
+            else:
+                self.add_to_log('[error][run][RuntimeError]: '+str(e))
             
             self.logs.extend(x.data)
             sys.stdout = sys.__stdout__
