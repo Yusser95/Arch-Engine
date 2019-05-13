@@ -12,9 +12,10 @@ class DynamicRuleEngine():
     def __init__(self):
 
         self.logs = []
-        self.base1 ="""class BaseClass(object):\n\tdef __init__(self, classtype):\n\t\tself._type = classtype\n\ndef ClassFactory(name, argnames=[], BaseClass=BaseClass):\n\tdef __init__(self, **kwargs):\n\t\tsetattr(self, "logs", [])\n\t\tfor key, value in kwargs.items():\n\t\t\tif argnames:\n\t\t\t\tif key not in argnames:\n\t\t\t\t\traise TypeError("Argument %s not valid for %s" % (key, self.__class__.__name__))\n\t\t\tsetattr(self, key, value)\n\t\tBaseClass.__init__(self, name)\n\tdef check_rules(self):\n\t\ttry:\n\t\t\tbase=self.logging+self.att_str+self.rule_str\n\t\t\tcodeobj = compile(base, 'fakemodule', 'exec')\n\t\t\tself.env = self.exec_env\n\t\t\texec(codeobj,self.env,self.env)\n\t\t\tself.logs.extend(self.env.get('inner_logs'))\n\t\texcept SyntaxError as e:\n\t\t\tself.logs.append('[error][check_rules][SyntaxError]: '+str(e)+' Syntax error {} ({}-{}): {}'.format(e.filename, e.lineno, e.offset, e.text))\n\t\t\tself.logs.extend(x.data)\n\t\t\treturn False\n\t\texcept Exception as e:\n\t\t\tself.logs.append('[error][check_rules][Exception]: '+str(e))\n\t\t\tself.logs.extend(x.data)\n\t\t\treturn False\n\t\texcept RuntimeError as e:\n\t\t\tself.logs.append('[error][check_rules][RuntimeError]: '+str(e))\n\t\t\tself.logs.extend(x.data)\n\t\t\treturn False\n\tnewclass = type(name, (BaseClass,),{"__init__": __init__,"check_rules":check_rules})\n\treturn newclass"""
+        self.base1 ="""g={}\nclass BaseClass(object):\n\tdef __init__(self, classtype):\n\t\tself._type = classtype\n\ndef ClassFactory(name, argnames=[], BaseClass=BaseClass):\n\tdef __init__(self, **kwargs):\n\t\tsetattr(self, "logs", [])\n\t\tfor key, value in kwargs.items():\n\t\t\tif argnames:\n\t\t\t\tif key not in argnames:\n\t\t\t\t\traise TypeError("Argument %s not valid for %s" % (key, self.__class__.__name__))\n\t\t\tsetattr(self, key, value)\n\t\tBaseClass.__init__(self, name)\n\tdef check_rules(self):\n\t\ttry:\n\t\t\tbase=self.logging+self.att_str+self.rule_str\n\t\t\tcodeobj = compile(base, 'fakemodule', 'exec')\n\t\t\tself.env = self.exec_env\n\t\t\tglobal g\n\t\t\tself.env['parent']=g.get(self.exec_env.get('parent'))\n\t\t\texec(codeobj,self.env,self.env)\n\t\t\tself.logs.extend(self.env.get('inner_logs'))\n\t\texcept SyntaxError as e:\n\t\t\tself.logs.append('[error][check_rules][SyntaxError]: '+str(e)+' Syntax error {} ({}-{}): {}'.format(e.filename, e.lineno, e.offset, e.text))\n\t\t\tself.logs.extend(x.data)\n\t\t\treturn False\n\t\texcept Exception as e:\n\t\t\tself.logs.append('[error][check_rules][Exception]: '+str(e))\n\t\t\tself.logs.extend(x.data)\n\t\t\treturn False\n\t\texcept RuntimeError as e:\n\t\t\tself.logs.append('[error][check_rules][RuntimeError]: '+str(e))\n\t\t\tself.logs.extend(x.data)\n\t\t\treturn False\n\tnewclass = type(name, (BaseClass,),{"__init__": __init__,"check_rules":check_rules})\n\treturn newclass"""
         
         self.base2 = """\nlogs=[]\ndef add_to_log(error):\n\tlogs.append(error)\n"""
+        self.base3 = ""
 
         self.rules = """\n"""
         
@@ -25,6 +26,11 @@ class DynamicRuleEngine():
     def ORMScriptClassInstanceGeneration(self, obj):
         attributs = ""
         exec_env = "{}"
+        childs_parents = ""
+
+        if obj.parent:
+            childs_parents += r"'parent' : '{}'".format(obj.parent.name)
+
         if obj.object_type.parms:
             temp_parms = []
             temp_parms2= []
@@ -67,10 +73,11 @@ class DynamicRuleEngine():
             if tmp1:
                 attributs+= tmp1 +"  ,  "
 
-            exec_env = "{"+",".join(["'{}' : {}".format(i.name ,i.name) for i in obj.childs])+"}" #str({i.name:i.name for i in obj.childs})
-
-        # if obj.parent:
-        #     attributs += "parent = {}".format(obj.parent.name)
+            temp2 = ["'{}' : {}".format(i.name ,i.name) for i in obj.childs]
+            if childs_parents:
+                temp2.append(childs_parents)
+            exec_env = "{"+",".join(temp2)+"}" #str({i.name:i.name for i in obj.childs})
+        
 
         attributs += '{} = "{}"'.format("att_str",str(r"\n"+attributs.replace("  ,  ",r"\n")+r"\n"))
         attributs += ",{} = '{}'".format("logging",r"""\ninner_logs=[]\ndef add_to_log(error):\n\tinner_logs.append(error)\n""")
@@ -91,8 +98,8 @@ class DynamicRuleEngine():
             rule_to_add += self.create_validation_rule( i.name, r"{}".format(syntax))
         attributs += ',{} = "{}"'.format("rule_str",str(r"\n"+rule_to_add+r"\n"))
 
-        return "{} = {}({})\n{}.check_rules()\nlogs.extend({}.logs)".format(obj.name,obj.object_type.name,attributs ,obj.name,obj.name)
 
+        return "{} = {}({})\ng['{}']={}".format(obj.name,obj.object_type.name,attributs,obj.name,obj.name) ,"\n{}.check_rules()\nlogs.extend({}.logs)".format(obj.name,obj.name)
 
     def get_type(self, type_id):
         def proccess_boolean(x):
@@ -132,13 +139,14 @@ class DynamicRuleEngine():
 
 
     def instances_generation(self, root_obj):
-        instances_str = self.ORMScriptClassInstanceGeneration(root_obj)
+        instances_str ,check_rules_str = self.ORMScriptClassInstanceGeneration(root_obj)
         children = root_obj.childs
         if children:
             for child in children:
-                inst_str = self.instances_generation(child)
+                inst_str ,check_str = self.instances_generation(child)
                 instances_str = inst_str +"\n"+instances_str
-        return instances_str
+                check_rules_str = check_str +"\n"+ check_rules_str
+        return instances_str ,check_rules_str
 
 
 
@@ -184,9 +192,13 @@ class DynamicRuleEngine():
 
         try:
 
+
+
         
             self.base2+= self.classes_generation(objects)
-            self.base2+= self.instances_generation(instances_root)
+            temp_base2 ,temp_base3 = self.instances_generation(instances_root)
+            self.base2 += temp_base2
+            self.base3 += temp_base3
             # print(self.base2)
 
 
@@ -236,7 +248,7 @@ class DynamicRuleEngine():
 
 
         try:
-            self.base = self.base1 + self.base2 + self.rules
+            self.base = self.base1 + self.base2+ self.base3 + self.rules
             # self.base+="\nprint('finished with no errors yeaah !!')"
             # print(self.base)
             codeobj = compile(self.base, 'fakemodule', 'exec')
