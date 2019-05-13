@@ -53,12 +53,15 @@
                         <div id="filee-1">
                           <div class="input-group">
 
+                          <input type="text" class="form-control" id="paramId" name="paramId[]" placeholder="Enter paramId" required="" />
 
                           <input type="text" class="form-control" id="parm_names" name="parm_names[]" placeholder="Enter param name" required="" />
 
 
                           <div class="form-control"><select class="select2" name="param_types[]" data-placeholder="Enter param type" required="">
                           </select></div>
+
+                          <input type="text" class="form-control" id="parm_defalult" name="parm_defalult[]" placeholder="Enter param default value" />
 
                           <textarea rows = "1" class="form-control" style="width: 100%;" id="param_desc" name="param_desc[]" placeholder="Enter param descreption"></textarea>
 
@@ -226,10 +229,14 @@
 
         var html = '<br><div class="input-group">'+
 
+                          '<input type="text" class="form-control" id="paramId" name="paramId[]" placeholder="Enter paramId" required="" />'+
+
 
                           '<input type="text" class="form-control" id="parm_names" name="parm_names[]" placeholder="Enter param name" required="" />'+
 
                           '<div class="form-control"><select class="select2" id="param-'+fileId+'" name="param_types[]" data-placeholder="Enter param type" required=""></select></div>'+
+
+                          '<input type="text" class="form-control" id="parm_defalult" name="parm_defalult[]" placeholder="Enter param default value" />'+
 
                           '<textarea rows = "1" class="form-control" style="width: 100%;" id="param_desc" name="param_desc[]" placeholder="Enter param descreption"></textarea>'+
 

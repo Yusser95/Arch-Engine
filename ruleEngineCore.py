@@ -34,11 +34,22 @@ class DynamicRuleEngine():
                 if i.name not in temp_parms:
                     temp_parms2.append("{} = {}".format(i.name ,"None"))
 
-            temp_parms = ["{} = '{}'".format(i.param.name ,i.value) for i in obj.parms]
+            # temp_parms = ["{} = '{}'".format(i.param.name ,i.value) for i in obj.parms]
+            temp_parms = []
+            for i in obj.parms:
+                param_type = self.get_type(i.param.param_type)
+                if param_type == str:
+                    temp_parms.append("{} = '{}'".format(i.param.name ,param_type(i.value)))
+                else:
+                    temp_parms.append("{} = {}".format(i.param.name ,param_type(i.value)))
+
+            # sys.stdout = sys.__stdout__
+            # print("temp_parms : " , temp_parms ,"*"*100)
+
             temp_parms.extend(temp_parms2)
-            attributs += ", ".join(temp_parms)
+            attributs += "  ,  ".join(temp_parms)
             if attributs:
-                attributs+= ", "
+                attributs+= "  ,  "
         if obj.object_type.childs:
 
             chids_Arrays = {}
@@ -49,17 +60,19 @@ class DynamicRuleEngine():
             for i in obj.childs:
                 chids_Arrays[i.object_type.name+"s"].append(i.name)
 
-            tmp1 =  ", ".join(["{} = {}".format(k,str("["+",".join(chids_Arrays[k])+"]")) for k in chids_Arrays])
+            tmp1 =  "  ,  ".join(["{} = {}".format(k,str("["+",".join(chids_Arrays[k])+"]")) for k in chids_Arrays])
             if tmp1:
-                attributs+= tmp1 +", "
-            tmp1 =  ", ".join(["{} = {}".format(i.name ,i.name) for i in obj.childs])
+                attributs+= tmp1 +"  ,  "
+            tmp1 =  "  ,  ".join(["{} = {}".format(i.name ,i.name) for i in obj.childs])
             if tmp1:
-                attributs+= tmp1 +", "
+                attributs+= tmp1 +"  ,  "
 
             exec_env = "{"+",".join(["'{}' : {}".format(i.name ,i.name) for i in obj.childs])+"}" #str({i.name:i.name for i in obj.childs})
 
-        
-        attributs += '{} = "{}"'.format("att_str",str(r"\n"+attributs.replace(", ",r"\n")+r"\n"))
+        # if obj.parent:
+        #     attributs += "parent = {}".format(obj.parent.name)
+
+        attributs += '{} = "{}"'.format("att_str",str(r"\n"+attributs.replace("  ,  ",r"\n")+r"\n"))
         attributs += ",{} = '{}'".format("logging",r"""\ninner_logs=[]\ndef add_to_log(error):\n\tinner_logs.append(error)\n""")
         attributs += ',{} = {}'.format("exec_env",exec_env)
 
@@ -80,6 +93,34 @@ class DynamicRuleEngine():
 
         return "{} = {}({})\n{}.check_rules()\nlogs.extend({}.logs)".format(obj.name,obj.object_type.name,attributs ,obj.name,obj.name)
 
+
+    def get_type(self, type_id):
+        def proccess_boolean(x):
+            if type(x) is str:
+                x= x.strip().lower()
+                if x == "true":
+                    return True
+                else:
+                    return False
+            else:
+                return bool(x)
+
+        def proccess_list(x):
+            # sys.stdout = sys.__stdout__
+            # print("x : " , x ,"*"*100)
+            return list(eval(x))
+
+        def proccess_dict(x):
+            return dict(eval(x))
+
+        self.types = {"string":str,"integer":int,"boolean":proccess_boolean,"float":float,"list":proccess_list,"dict":proccess_dict}
+
+        # types = [{"id":1,"text":"string"},{"id":2,"text":"integer"},{"id":3,"text":"boolean"},{"id":4,"text":"float"},{"id":5,"text":"list"},{"id":6,"text":"dict"}]
+        # sys.stdout = sys.__stdout__
+
+        # print("type_id : " , type_id ,"*"*100)
+
+        return self.types.get(str(type_id))
 
 
     def classes_generation(self, objects):
@@ -140,13 +181,52 @@ class DynamicRuleEngine():
     def fit(self, objects, instances_root):
         sys.stdout = x = ListStream()
 
+
+        try:
+
         
-        self.base2+= self.classes_generation(objects)
-        self.base2+= self.instances_generation(instances_root)
-        # print(self.base2)
+            self.base2+= self.classes_generation(objects)
+            self.base2+= self.instances_generation(instances_root)
+            # print(self.base2)
+
+
+        except SyntaxError as e:
+            self.add_to_log('[error][run][SyntaxError]: '+str(e)+"\n"+'Syntax error {} ({}-{}): {}'.format(e.filename, e.lineno, e.offset, e.text))
+
+            self.logs.extend(x.data)
+            sys.stdout = sys.__stdout__
+
+            return False
+
+        except RuntimeError as e:
+            if "name 'x' is not defined" in  str(e):
+                self.add_to_log('[error][run][Exception]: '+" trying to use undefined parameter check rules parms names")
+            else:
+                self.add_to_log('[error][run][RuntimeError]: '+str(e))
+            
+            self.logs.extend(x.data)
+            sys.stdout = sys.__stdout__
+
+            return False
+
+        except Exception as e:
+            if "name 'x' is not defined" in  str(e):
+                self.add_to_log('[error][run][Exception]: '+" trying to use undefined parameter check rules parms names")
+            else:
+                self.add_to_log('[error][run][Exception]: '+str(e))
+
+
+            
+            self.logs.extend(x.data)
+            sys.stdout = sys.__stdout__
+
+            return False
+        
 
         self.logs.extend(x.data)
         sys.stdout = sys.__stdout__
+
+        return True
 
         
         

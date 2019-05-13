@@ -70,7 +70,6 @@ login_manager.init_app(app)
 
 from models import *
 
-# c
 # db.create_all()
  
 # ScheduleLog.__table__.create(db.session.bind)
@@ -428,7 +427,7 @@ def recipekitsdata():
 	params = request.args.to_dict()
 	print(params)
 
-	types = [{"id":1,"text":"string"},{"id":2,"text":"integer"},{"id":3,"text":"boolean"}]
+	types = [{"id":1,"text":"string"},{"id":2,"text":"integer"},{"id":3,"text":"boolean"},{"id":4,"text":"float"},{"id":5,"text":"list"},{"id":6,"text":"dict"}]
 
 	q= params['q']
 	if q:
@@ -505,7 +504,9 @@ def editobject_typ(id):
 		param_types = request.form.getlist('param_types[]')
 		parm_names = request.form.getlist('parm_names[]')
 		param_desc = request.form.getlist('param_desc[]')
-		print(param_desc)
+		parm_defalult = request.form.getlist('parm_defalult[]')
+		paramId = request.form.getlist('paramId[]')
+		# print(param_desc)
 
 
 
@@ -520,12 +521,14 @@ def editobject_typ(id):
 
 			Param = OnjectTypeParamModel.query.get(param_ids[i])#filter_by(object_type_id=int(id),name=parm_names[i],desc=p_desc,param_type=param_types[i]).first()
 			if not Param:
-				Param = OnjectTypeParamModel(name=parm_names[i].replace(" ","_"),desc=p_desc,param_type=param_types[i])
+				Param = OnjectTypeParamModel(name=parm_names[i].replace(" ","_"),desc=p_desc,param_type=param_types[i],default_value=parm_defalult[i].replace('"',"'"),paramId=paramId[i])
 				obj.parms.append(Param)
 			else:
 				Param.name=parm_names[i].replace(" ","_")
 				Param.desc=p_desc
 				Param.param_type=param_types[i]
+				Param.default_value=parm_defalult[i].replace('"',"'")
+				Param.paramId = paramId[i]
 				db.session.commit()
 
 			new_parms.append(Param)
@@ -563,7 +566,8 @@ def create_object_type():
 			param_types = request.form.getlist('param_types[]')
 			parm_names = request.form.getlist('parm_names[]')
 			param_desc = request.form.getlist('param_desc[]')
-
+			parm_defalult = request.form.getlist('parm_defalult[]')
+			paramId = request.form.getlist('paramId[]')
 
 			obj = ObjectTypeModel(name=name.replace(" ","_"),desc=desc,user_id=user_id,object_type_id=object_type_id)
 
@@ -573,7 +577,7 @@ def create_object_type():
 					p_desc = param_desc[i]
 				except KeyError as e:
 					pass
-				Param = OnjectTypeParamModel(name=parm_names[i].replace(" ","_"),desc=p_desc,param_type=param_types[i])
+				Param = OnjectTypeParamModel(name=parm_names[i].replace(" ","_"),desc=p_desc,param_type=param_types[i],default_value=parm_defalult[i].replace('"',"'"),paramId=paramId[i])
 				obj.parms.append(Param)
 
 			db.session.add(obj)
@@ -607,7 +611,11 @@ def editobject_type_rules(id):
 		param_ids = request.form.getlist('param_ids[]')
 		parm_names = request.form.getlist('parm_names[]')
 		param_desc = request.form.getlist('param_desc[]')
-		print(param_ids)
+
+		ruleId = request.form.getlist('ruleId[]')
+		reference = request.form.getlist('reference[]')
+		discipline = request.form.getlist('discipline[]')
+		# print(param_ids)
 
 
 
@@ -623,11 +631,14 @@ def editobject_type_rules(id):
 
 			Rule = OnjectTypeRuleModel.query.get(param_ids[i])
 			if not Rule:
-				Rule = OnjectTypeRuleModel(name=parm_names[i],syntax=p_desc)
+				Rule = OnjectTypeRuleModel(name=parm_names[i],syntax=p_desc,ruleId =ruleId[i],reference =reference[i],discipline=discipline[i])
 				obj.rules.append(Rule)
 			else:
 				Rule.name=parm_names[i]
 				Rule.syntax=p_desc
+				Rule.ruleId =ruleId[i]
+				Rule.reference =reference[i]
+				Rule.discipline=discipline[i]
 				db.session.commit()
 
 
@@ -1184,7 +1195,7 @@ def createprojectinstance(p_id , i_id):
 
 
 		for i in range(len(parms_ids)):
-			Param = OnjectTypeInstanceParamModel(value=parms_values[i],param_id=parms_ids[i])
+			Param = OnjectTypeInstanceParamModel(value=parms_values[i].replace('"',"'"),param_id=parms_ids[i])
 			obj.parms.append(Param)
 
 		db.session.add(obj)
@@ -1226,7 +1237,7 @@ def editprojectinstance(p_id , i_id):
 
 		obj.parms.clear()
 		for i in range(len(parms_ids)):
-			Param = OnjectTypeInstanceParamModel(value=parms_values[i],param_id=parms_ids[i])
+			Param = OnjectTypeInstanceParamModel(value=parms_values[i].replace('"',"'"),param_id=parms_ids[i])
 			obj.parms.append(Param)
 
 

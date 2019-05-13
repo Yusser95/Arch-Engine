@@ -8,7 +8,7 @@ from datetime import datetime
 class User(db.Model):
     __tablename__ = "users"
     id = db.Column('id',db.Integer , primary_key=True)
-    username = db.Column('username', db.String(20), unique=True , index=True)
+    username = db.Column('username', db.String(250), unique=True , index=True)
     password = db.Column('password' , db.String(10))
     email = db.Column('email',db.String(50),unique=True , index=True)
     registered_on = db.Column('registered_on' , db.DateTime)
@@ -53,7 +53,7 @@ class ProjectModel(db.Model):
     __tablename__ = 'project'
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(20), unique=False, nullable=False)
+    name = db.Column(db.String(250), unique=False, nullable=False)
     desc = db.Column(db.String(1000), unique=False, nullable=True)
 
     user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'),
@@ -78,7 +78,7 @@ class ObjectTypeModel(db.Model):
     __tablename__ = 'object_type'
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(20), unique=True, nullable=False)
+    name = db.Column(db.String(250), unique=True, nullable=False)
     desc = db.Column(db.String(1000), unique=False, nullable=True)
     
 
@@ -126,7 +126,10 @@ class OnjectTypeRuleModel(db.Model):
     __tablename__ = 'object_type_rule'
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(20), unique=False, nullable=False)
+    name = db.Column(db.String(250), unique=False, nullable=False)
+    ruleId = db.Column(db.String(250), unique=False, nullable=True)
+    reference = db.Column(db.String(1000), unique=False, nullable=True)
+    discipline = db.Column(db.String(1000), unique=False, nullable=True)
     syntax = db.Column(db.String(1000), unique=False, nullable=False)
 
     object_type_id = db.Column(db.Integer, db.ForeignKey('object_type.id', ondelete='CASCADE'),
@@ -138,8 +141,11 @@ class OnjectTypeRuleModel(db.Model):
     created_at = db.Column('created_at' , db.DateTime)
 
 
-    def __init__(self ,name  ,syntax ):
+    def __init__(self ,name  ,syntax ,ruleId , reference ,discipline):
         self.name = name
+        self.ruleId = ruleId
+        self.reference = reference
+        self.discipline= discipline
         # self.param_type = param_type
         self.syntax = syntax
         # self.object_type_id = object_type_id
@@ -152,9 +158,12 @@ class OnjectTypeParamModel(db.Model):
     __tablename__ = 'object_type_param'
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(20), unique=False, nullable=False)
-    param_type = db.Column(db.String(20), unique=False, nullable=False)
+    name = db.Column(db.String(250), unique=False, nullable=False)
+    paramId = db.Column(db.String(250), unique=False, nullable=True)
+    param_type = db.Column(db.String(250), unique=False, nullable=False)
     desc = db.Column(db.String(1000), unique=False, nullable=True)
+
+    default_value = db.Column(db.String(1000), unique=False, nullable=True)
 
     object_type_id = db.Column(db.Integer, db.ForeignKey('object_type.id', ondelete='CASCADE'),
         nullable=True)
@@ -165,10 +174,12 @@ class OnjectTypeParamModel(db.Model):
     created_at = db.Column('created_at' , db.DateTime)
 
 
-    def __init__(self ,name ,param_type ,desc ):
+    def __init__(self ,name ,param_type ,desc,default_value ,paramId):
         self.name = name
         self.param_type = param_type
         self.desc = desc
+        self.default_value =default_value
+        self.paramId = paramId
         # self.object_type_id = object_type_id
 
         self.created_at = datetime.utcnow()
