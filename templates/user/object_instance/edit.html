@@ -10,10 +10,14 @@
 
     <div class="card-body">
 
-      <p>
+      <!-- <p>
         Font size: <span id="curSize"></span>
         <input id="fontSize" type="number" min="4" max="48" value="14"> pt
-      </p>
+      </p> -->
+
+      <label>Filter:</label>
+      <input name="search" placeholder="Filter..." autocomplete="off">
+      <br>
 
       <!-- Tree wrapper -->
       <!-- <div id="tree"></div> -->
@@ -24,10 +28,10 @@
         </div>
         <div id="tree" class="panel-body fancytree-colorize-hover fancytree-fade-expander">
         </div>
-        <div class="panel-footer">
+        <!-- <div class="panel-footer">
           <button id="btnExpandAll" class="btn btn-xs btn-primary">Expand all</button>
           <button id="btnCollapseAll" class="btn btn-xs btn-warning">Collapse all</button>
-        </div>
+        </div> -->
       </div>
 
       <hr />
@@ -164,6 +168,7 @@
 <script src={{ url_for('static',filename="fancytree/jquery.fancytree.edit.js")}}></script>
 <script src={{ url_for('static',filename="fancytree/jquery.fancytree.glyph.js")}}></script>
 <!-- <script src={{ url_for('static',filename="fancytree/jquery.fancytree.table.js")}}></script> -->
+<script src={{ url_for('static',filename="fancytree/jquery.fancytree.filter.js")}}></script>
 <script src={{ url_for('static',filename="fancytree/jquery.fancytree.wide.js")}}></script>
 <script src="//cdn.jsdelivr.net/npm/jquery-contextmenu@2.6.4/dist/jquery.contextMenu.min.js">
 </script>
@@ -243,8 +248,21 @@
 
 
       $("#tree").fancytree({
-        extensions: ["dnd5", "edit", "glyph", "wide"],
+        extensions: ["dnd5", "edit", "glyph", "wide","filter"],
         glyph: glyph_opts,
+        quicksearch: true,
+        filter: {
+        autoApply: true,   // Re-apply last filter if lazy data is loaded
+        autoExpand: true, // Expand all branches that contain matches while filtered
+        counter: false,     // Show a badge with number of matching child nodes near parent icons
+        fuzzy: false,      // Match single characters in order, e.g. 'fb' will match 'FooBar'
+        hideExpandedCounter: true,  // Hide counter badge if parent is expanded
+        hideExpanders: false,       // Hide expanders if all child nodes are hidden by filter
+        highlight: true,   // Highlight matches by wrapping inside <mark> tags
+        leavesOnly: false, // Match end nodes only
+        nodata: true,      // Display a 'no data' status node if result is empty
+        mode: "hide" //"dimm"       // Grayout unmatched nodes (pass "hide" to remove unmatched node instead)
+      },
 
         checkbox: false,
         click: function(event, data) {
@@ -320,23 +338,42 @@
 
 
 
-      $("#btnExpandAll").click(function(){
-      $("#tree").fancytree("getTree").visit(function(node){
-        node.setExpanded(true);
-      });
-    });
-    $("#btnCollapseAll").click(function(){
-      $("#tree").fancytree("getTree").visit(function(node){
-        node.setExpanded(false);
-      });
-    });
-    $( "#fontSize" ).change(function(){
-      $("#tree .fancytree-container").css("font-size", $(this).prop("value") + "pt");
-    });//.prop("value", 12);
+    //   $("#btnExpandAll").click(function(){
+    //   $("#tree").fancytree("getTree").visit(function(node){
+    //     node.setExpanded(true);
+    //   });
+    // });
+    // $("#btnCollapseAll").click(function(){
+    //   $("#tree").fancytree("getTree").visit(function(node){
+    //     node.setExpanded(false);
+    //   });
+    // });
+    // $( "#fontSize" ).change(function(){
+    //   $("#tree .fancytree-container").css("font-size", $(this).prop("value") + "pt");
+    // });//.prop("value", 12);
 
 
 
       $("#tree .fancytree-container").css("font-size",14+"pt");
+
+      $("input[name=search]").on("keyup", function(e){
+        var n,
+          tree = $.ui.fancytree.getTree(),
+          args = "autoApply autoExpand fuzzy hideExpanders highlight leavesOnly nodata".split(" "),
+          opts = {},
+          filterFunc = $("#branchMode").is(":checked") ? tree.filterBranches : tree.filterNodes,
+          match = $(this).val();
+
+
+        if(e && e.which === $.ui.keyCode.ESCAPE || $.trim(match) === ""){
+          $("input[name=search]").val("");
+          tree.clearFilter();
+          return;
+        }
+
+          // Pass a string to perform case insensitive matching
+          n = filterFunc.call(tree, match, opts);
+      });
 
 
 
