@@ -69,14 +69,14 @@
 
 
 
-                          <input type="text" class="form-control" id="ruleId" name="ruleId[]" placeholder="Enter ruleId" {% if i.ruleId %}value="{{i.ruleId}}"{% endif %}  required="" />
+                          <input type="text" class="form-control" id="ruleId" name="ruleId[]" placeholder="Enter ruleId" {% if i.ruleId and i.ruleId != "None" %}value="{{i.ruleId}}"{% endif %}  required="" />
 
 
 
 
                           <input type="text" class="form-control" id="parm_names" name="parm_names[]" placeholder="Enter rule name" value="{{i.name}}" required="" />
 
-                          <input type="text" class="form-control" id="reference" name="reference[]" placeholder="Enter reference" {% if i.reference %}value="{{i.reference}}"{% endif %} style="width: 100%;"  />
+                          <input type="text" class="form-control" id="reference" name="reference[]" placeholder="Enter reference" {% if i.reference and i.reference != "None" %}value="{{i.reference}}"{% endif %} style="width: 100%;"  />
 
                           <input type="text" class="form-control" id="discipline" name="discipline[]" placeholder="Enter discipline" {% if i.discipline and i.discipline != "None" %}value="{{i.discipline}}"{% endif %} style="width: 100%;" />
 

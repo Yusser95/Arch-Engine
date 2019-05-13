@@ -57,7 +57,7 @@
 
                           <input type="hidden"  id="param_ids" name="param_ids[]" value="{{i.id}}" />
 
-                          <input type="text" class="form-control" id="paramId" name="paramId[]" placeholder="Enter paramId" value="{{i.paramId}}" required="" />
+                          <input type="text" class="form-control" id="paramId" name="paramId[]" placeholder="Enter paramId" {% if i.paramId and i.paramId != "None" %} value="{{i.paramId}}"{% endif %} required="" />
 
 
                           <input type="text" class="form-control" id="parm_names" name="parm_names[]" placeholder="Enter param name" value="{{i.name}}" required="" />
