@@ -78,7 +78,7 @@
 
                           <input type="text" class="form-control" id="reference" name="reference[]" placeholder="Enter reference" {% if i.reference %}value="{{i.reference}}"{% endif %} style="width: 100%;"  />
 
-                          <input type="text" class="form-control" id="discipline" name="discipline[]" placeholder="Enter discipline" {% if i.discipline or i.discipline != "None" %}value="{{i.discipline}}"{% endif %} style="width: 100%;" />
+                          <input type="text" class="form-control" id="discipline" name="discipline[]" placeholder="Enter discipline" {% if i.discipline and i.discipline != "None" %}value="{{i.discipline}}"{% endif %} style="width: 100%;" />
 
                           <div id="error_message_{{i.id}}" style="width: 100%;"></div>
 
