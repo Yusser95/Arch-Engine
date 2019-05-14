@@ -244,7 +244,8 @@
               callback: function(key, opt){
                 var node = $.ui.fancytree.getNode(opt.$trigger);
                 // alert("Clicked on " + key + " on " + node);
-                window.location.replace('/user/project/{{project.id}}/instance/create/'+node.key);
+                var sortby = $('#sortby').val();
+                window.location.replace('/user/project/{{project.id}}/'+sortby+'/instance/create/'+node.key);
               }
             },
           // "copy": {name: "Copy", icon: "copy"},
@@ -263,7 +264,8 @@
                 var node = $.ui.fancytree.getNode(opt.$trigger);
                 // alert("Clicked on " + key + " on " + node);
                 if(confirm('Are you sure, You Want to delete this?')) {
-                  window.location.replace('/user/project/{{project.id}}/instance/delete/'+node.key);
+                  var sortby = $('#sortby').val(); 
+                  window.location.replace('/user/project/{{project.id}}/'+sortby+'/instance/delete/'+node.key);
                 }
               }  
             },

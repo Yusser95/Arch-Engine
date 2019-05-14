@@ -15,6 +15,15 @@
         <input id="fontSize" type="number" min="4" max="48" value="14"> pt
       </p> -->
 
+      <label>Sort By:</label>
+      <select name="sortby" id="sortby" placeholder="select method">
+        <option id="sortby-hierarchy" value="hierarchy" selected="">hierarchy</option>
+        <option id="sortby-object-type" value="object-type">obj-type</option>
+      </select>
+      <br>
+
+
+
       <label>Filter:</label>
       <input name="search" placeholder="Filter..." autocomplete="off">
       <br>
@@ -262,7 +271,8 @@
         checkbox: false,
         click: function(event, data) {
           // alert(data.node.key);
-          window.location.replace('/user/project/{{project.id}}/instance/show/'+data.node.key);
+          var sortby = $('#sortby').val(); 
+          window.location.replace('/user/project/{{project.id}}/'+sortby+'/instance/show/'+data.node.key);
         },
         init: function(event, data, flag) {
           // logEvent(event, data, "flag=" + flag);
@@ -298,7 +308,8 @@
               callback: function(key, opt){
                 var node = $.ui.fancytree.getNode(opt.$trigger);
                 // alert("Clicked on " + key + " on " + node);
-                window.location.replace('/user/project/{{project.id}}/instance/create/'+node.key);
+                var sortby = $('#sortby').val(); 
+                window.location.replace('/user/project/{{project.id}}/'+sortby+'/instance/create/'+node.key);
               }
             },
           // "copy": {name: "Copy", icon: "copy"},
@@ -308,7 +319,8 @@
               callback: function(key, opt){
                 var node = $.ui.fancytree.getNode(opt.$trigger);
                 // alert("Clicked on " + key + " on " + node);
-                window.location.replace('/user/project/{{project.id}}/instance/edit/'+node.key);
+                var sortby = $('#sortby').val(); 
+                window.location.replace('/user/project/{{project.id}}/'+sortby+'/instance/edit/'+node.key);
               }  
             },
           "delete": {name: "Delete", icon: "delete", disabled: false,
@@ -316,7 +328,8 @@
                 var node = $.ui.fancytree.getNode(opt.$trigger);
                 // alert("Clicked on " + key + " on " + node);
                 if(confirm('Are you sure, You Want to delete this?')) {
-                  window.location.replace('/user/project/{{project.id}}/instance/delete/'+node.key);
+                  var sortby = $('#sortby').val(); 
+                  window.location.replace('/user/project/{{project.id}}/'+sortby+'/instance/delete/'+node.key);
                 }
               } 
             },

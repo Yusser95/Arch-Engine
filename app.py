@@ -1132,8 +1132,8 @@ def get_instance_tree(base_page):
 			dest_dict['children'].append(get_instance_tree(child))
 	return dest_dict
 
-@app.route("/user/instance/data/tree/<id>", methods=['GET', "POST"])
-def objecttypeparentdatatreeid(id):
+@app.route("/user/instance/data/tree/<id>/<sortby>", methods=['GET', "POST"])
+def objecttypeparentdatatreeid(id,sortby):
 
 	# pick a root of the menu tree
 	root = ObjectTypeInstanceModel.query.filter_by(user_id=int(flask_login.current_user.id),id=int(id)).first() #.filter(ObjectTypeModel.object_type_id == None).all()
@@ -1158,23 +1158,23 @@ def showprojectinstance(p_id,sortby,i_id):
 			selected_instance = root_instance
 		else:
 			selected_instance = ObjectTypeInstanceModel.query.get(i_id)
-		return render_template('/user/object_instance/show.html',item=selected_instance, i_id=str(i_id), project=project, instance_data_source="/user/instance/data/tree/{}".format(str(root_instance.id)))
+		return render_template('/user/object_instance/show.html',sortby=sortby,item=selected_instance, i_id=str(i_id), project=project, instance_data_source="/user/instance/data/tree/{}/{}".format(str(root_instance.id),sortby))
 
-	return redirect('/user/project/{}/instance/create/-1'.format(str(p_id)))
+	return redirect('/user/project/{}/{}/instance/create/-1'.format(str(p_id),sortby))
 
 
-@app.route("/user/project/<p_id>/instance/delete/<i_id>" , methods =["GET"])
+@app.route("/user/project/<p_id>/<sortby>/instance/delete/<i_id>" , methods =["GET"])
 @flask_login.login_required
-def deleteprojectinstance(p_id,i_id):
+def deleteprojectinstance(p_id,sortby,i_id):
 	print("deleted " , i_id)
 	ObjectTypeInstanceModel.query.filter_by(id=i_id).delete()
 	db.session.commit()
-	return redirect('/user/project/{}/instance/show/{}'.format(str(p_id),str("-1")))#i_id)))
+	return redirect('/user/project/{}/{}/instance/show/{}'.format(str(p_id),sortby,str("-1")))#i_id)))
 
 
-@app.route("/user/project/<p_id>/instance/create/<i_id>" , methods =["GET" , "POST"])
+@app.route("/user/project/<p_id>/<sortby>/instance/create/<i_id>" , methods =["GET" , "POST"])
 @flask_login.login_required
-def createprojectinstance(p_id , i_id):
+def createprojectinstance(p_id,sortby , i_id):
 	# edit
 	if request.method == "POST":
 		object_type_id = request.form.get('object_type_id',type=int)
@@ -1205,7 +1205,7 @@ def createprojectinstance(p_id , i_id):
 		instance_id = obj.id
 		db.session.commit()
 
-		return redirect('/user/project/{}/instance/show/{}'.format(str(p_id),str(instance_id)))
+		return redirect('/user/project/{}/{}/instance/show/{}'.format(str(p_id),sortby,str(instance_id)))
 
 	# show  one row
 	elif request.method == "GET":
@@ -1214,15 +1214,15 @@ def createprojectinstance(p_id , i_id):
 		rt_id = -1
 		if root_instance:
 			rt_id = root_instance.id
-		return render_template('/user/object_instance/create.html',i_id=str(i_id), project=project, instance_data_source="/user/instance/data/tree/{}".format(str(rt_id)) ,objects_data_source="/user/object_type/children/data/{}".format(str(i_id)))
+		return render_template('/user/object_instance/create.html',sortby=sortby,i_id=str(i_id), project=project, instance_data_source="/user/instance/data/tree/{}".format(str(rt_id)) ,objects_data_source="/user/object_type/children/data/{}".format(str(i_id)))
 
 	return "404"
 
 
 
-@app.route("/user/project/<p_id>/instance/edit/<i_id>" , methods =["GET" , "POST"])
+@app.route("/user/project/<p_id>/<sortby>/instance/edit/<i_id>" , methods =["GET" , "POST"])
 @flask_login.login_required
-def editprojectinstance(p_id , i_id):
+def editprojectinstance(p_id,sortby , i_id):
 	# edit
 	if request.method == "POST":
 
@@ -1247,7 +1247,7 @@ def editprojectinstance(p_id , i_id):
 
 		instance_id = obj.id
 
-		return redirect('/user/project/{}/instance/show/{}'.format(str(p_id),str(instance_id)))
+		return redirect('/user/project/{}/{}/instance/show/{}'.format(str(p_id),sortby,str(instance_id)))
 
 	# show  one row
 	elif request.method == "GET":
@@ -1257,7 +1257,7 @@ def editprojectinstance(p_id , i_id):
 		rt_id = -1
 		if root_instance:
 			rt_id = root_instance.id
-		return render_template('/user/object_instance/edit.html',i_id=str(i_id), item=item, project=project, instance_data_source="/user/instance/data/tree/{}".format(str(rt_id)) ,objects_data_source="/user/object_type/children/data/{}".format(str(i_id)))
+		return render_template('/user/object_instance/edit.html',sortby=sortby,i_id=str(i_id), item=item, project=project, instance_data_source="/user/instance/data/tree/{}".format(str(rt_id)) ,objects_data_source="/user/object_type/children/data/{}".format(str(i_id)))
 
 	return "404"
 
