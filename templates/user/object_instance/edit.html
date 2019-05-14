@@ -314,8 +314,11 @@
               callback: function(key, opt){
                 var node = $.ui.fancytree.getNode(opt.$trigger);
                 // alert("Clicked on " + key + " on " + node);
-                var sortby = $('#sortby').val(); 
-                window.location.replace('/user/project/{{project.id}}/'+sortby+'/instance/create/'+node.key);
+                if (node.key != "-1" ){
+
+                  var sortby = $('#sortby').val(); 
+                  window.location.replace('/user/project/{{project.id}}/'+sortby+'/instance/create/'+node.key);
+                }
               }
             },
           // "copy": {name: "Copy", icon: "copy"},
@@ -325,17 +328,21 @@
               callback: function(key, opt){
                 var node = $.ui.fancytree.getNode(opt.$trigger);
                 // alert("Clicked on " + key + " on " + node);
-                var sortby = $('#sortby').val(); 
-                window.location.replace('/user/project/{{project.id}}/'+sortby+'/instance/edit/'+node.key);
+                if (node.key != "-1" ){
+                  var sortby = $('#sortby').val(); 
+                  window.location.replace('/user/project/{{project.id}}/'+sortby+'/instance/edit/'+node.key);
+                }
               } 
             },
           "delete": {name: "Delete", icon: "delete", disabled: false,
               callback: function(key, opt){
                 var node = $.ui.fancytree.getNode(opt.$trigger);
                 // alert("Clicked on " + key + " on " + node);
-                if(confirm('Are you sure, You Want to delete this?')) {
-                  var sortby = $('#sortby').val(); 
-                  window.location.replace('/user/project/{{project.id}}/'+sortby+'/instance/delete/'+node.key);
+                if (node.key != "-1" ){
+                  if(confirm('Are you sure, You Want to delete this?')) {
+                    var sortby = $('#sortby').val(); 
+                    window.location.replace('/user/project/{{project.id}}/'+sortby+'/instance/delete/'+node.key);
+                  }
                 }
               } 
             },
