@@ -1140,7 +1140,7 @@ def get_instance_type_tree(instances):
 		temp[i.object_type.name].append({'key':i.id, 'title':"{} ({})".format(i.name, i.object_type.name)})
 
 	for k in temp:
-		trees.append({'title':k,'children':temp[k],'expanded':True ,'active':False,'unselectable':True,'unselectableStatus':"selected"})
+		trees.append({'title':k,'children':temp[k],'expanded':True ,'active':False,'unselectable':True,'unselectableStatus':True})
 
 	return trees
 
