@@ -1151,7 +1151,7 @@ def objecttypeparentdatatreeid(p_id,id,sortby):
 	if sortby == "object-type":
 		instances = ObjectTypeInstanceModel.query.filter_by(user_id=int(flask_login.current_user.id),project_id=int(p_id)).all() #.filter(ObjectTypeModel.object_type_id == None).all()
 		trees = []
-		if root:
+		if instances:
 			trees = get_instance_type_tree(instances)
 
 		return jsonify(trees)
