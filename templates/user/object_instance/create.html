@@ -156,7 +156,8 @@
         $.ajax({
               url: '/validator/uniquename/instance',
               data: {
-                  name: value
+                  name: value,
+                  project_id:{{project.id}}
               },
               async:false,
               success: function(response) {

@@ -118,10 +118,11 @@ app.jinja_env.filters['datetime'] = format_datetime
 def instance_name_validator():
 	response = {'valid':'true'}
 	name = request.args.get('name')
+	project_id = request.args.get('project_id')
 	print(name)
 
 	# item = IngredientModel.query.filter_by(name=name).first()
-	item = ObjectTypeInstanceModel.query.filter(func.lower(ObjectTypeInstanceModel.name) == func.lower(name)).first()
+	item = ObjectTypeInstanceModel.query.filter(ObjectTypeInstanceModel.project_id == int(project_id),func.lower(ObjectTypeInstanceModel.name) == func.lower(name)).first()
 
 	if item:
 		response['valid'] = 'false'
