@@ -363,7 +363,7 @@
 
 
       $("#tree .fancytree-container").css("font-size",14+"pt");
-      
+
       $('#sortby').val('{{sortby}}').prop('selected', true);
 
       $("input[name=search]").on("keyup", function(e){
@@ -383,6 +383,14 @@
 
           // Pass a string to perform case insensitive matching
           n = filterFunc.call(tree, match, opts);
+      });
+
+
+      $("#sortby").on("change", function(e){
+
+        var sortby = $(this).val();
+        window.location.replace('/user/project/{{project.id}}/'+sortby+'/instance/show/-1');
+
       });
 
 

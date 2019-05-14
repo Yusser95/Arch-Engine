@@ -390,6 +390,14 @@
       });
 
 
+      $("#sortby").on("change", function(e){
+
+        var sortby = $(this).val();
+        window.location.replace('/user/project/{{project.id}}/'+sortby+'/instance/show/-1');
+
+      });
+
+
 
 
 
