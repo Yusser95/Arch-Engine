@@ -14,7 +14,7 @@ from datetime import datetime, timedelta
 import re
 from settings import *
 from urllib.parse import urlparse
-
+from collections import defaultdict
 import sys
 # from cloudinary.uploader import upload
 # from cloudinary.utils import cloudinary_url
@@ -1132,17 +1132,37 @@ def get_instance_tree(base_page):
 			dest_dict['children'].append(get_instance_tree(child))
 	return dest_dict
 
-@app.route("/user/instance/data/tree/<id>/<sortby>", methods=['GET', "POST"])
-def objecttypeparentdatatreeid(id,sortby):
+def get_instance_type_tree(instances):
+	trees = []
+	temp = defaultdict(list)
+
+	for i in instances:
+		temp[i.object_type.name].append({'key':i.id, 'title':"{} ({})".format(i.name, i.object_type.name)})
+
+	for k in temp:
+		trees.append({'key':k,'title':k,'children':temp[k],'expanded':True})
+
+	return trees
+
+@app.route("/user/<p_id>/instance/data/tree/<id>/<sortby>", methods=['GET', "POST"])
+def objecttypeparentdatatreeid(p_id,id,sortby):
 
 	# pick a root of the menu tree
-	root = ObjectTypeInstanceModel.query.filter_by(user_id=int(flask_login.current_user.id),id=int(id)).first() #.filter(ObjectTypeModel.object_type_id == None).all()
-	trees = []
-	if root:
-		tree = get_instance_tree(root)
-		trees.append(tree)
+	if sortby == "object-type":
+		instances = ObjectTypeInstanceModel.query.filter_by(user_id=int(flask_login.current_user.id),project_id=int(p_id)).all() #.filter(ObjectTypeModel.object_type_id == None).all()
+		trees = []
+		if root:
+			trees = get_instance_type_tree(instances)
 
-	return jsonify(trees)
+		return jsonify(trees)
+	else:
+		root = ObjectTypeInstanceModel.query.filter_by(user_id=int(flask_login.current_user.id),id=int(id)).first() #.filter(ObjectTypeModel.object_type_id == None).all()
+		trees = []
+		if root:
+			tree = get_instance_tree(root)
+			trees.append(tree)
+
+		return jsonify(trees)
 
 
 
@@ -1158,7 +1178,7 @@ def showprojectinstance(p_id,sortby,i_id):
 			selected_instance = root_instance
 		else:
 			selected_instance = ObjectTypeInstanceModel.query.get(i_id)
-		return render_template('/user/object_instance/show.html',sortby=sortby,item=selected_instance, i_id=str(i_id), project=project, instance_data_source="/user/instance/data/tree/{}/{}".format(str(root_instance.id),sortby))
+		return render_template('/user/object_instance/show.html',sortby=sortby,item=selected_instance, i_id=str(i_id), project=project, instance_data_source="/user/{}/instance/data/tree/{}/{}".format(str(p_id),str(root_instance.id),sortby))
 
 	return redirect('/user/project/{}/{}/instance/create/-1'.format(str(p_id),sortby))
 
@@ -1214,7 +1234,7 @@ def createprojectinstance(p_id,sortby , i_id):
 		rt_id = -1
 		if root_instance:
 			rt_id = root_instance.id
-		return render_template('/user/object_instance/create.html',sortby=sortby,i_id=str(i_id), project=project, instance_data_source="/user/instance/data/tree/{}/{}".format(str(rt_id),sortby) ,objects_data_source="/user/object_type/children/data/{}".format(str(i_id)))
+		return render_template('/user/object_instance/create.html',sortby=sortby,i_id=str(i_id), project=project, instance_data_source="/user/{}/instance/data/tree/{}/{}".format(str(p_id),str(rt_id),sortby) ,objects_data_source="/user/object_type/children/data/{}".format(str(i_id)))
 
 	return "404"
 
@@ -1257,7 +1277,7 @@ def editprojectinstance(p_id,sortby , i_id):
 		rt_id = -1
 		if root_instance:
 			rt_id = root_instance.id
-		return render_template('/user/object_instance/edit.html',sortby=sortby,i_id=str(i_id), item=item, project=project, instance_data_source="/user/instance/data/tree/{}/{}".format(str(rt_id),sortby) ,objects_data_source="/user/object_type/children/data/{}".format(str(i_id)))
+		return render_template('/user/object_instance/edit.html',sortby=sortby,i_id=str(i_id), item=item, project=project, instance_data_source="/user/{}/instance/data/tree/{}/{}".format(str(p_id),str(rt_id),sortby) ,objects_data_source="/user/object_type/children/data/{}".format(str(i_id)))
 
 	return "404"
 
