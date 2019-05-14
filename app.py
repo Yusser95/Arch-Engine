@@ -1146,10 +1146,10 @@ def objecttypeparentdatatreeid(id):
 
 
 
-@app.route("/user/project/<p_id>/instance/show/<i_id>" , methods =["GET"])
+@app.route("/user/project/<p_id>/<sortby>/instance/show/<i_id>" , methods =["GET"])
 @flask_login.login_required
-def showprojectinstance(p_id,i_id):
-	print(p_id)
+def showprojectinstance(p_id,sortby,i_id):
+	print(p_id,sortby)
 	project = ProjectModel.query.get(p_id)
 	root_instance = ObjectTypeInstanceModel.query.filter_by(project_id=int(p_id) , object_instance_id=None).first()
 	if root_instance:
