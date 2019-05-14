@@ -119,7 +119,7 @@ def instance_name_validator():
 	response = {'valid':'true'}
 	name = request.args.get('name')
 	project_id = request.args.get('project_id')
-	print(name)
+	print(project_id)
 
 	# item = IngredientModel.query.filter_by(name=name).first()
 	item = ObjectTypeInstanceModel.query.filter(func.lower(ObjectTypeInstanceModel.name) == func.lower(name)).filter_by(project_id=int(project_id)).first()
