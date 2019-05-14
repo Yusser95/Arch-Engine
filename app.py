@@ -1214,7 +1214,7 @@ def createprojectinstance(p_id,sortby , i_id):
 		rt_id = -1
 		if root_instance:
 			rt_id = root_instance.id
-		return render_template('/user/object_instance/create.html',sortby=sortby,i_id=str(i_id), project=project, instance_data_source="/user/instance/data/tree/{}".format(str(rt_id)) ,objects_data_source="/user/object_type/children/data/{}".format(str(i_id)))
+		return render_template('/user/object_instance/create.html',sortby=sortby,i_id=str(i_id), project=project, instance_data_source="/user/instance/data/tree/{}/{}".format(str(rt_id),sortby) ,objects_data_source="/user/object_type/children/data/{}".format(str(i_id)))
 
 	return "404"
 
@@ -1257,7 +1257,7 @@ def editprojectinstance(p_id,sortby , i_id):
 		rt_id = -1
 		if root_instance:
 			rt_id = root_instance.id
-		return render_template('/user/object_instance/edit.html',sortby=sortby,i_id=str(i_id), item=item, project=project, instance_data_source="/user/instance/data/tree/{}".format(str(rt_id)) ,objects_data_source="/user/object_type/children/data/{}".format(str(i_id)))
+		return render_template('/user/object_instance/edit.html',sortby=sortby,i_id=str(i_id), item=item, project=project, instance_data_source="/user/instance/data/tree/{}/{}".format(str(rt_id),sortby) ,objects_data_source="/user/object_type/children/data/{}".format(str(i_id)))
 
 	return "404"
 
