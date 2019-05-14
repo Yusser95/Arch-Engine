@@ -275,8 +275,10 @@
         checkbox: false,
         click: function(event, data) {
           // alert(data.node.key);
-          var sortby = $('#sortby').val(); 
-          window.location.replace('/user/project/{{project.id}}/'+sortby+'/instance/show/'+data.node.key);
+          if (data.node.key != "-1" ){
+            var sortby = $('#sortby').val(); 
+            window.location.replace('/user/project/{{project.id}}/'+sortby+'/instance/show/'+data.node.key);
+          }
         },
         init: function(event, data, flag) {
           // logEvent(event, data, "flag=" + flag);
