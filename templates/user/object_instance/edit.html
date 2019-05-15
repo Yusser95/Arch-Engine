@@ -406,6 +406,12 @@
 
       });
 
+      $("#create-project-form").submit(function(e){            
+            var sortby = $(this).val();
+            var url = '/user/project/{{project.id}}/'+sortby+'/instance/edit/{{i_id}}';
+            $('#create-project-form').attr('action', url); 
+        }); 
+
 
 
 
