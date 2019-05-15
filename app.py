@@ -499,6 +499,8 @@ def editobject_typ(id):
 
 		obj.name = request.form.get('name').replace(" ","_")
 		obj.desc = request.form.get('desc',default=None,type=str)
+		obj.table_revision = request.form.get('table_revision',default="",type=str)
+		obj.table_name = request.form.get('table_name',default="",type=str)
 		obj.object_type_id = request.form.get('parent',default=None,type=int)
 	
 		param_ids = request.form.getlist('param_ids[]')
@@ -559,6 +561,8 @@ def create_object_type():
 		with db.session.no_autoflush:
 			name = request.form.get('name').replace(" ","_")
 			desc = request.form.get('desc',default=None,type=str)
+			table_revision = request.form.get('table_revision',default="",type=str)
+			table_name = request.form.get('table_name',default="",type=str)
 			object_type_id = request.form.get('parent')
 
 			user_id = flask_login.current_user.id
@@ -570,7 +574,7 @@ def create_object_type():
 			parm_defalult = request.form.getlist('parm_defalult[]')
 			paramId = request.form.getlist('paramId[]')
 
-			obj = ObjectTypeModel(name=name.replace(" ","_"),desc=desc,user_id=user_id,object_type_id=object_type_id)
+			obj = ObjectTypeModel(name=name.replace(" ","_"),desc=desc,user_id=user_id,object_type_id=object_type_id,table_revision=table_revision,table_name=table_name)
 
 			for i in range(len(parm_names)):
 				p_desc = ""
@@ -1034,7 +1038,7 @@ def user_createproject():
 		project_id = obj.id
 		db.session.commit()
 
-		return redirect('/user/project/{}/instance/show/-1'.format(str(project_id)))
+		return redirect('/user/project/{}/hierarchy/instance/show/-1'.format(str(project_id)))
 
 	# show  one row
 	elif request.method == "GET":

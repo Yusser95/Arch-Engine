@@ -80,6 +80,11 @@ class ObjectTypeModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(250), unique=True, nullable=False)
     desc = db.Column(db.String(1000), unique=False, nullable=True)
+
+    table_name = db.Column(db.String(1000), unique=False, nullable=True)
+    table_revision = db.Column(db.String(1000), unique=False, nullable=True)
+
+    desc = db.Column(db.String(1000), unique=False, nullable=True)
     
 
     user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'),
@@ -100,9 +105,11 @@ class ObjectTypeModel(db.Model):
     created_at = db.Column('created_at' , db.DateTime)
 
 
-    def __init__(self , name ,desc ,user_id ,object_type_id ):
+    def __init__(self , name ,desc ,user_id ,object_type_id ,table_name ,table_revision ):
         self.name = name
         self.desc = desc
+        self.table_name = table_name
+        self.table_revision = table_revision
         self.object_type_id = object_type_id
         self.user_id = user_id
         self.created_at = datetime.utcnow()
