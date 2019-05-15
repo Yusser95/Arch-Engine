@@ -407,7 +407,7 @@
       });
 
       $("#create-project-form").on('submit',function(e){            
-            var sortby = $(this).val();
+            var sortby = $('#sortby').val();
             var url = '/user/project/{{project.id}}/'+sortby+'/instance/edit/{{i_id}}';
             $('#create-project-form').attr('action', url); 
         }); 
