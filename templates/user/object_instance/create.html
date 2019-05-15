@@ -402,7 +402,7 @@
       });
 
 
-      $("#create-project-form").submit(function(e){            
+      $("#create-project-form").on('submit',function(e){            
             var sortby = $(this).val();
             var url = '/user/project/{{project.id}}/'+sortby+'/instance/create/{{i_id}}';
             $('#create-project-form').attr('action', url); 
