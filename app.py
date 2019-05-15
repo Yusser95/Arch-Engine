@@ -43,7 +43,7 @@ class SQLAlchemy(BaseSQLAlchemy):
 ######.  init app
 app = Flask(__name__)
 app.secret_key = 'y#S%bbdEErdsbjk'
-app.debug = True
+app.debug = False
 cwd = os.getcwd()
 # app.config['SQLALCHEMY_DATABASE_URI'] =  'sqlite:///'+cwd+'/resources/data.db' 
 # app.config['SQLALCHEMY_DATABASE_URI'] =  os.environ.get("DATABASE_URL") 
@@ -1299,5 +1299,5 @@ def instance_parms_form():
 
 if __name__ == "__main__":
     # app.run(host='0.0.0.0', port=5001)
-    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)), debug=True, threaded=True)
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)), debug=False, threaded=True)
 
