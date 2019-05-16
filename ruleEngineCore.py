@@ -37,6 +37,8 @@ class DynamicRuleEngine():
             temp_parms2= []
             if childs_parents:
                 temp_parms2.append(childs_parents)
+            else:
+                temp_parms2.append("parent = ''")
             for i in obj.parms:
                 temp_parms.append(i.param.name)
             for i in obj.object_type.parms:
