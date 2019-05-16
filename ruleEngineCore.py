@@ -75,8 +75,8 @@ class DynamicRuleEngine():
                 attributs+= tmp1 +"  ,  "
 
             temp2 = ["'{}' : {}".format(i.name ,i.name) for i in obj.childs]
-            if childs_parents:
-                temp2.append(childs_parents)
+            # if childs_parents:
+                # temp2.append(childs_parents)
             exec_env = "{"+",".join(temp2)+"}" #str({i.name:i.name for i in obj.childs})
         
 
