@@ -86,7 +86,7 @@ class DynamicRuleEngine():
         
         line = re.sub(r"\\nparent = '.*'\\n", r"\n", attributs.replace("  ,  ",r"\n"))
 
-        attributs += '{} = "{}"'.format("att_str",str(r"\n"+line+r"\n"))
+        attributs += '{} = "{}"'.format("att_str",str(r"\n"+r"{}".format(line)+r"\n"))
         attributs += ",{} = '{}'".format("logging",r"""\ninner_logs=[]\ndef add_to_log(error):\n\tinner_logs.append(error)\n""")
         attributs += ',{} = {}'.format("exec_env",exec_env)
 
