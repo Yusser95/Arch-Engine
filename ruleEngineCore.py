@@ -34,7 +34,9 @@ class DynamicRuleEngine():
 
         if obj.object_type.parms:
             temp_parms = []
-            temp_parms2= [childs_parents]
+            temp_parms2= []
+            if childs_parents:
+                temp_parms2.append(childs_parents)
             for i in obj.parms:
                 temp_parms.append(i.param.name)
             for i in obj.object_type.parms:
