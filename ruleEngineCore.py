@@ -294,7 +294,7 @@ class DynamicRuleEngine():
 
         self.logs.extend(x.data)
         sys.stdout = sys.__stdout__
-
+        print(self.base)
         return True
 
         
