@@ -104,7 +104,7 @@ class DynamicRuleEngine():
         attributs += ',{} = "{}"'.format("rule_str",str(r"\n"+rule_to_add+r"\n"))
 
 
-        return "{} = {}({})\ng['{}']={}".format(obj.name,obj.object_type.name,attributs,obj.name,obj.name) ,"\n{}.set_parent()\n{}.check_rules()\nlogs.extend({}.logs)".format(obj.name,obj.name,obj.name)
+        return "{} = {}({})\ng['{}']={}".format(obj.name,obj.object_type.name,attributs,obj.name,obj.name) ,"\n{}.set_parent()".format(obj.name) ,"\n{}.check_rules()\nlogs.extend({}.logs)".format(obj.name,obj.name,obj.name)
 
     def get_type(self, type_id):
         def proccess_boolean(x):
@@ -144,14 +144,15 @@ class DynamicRuleEngine():
 
 
     def instances_generation(self, root_obj):
-        instances_str ,check_rules_str = self.ORMScriptClassInstanceGeneration(root_obj)
+        instances_str,set_parent_str ,check_rules_str = self.ORMScriptClassInstanceGeneration(root_obj)
         children = root_obj.childs
         if children:
             for child in children:
-                inst_str ,check_str = self.instances_generation(child)
+                inst_str,parent_str ,check_str = self.instances_generation(child)
                 instances_str = inst_str +"\n"+instances_str
                 check_rules_str = check_str +"\n"+ check_rules_str
-        return instances_str ,check_rules_str
+                set_parent_str = parent_str +"\n"+ set_parent_str
+        return instances_str,set_parent_str ,check_rules_str
 
 
 
@@ -201,8 +202,9 @@ class DynamicRuleEngine():
 
         
             self.base2+= self.classes_generation(objects)
-            temp_base2 ,temp_base3 = self.instances_generation(instances_root)
+            temp_base2 ,temp_base4,temp_base3 = self.instances_generation(instances_root)
             self.base2 += temp_base2
+            self.base3 += temp_base4
             self.base3 += temp_base3
             # print(self.base2)
 
