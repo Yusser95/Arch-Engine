@@ -84,7 +84,7 @@ class DynamicRuleEngine():
                 # temp2.append(childs_parents)
             exec_env = "{"+",".join(temp2)+"}" #str({i.name:i.name for i in obj.childs})
         
-        line = re.sub(r"\nparent = '.*'\n", "\n", attributs.replace("  ,  ",r"\n"))
+        line = re.sub(r"\nparent = '.*'\n", r"\n", attributs.replace("  ,  ",r"\n"))
 
         attributs += '{} = "{}"'.format("att_str",str(r"\n"+line+r"\n"))
         attributs += ",{} = '{}'".format("logging",r"""\ninner_logs=[]\ndef add_to_log(error):\n\tinner_logs.append(error)\n""")
