@@ -1,6 +1,5 @@
 from collections import defaultdict
 import sys
-import re
 
 class ListStream:
     def __init__(self):
@@ -13,10 +12,9 @@ class DynamicRuleEngine():
     def __init__(self):
 
         self.logs = []
-        self.base1 ="""g={}\nclass BaseClass(object):\n\tdef __init__(self, classtype):\n\t\tself._type = classtype\n\ndef ClassFactory(name, argnames=[], BaseClass=BaseClass):\n\tdef __init__(self, **kwargs):\n\t\tsetattr(self, "logs", [])\n\t\tfor key, value in kwargs.items():\n\t\t\tif argnames:\n\t\t\t\tif key not in argnames:\n\t\t\t\t\traise TypeError("Argument %s not valid for %s" % (key, self.__class__.__name__))\n\t\t\tsetattr(self, key, value)\n\t\tBaseClass.__init__(self, name)\n\tdef check_rules(self):\n\t\ttry:\n\t\t\tbase=self.logging+self.att_str+self.rule_str\n\t\t\tcodeobj = compile(base, 'fakemodule', 'exec')\n\t\t\tself.env = self.exec_env\n\t\t\tglobal g\n\t\t\tself.env['parent']=self.parent\n\t\t\tself.env['self']=self\n\t\t\texec(codeobj,self.env,self.env)\n\t\t\tself.logs.extend(self.env.get('inner_logs'))\n\t\texcept SyntaxError as e:\n\t\t\tself.logs.append('[error][check_rules][SyntaxError]: '+str(e)+' Syntax error {} ({}-{}): {}'.format(e.filename, e.lineno, e.offset, e.text))\n\t\t\tself.logs.extend(x.data)\n\t\t\treturn False\n\t\texcept Exception as e:\n\t\t\tself.logs.append('[error][check_rules][Exception]: '+str(e))\n\t\t\tself.logs.extend(x.data)\n\t\t\treturn False\n\t\texcept RuntimeError as e:\n\t\t\tself.logs.append('[error][check_rules][RuntimeError]: '+str(e))\n\t\t\tself.logs.extend(x.data)\n\t\t\treturn False\n\tdef set_parent(self):\n\t\tglobal g\n\t\tself.parent=g.get(self.parent)\n\tnewclass = type(name, (BaseClass,),{"__init__": __init__,"check_rules":check_rules,"set_parent":set_parent})\n\treturn newclass"""
+        self.base1 ="""class BaseClass(object):\n\tdef __init__(self, classtype):\n\t\tself._type = classtype\n\ndef ClassFactory(name, argnames=[], BaseClass=BaseClass):\n\tdef __init__(self, **kwargs):\n\t\tsetattr(self, "logs", [])\n\t\tfor key, value in kwargs.items():\n\t\t\tif argnames:\n\t\t\t\tif key not in argnames:\n\t\t\t\t\traise TypeError("Argument %s not valid for %s" % (key, self.__class__.__name__))\n\t\t\tsetattr(self, key, value)\n\t\tBaseClass.__init__(self, name)\n\tdef check_rules(self):\n\t\ttry:\n\t\t\tbase=self.logging+self.att_str+self.rule_str\n\t\t\tcodeobj = compile(base, 'fakemodule', 'exec')\n\t\t\tself.env = self.exec_env\n\t\t\texec(codeobj,self.env,self.env)\n\t\t\tself.logs.extend(self.env.get('inner_logs'))\n\t\texcept SyntaxError as e:\n\t\t\tself.logs.append('[error][check_rules][SyntaxError]: '+str(e)+' Syntax error {} ({}-{}): {}'.format(e.filename, e.lineno, e.offset, e.text))\n\t\t\tself.logs.extend(x.data)\n\t\t\treturn False\n\t\texcept Exception as e:\n\t\t\tself.logs.append('[error][check_rules][Exception]: '+str(e))\n\t\t\tself.logs.extend(x.data)\n\t\t\treturn False\n\t\texcept RuntimeError as e:\n\t\t\tself.logs.append('[error][check_rules][RuntimeError]: '+str(e))\n\t\t\tself.logs.extend(x.data)\n\t\t\treturn False\n\tnewclass = type(name, (BaseClass,),{"__init__": __init__,"check_rules":check_rules})\n\treturn newclass"""
         
         self.base2 = """\nlogs=[]\ndef add_to_log(error):\n\tlogs.append(error)\n"""
-        self.base3 = ""
 
         self.rules = """\n"""
         
@@ -27,41 +25,20 @@ class DynamicRuleEngine():
     def ORMScriptClassInstanceGeneration(self, obj):
         attributs = ""
         exec_env = "{}"
-        childs_parents = ""
-
-        if obj.parent:
-            # childs_parents += r"'parent' : '{}'".format(obj.parent.name)
-            childs_parents += r"parent = '{}'".format(obj.parent.name)
-
         if obj.object_type.parms:
             temp_parms = []
             temp_parms2= []
-            if childs_parents:
-                temp_parms2.append(childs_parents)
-            else:
-                temp_parms2.append("parent = ''")
             for i in obj.parms:
                 temp_parms.append(i.param.name)
             for i in obj.object_type.parms:
                 if i.name not in temp_parms:
                     temp_parms2.append("{} = {}".format(i.name ,"None"))
 
-            # temp_parms = ["{} = '{}'".format(i.param.name ,i.value) for i in obj.parms]
-            temp_parms = []
-            for i in obj.parms:
-                param_type = self.get_type(i.param.param_type)
-                if param_type == str:
-                    temp_parms.append("{} = '{}'".format(i.param.name ,param_type(i.value)))
-                else:
-                    temp_parms.append("{} = {}".format(i.param.name ,param_type(i.value)))
-
-            # sys.stdout = sys.__stdout__
-            # print("temp_parms : " , temp_parms ,"*"*100)
-
+            temp_parms = ["{} = '{}'".format(i.param.name ,i.value) for i in obj.parms]
             temp_parms.extend(temp_parms2)
-            attributs += "  ,  ".join(temp_parms)
+            attributs += ", ".join(temp_parms)
             if attributs:
-                attributs+= "  ,  "
+                attributs+= ", "
         if obj.object_type.childs:
 
             chids_Arrays = {}
@@ -72,21 +49,17 @@ class DynamicRuleEngine():
             for i in obj.childs:
                 chids_Arrays[i.object_type.name+"s"].append(i.name)
 
-            tmp1 =  "  ,  ".join(["{} = {}".format(k,str("["+",".join(chids_Arrays[k])+"]")) for k in chids_Arrays])
+            tmp1 =  ", ".join(["{} = {}".format(k,str("["+",".join(chids_Arrays[k])+"]")) for k in chids_Arrays])
             if tmp1:
-                attributs+= tmp1 +"  ,  "
-            tmp1 =  "  ,  ".join(["{} = {}".format(i.name ,i.name) for i in obj.childs])
+                attributs+= tmp1 +", "
+            tmp1 =  ", ".join(["{} = {}".format(i.name ,i.name) for i in obj.childs])
             if tmp1:
-                attributs+= tmp1 +"  ,  "
+                attributs+= tmp1 +", "
 
-            temp2 = ["'{}' : {}".format(i.name ,i.name) for i in obj.childs]
-            # if childs_parents:
-                # temp2.append(childs_parents)
-            exec_env = "{"+",".join(temp2)+"}" #str({i.name:i.name for i in obj.childs})
+            exec_env = "{"+",".join(["'{}' : {}".format(i.name ,i.name) for i in obj.childs])+"}" #str({i.name:i.name for i in obj.childs})
+
         
-        line = re.sub(r"\\nparent = '.*'\\n", r"\\n", attributs.replace("  ,  ",r"\n"))
-
-        attributs += '{} = "{}"'.format("att_str",str(r"\n"+line+r"\n"))
+        attributs += '{} = "{}"'.format("att_str",str(r"\n"+attributs.replace(", ",r"\n")+r"\n"))
         attributs += ",{} = '{}'".format("logging",r"""\ninner_logs=[]\ndef add_to_log(error):\n\tinner_logs.append(error)\n""")
         attributs += ',{} = {}'.format("exec_env",exec_env)
 
@@ -105,36 +78,8 @@ class DynamicRuleEngine():
             rule_to_add += self.create_validation_rule( i.name, r"{}".format(syntax))
         attributs += ',{} = "{}"'.format("rule_str",str(r"\n"+rule_to_add+r"\n"))
 
+        return "{} = {}({})\n{}.check_rules()\nlogs.extend({}.logs)".format(obj.name,obj.object_type.name,attributs ,obj.name,obj.name)
 
-        return "{} = {}({})\ng['{}']={}".format(obj.name,obj.object_type.name,attributs,obj.name,obj.name) ,"\n{}.set_parent()".format(obj.name) ,"\n{}.check_rules()\nlogs.extend({}.logs)".format(obj.name,obj.name,obj.name)
-
-    def get_type(self, type_id):
-        def proccess_boolean(x):
-            if type(x) is str:
-                x= x.strip().lower()
-                if x == "true":
-                    return True
-                else:
-                    return False
-            else:
-                return bool(x)
-
-        def proccess_list(x):
-            # sys.stdout = sys.__stdout__
-            # print("x : " , x ,"*"*100)
-            return list(eval(x))
-
-        def proccess_dict(x):
-            return dict(eval(x))
-
-        self.types = {"string":str,"integer":int,"boolean":proccess_boolean,"float":float,"list":proccess_list,"dict":proccess_dict}
-
-        # types = [{"id":1,"text":"string"},{"id":2,"text":"integer"},{"id":3,"text":"boolean"},{"id":4,"text":"float"},{"id":5,"text":"list"},{"id":6,"text":"dict"}]
-        # sys.stdout = sys.__stdout__
-
-        # print("type_id : " , type_id ,"*"*100)
-
-        return self.types.get(str(type_id))
 
 
     def classes_generation(self, objects):
@@ -146,15 +91,13 @@ class DynamicRuleEngine():
 
 
     def instances_generation(self, root_obj):
-        instances_str,set_parent_str ,check_rules_str = self.ORMScriptClassInstanceGeneration(root_obj)
+        instances_str = self.ORMScriptClassInstanceGeneration(root_obj)
         children = root_obj.childs
         if children:
             for child in children:
-                inst_str,parent_str ,check_str = self.instances_generation(child)
+                inst_str = self.instances_generation(child)
                 instances_str = inst_str +"\n"+instances_str
-                check_rules_str = check_str +"\n"+ check_rules_str
-                set_parent_str = parent_str +"\n"+ set_parent_str
-        return instances_str,set_parent_str ,check_rules_str
+        return instances_str
 
 
 
@@ -197,57 +140,13 @@ class DynamicRuleEngine():
     def fit(self, objects, instances_root):
         sys.stdout = x = ListStream()
 
-
-        try:
-
-
-
         
-            self.base2+= self.classes_generation(objects)
-            temp_base2 ,temp_base4,temp_base3 = self.instances_generation(instances_root)
-            self.base2 += temp_base2
-            self.base3 += temp_base4
-            self.base3 += temp_base3
-            # print(self.base2)
-
-
-        except SyntaxError as e:
-            self.add_to_log('[error][run][SyntaxError]: '+str(e)+"\n"+'Syntax error {} ({}-{}): {}'.format(e.filename, e.lineno, e.offset, e.text))
-
-            self.logs.extend(x.data)
-            sys.stdout = sys.__stdout__
-
-            return False
-
-        except RuntimeError as e:
-            if "name 'x' is not defined" in  str(e):
-                self.add_to_log('[error][run][Exception]: '+" trying to use undefined parameter check rules parms names")
-            else:
-                self.add_to_log('[error][run][RuntimeError]: '+str(e))
-            
-            self.logs.extend(x.data)
-            sys.stdout = sys.__stdout__
-
-            return False
-
-        except Exception as e:
-            if "name 'x' is not defined" in  str(e):
-                self.add_to_log('[error][run][Exception]: '+" trying to use undefined parameter check rules parms names")
-            else:
-                self.add_to_log('[error][run][Exception]: '+str(e))
-
-
-            
-            self.logs.extend(x.data)
-            sys.stdout = sys.__stdout__
-
-            return False
-        
+        self.base2+= self.classes_generation(objects)
+        self.base2+= self.instances_generation(instances_root)
+        # print(self.base2)
 
         self.logs.extend(x.data)
         sys.stdout = sys.__stdout__
-
-        return True
 
         
         
@@ -257,7 +156,7 @@ class DynamicRuleEngine():
 
 
         try:
-            self.base = self.base1 + self.base2+ self.base3 + self.rules
+            self.base = self.base1 + self.base2 + self.rules
             # self.base+="\nprint('finished with no errors yeaah !!')"
             # print(self.base)
             codeobj = compile(self.base, 'fakemodule', 'exec')
@@ -273,37 +172,26 @@ class DynamicRuleEngine():
             print(self.base)
 
             return False
-
-        except RuntimeError as e:
-            if "name 'x' is not defined" in  str(e):
-                self.add_to_log('[error][run][Exception]: '+" trying to use undefined parameter check rules parms names")
-            else:
-                self.add_to_log('[error][run][RuntimeError]: '+str(e))
-            
-            self.logs.extend(x.data)
-            sys.stdout = sys.__stdout__
-            print(self.base)
-
-            return False
-
         except Exception as e:
-            if "name 'x' is not defined" in  str(e):
-                self.add_to_log('[error][run][Exception]: '+" trying to use undefined parameter check rules parms names")
-            else:
-                self.add_to_log('[error][run][Exception]: '+str(e))
-
-
+            self.add_to_log('[error][run][Exception]: '+str(e))
             
             self.logs.extend(x.data)
             sys.stdout = sys.__stdout__
             print(self.base)
 
             return False
-        
+        except RuntimeError as e:
+            self.add_to_log('[error][run][RuntimeError]: '+str(e))
+            
+            self.logs.extend(x.data)
+            sys.stdout = sys.__stdout__
+            print(self.base)
+
+            return False
 
         self.logs.extend(x.data)
         sys.stdout = sys.__stdout__
-        print(self.base)
+
         return True
 
         

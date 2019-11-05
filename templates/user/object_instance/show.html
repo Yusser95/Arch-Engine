@@ -17,18 +17,6 @@
         <input id="fontSize" type="number" min="4" max="48" value="14"> pt
       </p> -->
 
-      <label>Sort By:</label>
-      <select name="sortby" id="sortby" placeholder="select method">
-        <option id="sortby-hierarchy" value="hierarchy" selected="">hierarchy</option>
-        <option id="sortby-object-type" value="object-type">obj-type</option>
-      </select>
-      <br>
-
-      <label>Filter:</label>
-      <input name="search" placeholder="Filter..." autocomplete="off">
-      <br>
-
-
       <!-- Tree wrapper -->
       <!-- <div id="tree"></div> -->
 
@@ -170,7 +158,7 @@
 <script src={{ url_for('static',filename="fancytree/jquery.fancytree.dnd5.js")}}></script>
 <script src={{ url_for('static',filename="fancytree/jquery.fancytree.edit.js")}}></script>
 <script src={{ url_for('static',filename="fancytree/jquery.fancytree.glyph.js")}}></script>
-<script src={{ url_for('static',filename="fancytree/jquery.fancytree.filter.js")}}></script>
+<!-- <script src={{ url_for('static',filename="fancytree/jquery.fancytree.table.js")}}></script> -->
 <script src={{ url_for('static',filename="fancytree/jquery.fancytree.wide.js")}}></script>
 <script src="//cdn.jsdelivr.net/npm/jquery-contextmenu@2.6.4/dist/jquery.contextMenu.min.js">
 </script>
@@ -189,29 +177,13 @@
 
 
       $("#tree").fancytree({
-        extensions: ["dnd5", "edit", "glyph", "wide","filter"],
+        extensions: ["dnd5", "edit", "glyph", "wide"],
         glyph: glyph_opts,
-        quicksearch: true,
-        filter: {
-        autoApply: true,   // Re-apply last filter if lazy data is loaded
-        autoExpand: true, // Expand all branches that contain matches while filtered
-        counter: false,     // Show a badge with number of matching child nodes near parent icons
-        fuzzy: false,      // Match single characters in order, e.g. 'fb' will match 'FooBar'
-        hideExpandedCounter: true,  // Hide counter badge if parent is expanded
-        hideExpanders: false,       // Hide expanders if all child nodes are hidden by filter
-        highlight: true,   // Highlight matches by wrapping inside <mark> tags
-        leavesOnly: false, // Match end nodes only
-        nodata: true,      // Display a 'no data' status node if result is empty
-        mode: "hide" //"dimm"       // Grayout unmatched nodes (pass "hide" to remove unmatched node instead)
-      },
 
         checkbox: false,
         click: function(event, data) {
           // alert(data.node.key);
-          if (data.node.key != "-1" ){
-            var sortby = $('#sortby').val(); 
-            window.location.replace('/user/project/{{project.id}}/'+sortby+'/instance/show/'+data.node.key);
-          }
+          window.location.replace('/user/project/{{project.id}}/instance/show/'+data.node.key);
         },
         init: function(event, data, flag) {
           // logEvent(event, data, "flag=" + flag);
@@ -246,10 +218,7 @@
               callback: function(key, opt){
                 var node = $.ui.fancytree.getNode(opt.$trigger);
                 // alert("Clicked on " + key + " on " + node);
-                if (node.key != "-1" ){
-                  var sortby = $('#sortby').val();
-                  window.location.replace('/user/project/{{project.id}}/'+sortby+'/instance/create/'+node.key);
-                }
+                window.location.replace('/user/project/{{project.id}}/instance/create/'+node.key);
               }
             },
           // "copy": {name: "Copy", icon: "copy"},
@@ -259,21 +228,15 @@
               callback: function(key, opt){
                 var node = $.ui.fancytree.getNode(opt.$trigger);
                 // alert("Clicked on " + key + " on " + node);
-                if (node.key != "-1" ){
-                  var sortby = $('#sortby').val(); 
-                  window.location.replace('/user/project/{{project.id}}/'+sortby+'/instance/edit/'+node.key);
-                }
+                window.location.replace('/user/project/{{project.id}}/instance/edit/'+node.key);
               }  
             },
           "delete": {name: "Delete", icon: "delete", disabled: false,
               callback: function(key, opt){
                 var node = $.ui.fancytree.getNode(opt.$trigger);
                 // alert("Clicked on " + key + " on " + node);
-                if (node.key != "-1" ){
-                  if(confirm('Are you sure, You Want to delete this?')) {
-                    var sortby = $('#sortby').val(); 
-                    window.location.replace('/user/project/{{project.id}}/'+sortby+'/instance/delete/'+node.key);
-                  }
+                if(confirm('Are you sure, You Want to delete this?')) {
+                  window.location.replace('/user/project/{{project.id}}/instance/delete/'+node.key);
                 }
               }  
             },
@@ -357,41 +320,9 @@
 
       $("#tree .fancytree-container").css("font-size",14+"pt");
 
-      $('#sortby').val('{{sortby}}').prop('selected', true);
-
-
-
-      $("input[name=search]").on("keyup", function(e){
-        var n,
-          tree = $.ui.fancytree.getTree(),
-          args = "autoApply autoExpand fuzzy hideExpanders highlight leavesOnly nodata".split(" "),
-          opts = {},
-          filterFunc = $("#branchMode").is(":checked") ? tree.filterBranches : tree.filterNodes,
-          match = $(this).val();
-
-
-        if(e && e.which === $.ui.keyCode.ESCAPE || $.trim(match) === ""){
-          $("input[name=search]").val("");
-          tree.clearFilter();
-          return;
-        }
-
-          // Pass a string to perform case insensitive matching
-          n = filterFunc.call(tree, match, opts);
-      });
-
-
-      $("#sortby").on("change", function(e){
-
-        var sortby = $(this).val();
-        window.location.replace('/user/project/{{project.id}}/'+sortby+'/instance/show/-1');
-
-      });
-
 
 
     });
-
     </script>
 
 {% endblock %}

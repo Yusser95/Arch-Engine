@@ -42,17 +42,6 @@
                   </select>
                 </div>
 
-                <div class="form-group">
-                    <label for="table_name">table name</label>
-                    <input type="text" class="form-control" id="table_name" name="table_name" value="{{item.table_name}}" placeholder="Enter table name" >
-                  </div>
-
-
-                  <div class="form-group">
-                    <label for="table_revision">table revision</label>
-                    <input type="text" class="form-control" id="table_revision" name="table_revision" value="{{item.table_revision}}" placeholder="Enter table revision">
-                  </div>
-
                 <br>
 
 
@@ -68,8 +57,6 @@
 
                           <input type="hidden"  id="param_ids" name="param_ids[]" value="{{i.id}}" />
 
-                          <input type="text" class="form-control" id="paramId" name="paramId[]" placeholder="Enter paramId" {% if i.paramId and i.paramId != "None" %} value="{{i.paramId}}"{% endif %} />
-
 
                           <input type="text" class="form-control" id="parm_names" name="parm_names[]" placeholder="Enter param name" value="{{i.name}}" required="" />
 
@@ -77,8 +64,6 @@
                           <div class="form-control"><select class="select2" name="param_types[]" data-placeholder="Enter param type" required="">
                             <option id="{{i.id}}" value="{{i.param_type}}" selected="">{{i.param_type}}</option>
                           </select></div>
-
-                          <input type="text" class="form-control" id="parm_defalult" name="parm_defalult[]" placeholder="Enter param default value"{% if i.default_value and i.default_value != "None" %} value="{{i.default_value}}"{% endif %}  />
 
                           <textarea rows = "1" class="form-control" style="width: 100%;" id="param_desc" name="param_desc[]" placeholder="Enter param descreption">{{i.desc}}</textarea>
 
@@ -247,14 +232,10 @@
 
                           '<input type="hidden"  id="param_ids" name="param_ids[]" value="" />'+
 
-                          '<input type="text" class="form-control" id="paramId" name="paramId[]" placeholder="Enter paramId" />'+
-
 
                           '<input type="text" class="form-control" id="parm_names" name="parm_names[]" placeholder="Enter param name" required="" />'+
 
                           '<div class="form-control"><select class="select2" id="param-'+fileId+'" name="param_types[]" data-placeholder="Enter param type" required=""></select></div>'+
-
-                          '<input type="text" class="form-control" id="parm_defalult" name="parm_defalult[]" placeholder="Enter param default value" />'+
 
                           '<textarea rows = "1" class="form-control" style="width: 100%;" id="param_desc" name="param_desc[]" placeholder="Enter param descreption"></textarea>'+
 

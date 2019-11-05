@@ -14,7 +14,7 @@ from datetime import datetime, timedelta
 import re
 from settings import *
 from urllib.parse import urlparse
-from collections import defaultdict
+
 import sys
 # from cloudinary.uploader import upload
 # from cloudinary.utils import cloudinary_url
@@ -43,7 +43,7 @@ class SQLAlchemy(BaseSQLAlchemy):
 ######.  init app
 app = Flask(__name__)
 app.secret_key = 'y#S%bbdEErdsbjk'
-app.debug = False
+app.debug = True
 cwd = os.getcwd()
 # app.config['SQLALCHEMY_DATABASE_URI'] =  'sqlite:///'+cwd+'/resources/data.db' 
 # app.config['SQLALCHEMY_DATABASE_URI'] =  os.environ.get("DATABASE_URL") 
@@ -70,6 +70,7 @@ login_manager.init_app(app)
 
 from models import *
 
+# c
 # db.create_all()
  
 # ScheduleLog.__table__.create(db.session.bind)
@@ -118,11 +119,10 @@ app.jinja_env.filters['datetime'] = format_datetime
 def instance_name_validator():
 	response = {'valid':'true'}
 	name = request.args.get('name')
-	project_id = request.args.get('project_id')
-	print(project_id)
+	print(name)
 
 	# item = IngredientModel.query.filter_by(name=name).first()
-	item = ObjectTypeInstanceModel.query.filter(func.lower(ObjectTypeInstanceModel.name) == func.lower(name)).filter_by(project_id=int(project_id)).first()
+	item = ObjectTypeInstanceModel.query.filter(func.lower(ObjectTypeInstanceModel.name) == func.lower(name)).first()
 
 	if item:
 		response['valid'] = 'false'
@@ -428,7 +428,7 @@ def recipekitsdata():
 	params = request.args.to_dict()
 	print(params)
 
-	types = [{"id":1,"text":"string"},{"id":2,"text":"integer"},{"id":3,"text":"boolean"},{"id":4,"text":"float"},{"id":5,"text":"list"},{"id":6,"text":"dict"}]
+	types = [{"id":1,"text":"string"},{"id":2,"text":"integer"},{"id":3,"text":"boolean"}]
 
 	q= params['q']
 	if q:
@@ -499,17 +499,13 @@ def editobject_typ(id):
 
 		obj.name = request.form.get('name').replace(" ","_")
 		obj.desc = request.form.get('desc',default=None,type=str)
-		obj.table_revision = request.form.get('table_revision',default="",type=str)
-		obj.table_name = request.form.get('table_name',default="",type=str)
 		obj.object_type_id = request.form.get('parent',default=None,type=int)
 	
 		param_ids = request.form.getlist('param_ids[]')
 		param_types = request.form.getlist('param_types[]')
 		parm_names = request.form.getlist('parm_names[]')
 		param_desc = request.form.getlist('param_desc[]')
-		parm_defalult = request.form.getlist('parm_defalult[]')
-		paramId = request.form.getlist('paramId[]')
-		# print(param_desc)
+		print(param_desc)
 
 
 
@@ -524,14 +520,12 @@ def editobject_typ(id):
 
 			Param = OnjectTypeParamModel.query.get(param_ids[i])#filter_by(object_type_id=int(id),name=parm_names[i],desc=p_desc,param_type=param_types[i]).first()
 			if not Param:
-				Param = OnjectTypeParamModel(name=parm_names[i].replace(" ","_"),desc=p_desc,param_type=param_types[i],default_value=parm_defalult[i].replace('"',"'"),paramId=paramId[i])
+				Param = OnjectTypeParamModel(name=parm_names[i].replace(" ","_"),desc=p_desc,param_type=param_types[i])
 				obj.parms.append(Param)
 			else:
 				Param.name=parm_names[i].replace(" ","_")
 				Param.desc=p_desc
 				Param.param_type=param_types[i]
-				Param.default_value=parm_defalult[i].replace('"',"'")
-				Param.paramId = paramId[i]
 				db.session.commit()
 
 			new_parms.append(Param)
@@ -561,8 +555,6 @@ def create_object_type():
 		with db.session.no_autoflush:
 			name = request.form.get('name').replace(" ","_")
 			desc = request.form.get('desc',default=None,type=str)
-			table_revision = request.form.get('table_revision',default="",type=str)
-			table_name = request.form.get('table_name',default="",type=str)
 			object_type_id = request.form.get('parent')
 
 			user_id = flask_login.current_user.id
@@ -571,10 +563,9 @@ def create_object_type():
 			param_types = request.form.getlist('param_types[]')
 			parm_names = request.form.getlist('parm_names[]')
 			param_desc = request.form.getlist('param_desc[]')
-			parm_defalult = request.form.getlist('parm_defalult[]')
-			paramId = request.form.getlist('paramId[]')
 
-			obj = ObjectTypeModel(name=name.replace(" ","_"),desc=desc,user_id=user_id,object_type_id=object_type_id,table_revision=table_revision,table_name=table_name)
+
+			obj = ObjectTypeModel(name=name.replace(" ","_"),desc=desc,user_id=user_id,object_type_id=object_type_id)
 
 			for i in range(len(parm_names)):
 				p_desc = ""
@@ -582,7 +573,7 @@ def create_object_type():
 					p_desc = param_desc[i]
 				except KeyError as e:
 					pass
-				Param = OnjectTypeParamModel(name=parm_names[i].replace(" ","_"),desc=p_desc,param_type=param_types[i],default_value=parm_defalult[i].replace('"',"'"),paramId=paramId[i])
+				Param = OnjectTypeParamModel(name=parm_names[i].replace(" ","_"),desc=p_desc,param_type=param_types[i])
 				obj.parms.append(Param)
 
 			db.session.add(obj)
@@ -616,11 +607,7 @@ def editobject_type_rules(id):
 		param_ids = request.form.getlist('param_ids[]')
 		parm_names = request.form.getlist('parm_names[]')
 		param_desc = request.form.getlist('param_desc[]')
-
-		ruleId = request.form.getlist('ruleId[]')
-		reference = request.form.getlist('reference[]')
-		discipline = request.form.getlist('discipline[]')
-		# print(param_ids)
+		print(param_ids)
 
 
 
@@ -636,14 +623,11 @@ def editobject_type_rules(id):
 
 			Rule = OnjectTypeRuleModel.query.get(param_ids[i])
 			if not Rule:
-				Rule = OnjectTypeRuleModel(name=parm_names[i],syntax=p_desc,ruleId =ruleId[i],reference =reference[i],discipline=discipline[i])
+				Rule = OnjectTypeRuleModel(name=parm_names[i],syntax=p_desc)
 				obj.rules.append(Rule)
 			else:
 				Rule.name=parm_names[i]
 				Rule.syntax=p_desc
-				Rule.ruleId =ruleId[i]
-				Rule.reference =reference[i]
-				Rule.discipline=discipline[i]
 				db.session.commit()
 
 
@@ -1038,7 +1022,7 @@ def user_createproject():
 		project_id = obj.id
 		db.session.commit()
 
-		return redirect('/user/project/{}/hierarchy/instance/show/-1'.format(str(project_id)))
+		return redirect('/user/project/{}/instance/show/-1'.format(str(project_id)))
 
 	# show  one row
 	elif request.method == "GET":
@@ -1136,44 +1120,24 @@ def get_instance_tree(base_page):
 			dest_dict['children'].append(get_instance_tree(child))
 	return dest_dict
 
-def get_instance_type_tree(instances):
-	trees = []
-	temp = defaultdict(list)
-
-	for i in instances:
-		temp[i.object_type.name].append({'key':i.id, 'title':"{} ({})".format(i.name, i.object_type.name)})
-
-	for k in temp:
-		trees.append({'key':'-1','title':k,'children':temp[k],'expanded':True ,'active':False })#,'unselectable':True,'unselectableStatus':"unselectable"})
-
-	return trees
-
-@app.route("/user/<p_id>/instance/data/tree/<id>/<sortby>", methods=['GET', "POST"])
-def objecttypeparentdatatreeid(p_id,id,sortby):
+@app.route("/user/instance/data/tree/<id>", methods=['GET', "POST"])
+def objecttypeparentdatatreeid(id):
 
 	# pick a root of the menu tree
-	if sortby == "object-type":
-		instances = ObjectTypeInstanceModel.query.filter_by(user_id=int(flask_login.current_user.id),project_id=int(p_id)).all() #.filter(ObjectTypeModel.object_type_id == None).all()
-		trees = []
-		if instances:
-			trees = get_instance_type_tree(instances)
+	root = ObjectTypeInstanceModel.query.filter_by(user_id=int(flask_login.current_user.id),id=int(id)).first() #.filter(ObjectTypeModel.object_type_id == None).all()
+	trees = []
+	if root:
+		tree = get_instance_tree(root)
+		trees.append(tree)
 
-		return jsonify(trees)
-	else:
-		root = ObjectTypeInstanceModel.query.filter_by(user_id=int(flask_login.current_user.id),id=int(id)).first() #.filter(ObjectTypeModel.object_type_id == None).all()
-		trees = []
-		if root:
-			tree = get_instance_tree(root)
-			trees.append(tree)
-
-		return jsonify(trees)
+	return jsonify(trees)
 
 
 
-@app.route("/user/project/<p_id>/<sortby>/instance/show/<i_id>" , methods =["GET"])
+@app.route("/user/project/<p_id>/instance/show/<i_id>" , methods =["GET"])
 @flask_login.login_required
-def showprojectinstance(p_id,sortby,i_id):
-	print(p_id,sortby)
+def showprojectinstance(p_id,i_id):
+	print(p_id)
 	project = ProjectModel.query.get(p_id)
 	root_instance = ObjectTypeInstanceModel.query.filter_by(project_id=int(p_id) , object_instance_id=None).first()
 	if root_instance:
@@ -1182,23 +1146,23 @@ def showprojectinstance(p_id,sortby,i_id):
 			selected_instance = root_instance
 		else:
 			selected_instance = ObjectTypeInstanceModel.query.get(i_id)
-		return render_template('/user/object_instance/show.html',sortby=sortby,item=selected_instance, i_id=str(i_id), project=project, instance_data_source="/user/{}/instance/data/tree/{}/{}".format(str(p_id),str(root_instance.id),sortby))
+		return render_template('/user/object_instance/show.html',item=selected_instance, i_id=str(i_id), project=project, instance_data_source="/user/instance/data/tree/{}".format(str(root_instance.id)))
 
-	return redirect('/user/project/{}/{}/instance/create/-1'.format(str(p_id),sortby))
+	return redirect('/user/project/{}/instance/create/-1'.format(str(p_id)))
 
 
-@app.route("/user/project/<p_id>/<sortby>/instance/delete/<i_id>" , methods =["GET"])
+@app.route("/user/project/<p_id>/instance/delete/<i_id>" , methods =["GET"])
 @flask_login.login_required
-def deleteprojectinstance(p_id,sortby,i_id):
+def deleteprojectinstance(p_id,i_id):
 	print("deleted " , i_id)
 	ObjectTypeInstanceModel.query.filter_by(id=i_id).delete()
 	db.session.commit()
-	return redirect('/user/project/{}/{}/instance/show/{}'.format(str(p_id),sortby,str("-1")))#i_id)))
+	return redirect('/user/project/{}/instance/show/{}'.format(str(p_id),str("-1")))#i_id)))
 
 
-@app.route("/user/project/<p_id>/<sortby>/instance/create/<i_id>" , methods =["GET" , "POST"])
+@app.route("/user/project/<p_id>/instance/create/<i_id>" , methods =["GET" , "POST"])
 @flask_login.login_required
-def createprojectinstance(p_id,sortby , i_id):
+def createprojectinstance(p_id , i_id):
 	# edit
 	if request.method == "POST":
 		object_type_id = request.form.get('object_type_id',type=int)
@@ -1220,7 +1184,7 @@ def createprojectinstance(p_id,sortby , i_id):
 
 
 		for i in range(len(parms_ids)):
-			Param = OnjectTypeInstanceParamModel(value=parms_values[i].replace('"',"'"),param_id=parms_ids[i])
+			Param = OnjectTypeInstanceParamModel(value=parms_values[i],param_id=parms_ids[i])
 			obj.parms.append(Param)
 
 		db.session.add(obj)
@@ -1229,7 +1193,7 @@ def createprojectinstance(p_id,sortby , i_id):
 		instance_id = obj.id
 		db.session.commit()
 
-		return redirect('/user/project/{}/{}/instance/show/{}'.format(str(p_id),sortby,str(instance_id)))
+		return redirect('/user/project/{}/instance/show/{}'.format(str(p_id),str(instance_id)))
 
 	# show  one row
 	elif request.method == "GET":
@@ -1238,15 +1202,15 @@ def createprojectinstance(p_id,sortby , i_id):
 		rt_id = -1
 		if root_instance:
 			rt_id = root_instance.id
-		return render_template('/user/object_instance/create.html',sortby=sortby,i_id=str(i_id), project=project, instance_data_source="/user/{}/instance/data/tree/{}/{}".format(str(p_id),str(rt_id),sortby) ,objects_data_source="/user/object_type/children/data/{}".format(str(i_id)))
+		return render_template('/user/object_instance/create.html',i_id=str(i_id), project=project, instance_data_source="/user/instance/data/tree/{}".format(str(rt_id)) ,objects_data_source="/user/object_type/children/data/{}".format(str(i_id)))
 
 	return "404"
 
 
 
-@app.route("/user/project/<p_id>/<sortby>/instance/edit/<i_id>" , methods =["GET" , "POST"])
+@app.route("/user/project/<p_id>/instance/edit/<i_id>" , methods =["GET" , "POST"])
 @flask_login.login_required
-def editprojectinstance(p_id,sortby , i_id):
+def editprojectinstance(p_id , i_id):
 	# edit
 	if request.method == "POST":
 
@@ -1262,7 +1226,7 @@ def editprojectinstance(p_id,sortby , i_id):
 
 		obj.parms.clear()
 		for i in range(len(parms_ids)):
-			Param = OnjectTypeInstanceParamModel(value=parms_values[i].replace('"',"'"),param_id=parms_ids[i])
+			Param = OnjectTypeInstanceParamModel(value=parms_values[i],param_id=parms_ids[i])
 			obj.parms.append(Param)
 
 
@@ -1271,7 +1235,7 @@ def editprojectinstance(p_id,sortby , i_id):
 
 		instance_id = obj.id
 
-		return redirect('/user/project/{}/{}/instance/show/{}'.format(str(p_id),sortby,str(instance_id)))
+		return redirect('/user/project/{}/instance/show/{}'.format(str(p_id),str(instance_id)))
 
 	# show  one row
 	elif request.method == "GET":
@@ -1281,7 +1245,7 @@ def editprojectinstance(p_id,sortby , i_id):
 		rt_id = -1
 		if root_instance:
 			rt_id = root_instance.id
-		return render_template('/user/object_instance/edit.html',sortby=sortby,i_id=str(i_id), item=item, project=project, instance_data_source="/user/{}/instance/data/tree/{}/{}".format(str(p_id),str(rt_id),sortby) ,objects_data_source="/user/object_type/children/data/{}".format(str(i_id)))
+		return render_template('/user/object_instance/edit.html',i_id=str(i_id), item=item, project=project, instance_data_source="/user/instance/data/tree/{}".format(str(rt_id)) ,objects_data_source="/user/object_type/children/data/{}".format(str(i_id)))
 
 	return "404"
 
@@ -1299,5 +1263,5 @@ def instance_parms_form():
 
 if __name__ == "__main__":
     # app.run(host='0.0.0.0', port=5001)
-    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)), debug=False, threaded=True)
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)), debug=True, threaded=True)
 
